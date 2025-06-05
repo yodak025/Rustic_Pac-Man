@@ -1,18 +1,21 @@
-import Game from './Game'
-import Menu from './Menu'
-import { useState } from 'react'
+import { Engine } from "./core/engine";
+import { createGameLoop } from "./core/loop";
+import { useState, useEffect, use } from "react";
 
 function App() {
-  const [gameStarted, setGameStarted] = useState(false)
+  let engine = new Engine();
+  useEffect(() => {
+    let stop = createGameLoop((delta) => {
+      engine.tick(delta);
+    });
+    return () => stop();
+  }, []);
+
+  const [gameStarted, setGameStarted] = useState(engine.state.runState);
+
   return (
-    <>
-      {!gameStarted ? (
-        <Menu  setGameStarted={setGameStarted} />
-      ) : (
-        <Game />
-      )}
-    </>
-  )
+    <>{!gameStarted ? <Menu setGameStarted={setGameStarted} /> : <Game />}</>
+  );
 }
 
-export default App
+export default App;
