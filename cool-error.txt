@@ -1,0 +1,812 @@
+[Running] python -u "c:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\tests\reset_test.py"
+FE
+======================================================================
+ERROR: test_reset (__main__.TestCase)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "c:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\tests\reset_test.py", line 79, in test_reset
+    self.assertTrue(np.array_equal(control_cells, vanilla_cells))
+  File "C:\Users\diego\AppData\Local\Programs\Python\Python310\lib\site-packages\numpy\core\numeric.py", line 2439, in array_equal
+    return bool(asarray(a1 == a2).all())
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 35, in __eq__
+    return self.__dict__ == other.__dict__
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 17, in __eq__
+    return (self.up == other.up and
+  File "C:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\cell.py", line 34, in __eq__
+    if isinstance(other, Cell):
+RecursionError: maximum recursion depth exceeded while calling a Python object
+
+======================================================================
+FAIL: test_link_cells (__main__.TestCase)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "c:\Users\diego\Desktop\TFG-RusticPacman\Rustic_Pac-Man\maze_generation\tests\reset_test.py", line 21, in test_link_cells
+    self.assertEqual(cells[0, 0].next.up, None)
+AssertionError: <maze_generation.cell.Cell object at 0x0000028FD317E620> != None
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.003s
+
+FAILED (failures=1, errors=1)
+
+[Done] exited with code=1 in 0.268 seconds

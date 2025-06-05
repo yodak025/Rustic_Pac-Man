@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador de Celdas - Prueba</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            padding: 30px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #4a5568;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            font-weight: 300;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+
+        label {
+            font-weight: 600;
+            color: #4a5568;
+            font-size: 0.9em;
+        }
+
+        input[type="number"] {
+            padding: 8px 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+            width: 80px;
+            text-align: center;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button:disabled {
+            background: #a0aec0;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        #canvas, #gridCanvas {
+            border: 3px solid #e2e8f0;
+            border-radius: 10px;
+            margin: 20px auto;
+            display: block;
+            background: #f7fafc;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .loading {
+            text-align: center;
+            margin: 20px 0;
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        .error {
+            background: #fed7e2;
+            color: #c53030;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .info {
+            background: #e6fffa;
+            color: #00695c;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .stat {
+            text-align: center;
+            background: #f7fafc;
+            padding: 15px 20px;
+            border-radius: 10px;
+            border: 2px solid #e2e8f0;
+        }
+
+        .stat-label {
+            font-size: 0.8em;
+            color: #718096;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-value {
+            font-size: 1.5em;
+            color: #4a5568;
+            font-weight: 700;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="/rustic-client/index.html"> <h1> Demo </h1> </a>
+    </header>
+    <div class="container">
+        <h1>🎮 Generador de Celdas</h1>
+        
+        <div class="controls">
+            <div class="control-group">
+                <label for="rows">Filas:</label>
+                <input type="number" id="rows" value="9" min="1" max="20">
+            </div>
+            <div class="control-group">
+                <label for="cols">Columnas:</label>
+                <input type="number" id="cols" value="5" min="1" max="20">
+            </div>
+            <div class="control-group">
+                <label for="maxSize">Tamaño Max:</label>
+                <input type="number" id="maxSize" value="5" min="1" max="10">
+            </div>
+            <button id="generateBtn" onclick="generateCells()">
+                🎲 Generar Celdas
+            </button>
+        </div>
+
+        <div id="message"></div>
+
+        <div class="stats" id="stats" style="display: none;">
+            <div class="stat">
+                <div class="stat-label">Celdas Llenas</div>
+                <div class="stat-value" id="filledCells">-</div>
+            </div>
+            <div class="stat">
+                <div class="stat-label">Grupos</div>
+                <div class="stat-value" id="groupCount">-</div>
+            </div>
+            <div class="stat">
+                <div class="stat-label">Conexiones</div>
+                <div class="stat-value" id="connectionCount">-</div>
+            </div>
+        </div>
+
+        <canvas id="canvas" width="800" height="800"></canvas>
+        
+        <h2 style="text-align: center; color: #4a5568; margin: 40px 0 20px 0; font-size: 1.5em; font-weight: 300;">Vista de Cuadrícula 3x3</h2>
+        <canvas id="gridCanvas" width="800" height="800"></canvas>
+    </div>
+
+    <script>
+        let currentCells = null;
+
+        async function generateCells() {
+            const generateBtn = document.getElementById('generateBtn');
+            const messageDiv = document.getElementById('message');
+            const canvas = document.getElementById('canvas');
+            const ctx = canvas.getContext('2d');
+            const statsDiv = document.getElementById('stats');
+
+            // Deshabilitar el botón y mostrar loading
+            generateBtn.disabled = true;
+            generateBtn.textContent = '⏳ Generando...';
+            messageDiv.innerHTML = '<div class="loading">Generando celdas...</div>';
+            statsDiv.style.display = 'none';
+
+            // Limpiar canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            try {
+                const rows = parseInt(document.getElementById('rows').value);
+                const cols = parseInt(document.getElementById('cols').value);
+                const maxSize = parseInt(document.getElementById('maxSize').value);
+
+                const response = await fetch('/generate-cells', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        rows: rows,
+                        cols: cols,
+                        max_figure_size: maxSize
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    currentCells = data.cells;
+                    messageDiv.innerHTML = '<div class="info">¡Celdas generadas exitosamente!</div>';
+                    drawCells(data.cells, data.rows, data.cols);
+                    drawGridCells(data.cells, data.rows, data.cols);
+                    updateStats(data.cells);
+                    statsDiv.style.display = 'flex';
+                } else {
+                    messageDiv.innerHTML = `<div class="error">Error: ${data.error}</div>`;
+                }
+            } catch (error) {
+                messageDiv.innerHTML = `<div class="error">Error de conexión: ${error.message}</div>`;
+            } finally {
+                // Rehabilitar el botón
+                generateBtn.disabled = false;
+                generateBtn.textContent = '🎲 Generar Celdas';
+            }
+        }
+
+        function drawCells(cells, rows, cols) {
+            const canvas = document.getElementById('canvas');
+            const ctx = canvas.getContext('2d');
+            
+            // Calcular tamaño de celda
+            const cellSize = Math.min(canvas.width / cols, canvas.height / rows) * 0.9;
+            const offsetX = (canvas.width - cellSize * cols) / 2;
+            const offsetY = (canvas.height - cellSize * rows) / 2;
+
+            // Limpiar canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Dibujar las celdas
+            for (let i = 0; i < rows; i++) {
+                for (let j = 0; j < cols; j++) {
+                    const cell = cells[i][j];
+                    const x = offsetX + j * cellSize;
+                    const y = offsetY + i * cellSize;
+
+                    // Dibujar fondo de la celda
+                    if (cell.is_filled) {
+                        // Color basado en el grupo
+                        const hue = (cell.group_seq * 137.5) % 360;
+                        ctx.fillStyle = `hsl(${hue}, 70%, 85%)`;
+                        ctx.fillRect(x, y, cellSize, cellSize);
+
+                        // Borde más oscuro para celdas llenas
+                        ctx.strokeStyle = `hsl(${hue}, 70%, 50%)`;
+                        ctx.lineWidth = 2;
+                        ctx.strokeRect(x, y, cellSize, cellSize);
+
+                        // Mostrar número de secuencia
+                        ctx.fillStyle = `hsl(${hue}, 70%, 30%)`;
+                        ctx.font = `bold ${cellSize * 0.2}px Arial`;
+                        ctx.textAlign = 'center';
+                        ctx.fillText(cell.seq, x + cellSize/2, y + cellSize/2 + cellSize * 0.07);
+                    } else {
+                        // Celda vacía
+                        ctx.fillStyle = '#f8f9fa';
+                        ctx.fillRect(x, y, cellSize, cellSize);
+                        ctx.strokeStyle = '#dee2e6';
+                        ctx.lineWidth = 1;
+                        ctx.strokeRect(x, y, cellSize, cellSize);
+                    }
+
+                    // Dibujar conexiones
+                    if (cell.is_filled) {
+                        ctx.strokeStyle = '#2d3748';
+                        ctx.lineWidth = 4;
+
+                        // Conexión hacia arriba (UP = 0)
+                        if (cell.is_connected_at[0]) {
+                            ctx.beginPath();
+                            ctx.moveTo(x + cellSize/2, y);
+                            ctx.lineTo(x + cellSize/2, y + cellSize/4);
+                            ctx.stroke();
+                        }
+
+                        // Conexión hacia la derecha (RIGHT = 1)
+                        if (cell.is_connected_at[1]) {
+                            ctx.beginPath();
+                            ctx.moveTo(x + cellSize, y + cellSize/2);
+                            ctx.lineTo(x + cellSize * 3/4, y + cellSize/2);
+                            ctx.stroke();
+                        }
+
+                        // Conexión hacia abajo (DOWN = 2)
+                        if (cell.is_connected_at[2]) {
+                            ctx.beginPath();
+                            ctx.moveTo(x + cellSize/2, y + cellSize);
+                            ctx.lineTo(x + cellSize/2, y + cellSize * 3/4);
+                            ctx.stroke();
+                        }
+
+                        // Conexión hacia la izquierda (LEFT = 3)
+                        if (cell.is_connected_at[3]) {
+                            ctx.beginPath();
+                            ctx.moveTo(x, y + cellSize/2);
+                            ctx.lineTo(x + cellSize/4, y + cellSize/2);
+                            ctx.stroke();
+                        }
+                    }
+                }
+            }
+
+            // Dibujar contornos de las figuras
+            ctx.strokeStyle = '#1a202c';
+            ctx.lineWidth = 3;
+            
+            for (let i = 0; i < rows; i++) {
+                for (let j = 0; j < cols; j++) {
+                    const cell = cells[i][j];
+                    if (cell.is_filled) {
+                        const x = offsetX + j * cellSize;
+                        const y = offsetY + i * cellSize;
+                        
+                        // Verificar cada borde de la celda
+                        // Borde superior
+                        const hasTopNeighbor = i > 0 && cells[i][j].is_connected_at[0];
+                        if (!hasTopNeighbor) {
+                            ctx.beginPath();
+                            ctx.moveTo(x, y);
+                            ctx.lineTo(x + cellSize, y);
+                            ctx.stroke();
+                        }
+                        
+                        // Borde derecho
+                        const hasRightNeighbor = j < cols-1 && cells[i][j].is_connected_at[1];
+                        if (!hasRightNeighbor) {
+                            ctx.beginPath();
+                            ctx.moveTo(x + cellSize, y);
+                            ctx.lineTo(x + cellSize, y + cellSize);
+                            ctx.stroke();
+                        }
+                        
+                        // Borde inferior
+                        const hasBottomNeighbor = i < rows-1 && cells[i][j].is_connected_at[2];
+                        if (!hasBottomNeighbor) {
+                            ctx.beginPath();
+                            ctx.moveTo(x + cellSize, y + cellSize);
+                            ctx.lineTo(x, y + cellSize);
+                            ctx.stroke();
+                        }
+                        
+                        // Borde izquierdo
+                        const hasLeftNeighbor = j > 0 && cells[i][j].is_connected_at[3];
+                        if (!hasLeftNeighbor) {
+                            ctx.beginPath();
+                            ctx.moveTo(x, y + cellSize);
+                            ctx.lineTo(x, y);
+                            ctx.stroke();
+                        }
+                    }
+                }
+            }
+        }
+
+        function drawGridCells(cells, rows, cols) {
+            const canvas = document.getElementById('gridCanvas');
+            const ctx = canvas.getContext('2d');
+            
+            // Calcular el ancho total del grid simétrico
+            // Columna central (primera columna de celdas) + (cols-1)*2 columnas adicionales
+            const totalGridWidth = cols === 1 ? 3 : 3 + (cols - 1) * 6;
+            const totalGridHeight = rows * 3;
+            const squareSize = Math.min(canvas.width / totalGridWidth, canvas.height / totalGridHeight) * 0.9;
+            const offsetX = (canvas.width - squareSize * totalGridWidth) / 2;
+            const offsetY = (canvas.height - squareSize * totalGridHeight) / 2;
+
+            // Limpiar canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Dibujar cuadrícula base
+            ctx.fillStyle = '#f0f0f0';
+            ctx.fillRect(offsetX, offsetY, totalGridWidth * squareSize, totalGridHeight * squareSize);
+
+            // Dibujar líneas de cuadrícula
+            ctx.strokeStyle = '#d0d0d0';
+            ctx.lineWidth = 1;
+            
+            // Líneas verticales
+            for (let i = 0; i <= totalGridWidth; i++) {
+                ctx.beginPath();
+                ctx.moveTo(offsetX + i * squareSize, offsetY);
+                ctx.lineTo(offsetX + i * squareSize, offsetY + totalGridHeight * squareSize);
+                ctx.stroke();
+            }
+            
+            // Líneas horizontales
+            for (let i = 0; i <= totalGridHeight; i++) {
+                ctx.beginPath();
+                ctx.moveTo(offsetX, offsetY + i * squareSize);
+                ctx.lineTo(offsetX + totalGridWidth * squareSize, offsetY + i * squareSize);
+                ctx.stroke();
+            }
+
+            // Rellenar tiles de figuras
+            ctx.fillStyle = '#333333';
+            for (let i = 0; i < rows; i++) {
+                for (let j = 0; j < cols; j++) {
+                    const cell = cells[i][j];
+                    if (cell.is_filled) {
+                        if (j === 0) {
+                            // Primera columna (central) - dibujar en el centro
+                            const baseX = offsetX + (totalGridWidth / 2 - 1.5) * squareSize;
+                            const baseY = offsetY + i * 3 * squareSize;
+                            
+                            for (let gi = 0; gi < 3; gi++) {
+                                for (let gj = 0; gj < 3; gj++) {
+                                    ctx.fillRect(
+                                        baseX + gj * squareSize, 
+                                        baseY + gi * squareSize, 
+                                        squareSize, 
+                                        squareSize
+                                    );
+                                }
+                            }
+                        } else {
+                            // Columnas adicionales - dibujar en ambos lados simétricamente
+                            // Lado derecho
+                            const baseXRight = offsetX + (totalGridWidth / 2 - 1.5 + j * 3) * squareSize;
+                            const baseY = offsetY + i * 3 * squareSize;
+                            
+                            for (let gi = 0; gi < 3; gi++) {
+                                for (let gj = 0; gj < 3; gj++) {
+                                    ctx.fillRect(
+                                        baseXRight + gj * squareSize, 
+                                        baseY + gi * squareSize, 
+                                        squareSize, 
+                                        squareSize
+                                    );
+                                }
+                            }
+                            
+                            // Lado izquierdo (simétrico)
+                            const baseXLeft = offsetX + (totalGridWidth / 2 - 1.5 - j * 3) * squareSize;
+                            
+                            for (let gi = 0; gi < 3; gi++) {
+                                for (let gj = 0; gj < 3; gj++) {
+                                    ctx.fillRect(
+                                        baseXLeft + gj * squareSize, 
+                                        baseY + gi * squareSize, 
+                                        squareSize, 
+                                        squareSize
+                                    );
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Dibujar líneas finas de separación entre celdas 3x3
+            ctx.strokeStyle = '#888888';
+            ctx.lineWidth = 0.5;
+            
+            // Líneas verticales cada 3 tiles
+            for (let j = 0; j < cols; j++) {
+                if (j === 0) {
+                    // Líneas para la columna central
+                    const centerX = offsetX + (totalGridWidth / 2 - 1.5) * squareSize;
+                    ctx.beginPath();
+                    ctx.moveTo(centerX, offsetY);
+                    ctx.lineTo(centerX, offsetY + totalGridHeight * squareSize);
+                    ctx.stroke();
+                    
+                    ctx.beginPath();
+                    ctx.moveTo(centerX + 3 * squareSize, offsetY);
+                    ctx.lineTo(centerX + 3 * squareSize, offsetY + totalGridHeight * squareSize);
+                    ctx.stroke();
+                } else {
+                    // Líneas para columnas simétricas
+                    const rightX = offsetX + (totalGridWidth / 2 - 1.5 + j * 3) * squareSize;
+                    const leftX = offsetX + (totalGridWidth / 2 - 1.5 - j * 3) * squareSize;
+                    
+                    // Lado derecho
+                    ctx.beginPath();
+                    ctx.moveTo(rightX, offsetY);
+                    ctx.lineTo(rightX, offsetY + totalGridHeight * squareSize);
+                    ctx.stroke();
+                    
+                    ctx.beginPath();
+                    ctx.moveTo(rightX + 3 * squareSize, offsetY);
+                    ctx.lineTo(rightX + 3 * squareSize, offsetY + totalGridHeight * squareSize);
+                    ctx.stroke();
+                    
+                    // Lado izquierdo
+                    ctx.beginPath();
+                    ctx.moveTo(leftX, offsetY);
+                    ctx.lineTo(leftX, offsetY + totalGridHeight * squareSize);
+                    ctx.stroke();
+                    
+                    ctx.beginPath();
+                    ctx.moveTo(leftX + 3 * squareSize, offsetY);
+                    ctx.lineTo(leftX + 3 * squareSize, offsetY + totalGridHeight * squareSize);
+                    ctx.stroke();
+                }
+            }
+            
+            // Líneas horizontales cada 3 tiles
+            for (let i = 0; i <= rows; i++) {
+                ctx.beginPath();
+                ctx.moveTo(offsetX, offsetY + i * 3 * squareSize);
+                ctx.lineTo(offsetX + totalGridWidth * squareSize, offsetY + i * 3 * squareSize);
+                ctx.stroke();
+            }
+
+            // Dibujar bordes de figuras
+            ctx.strokeStyle = '#000000';
+            ctx.lineWidth = 2;
+            
+            for (let i = 0; i < rows; i++) {
+                for (let j = 0; j < cols; j++) {
+                    const cell = cells[i][j];
+                    if (cell.is_filled) {
+                        if (j === 0) {
+                            // Primera columna (central)
+                            const baseX = offsetX + (totalGridWidth / 2 - 1.5) * squareSize;
+                            const baseY = offsetY + i * 3 * squareSize;
+                            
+                            // Borde superior
+                            const hasTopNeighbor = i > 0 && cells[i-1][j].is_filled && cell.is_connected_at[0];
+                            if (!hasTopNeighbor) {
+                                ctx.beginPath();
+                                ctx.moveTo(baseX, baseY);
+                                ctx.lineTo(baseX + 3 * squareSize, baseY);
+                                ctx.stroke();
+                            }
+                            
+                            // Borde derecho (solo si hay conexión hacia la derecha)
+                            const hasRightNeighbor = j < cols-1 && cells[i][j+1].is_filled && cell.is_connected_at[1];
+                            if (!hasRightNeighbor) {
+                                ctx.beginPath();
+                                ctx.moveTo(baseX + 3 * squareSize, baseY);
+                                ctx.lineTo(baseX + 3 * squareSize, baseY + 3 * squareSize);
+                                ctx.stroke();
+                            }
+                            
+                            // Borde izquierdo (simétrico al derecho)
+                            if (!hasRightNeighbor) {
+                                ctx.beginPath();
+                                ctx.moveTo(baseX, baseY + 3 * squareSize);
+                                ctx.lineTo(baseX, baseY);
+                                ctx.stroke();
+                            }
+                            
+                            // Borde inferior
+                            const hasBottomNeighbor = i < rows-1 && cells[i+1][j].is_filled && cell.is_connected_at[2];
+                            if (!hasBottomNeighbor) {
+                                ctx.beginPath();
+                                ctx.moveTo(baseX + 3 * squareSize, baseY + 3 * squareSize);
+                                ctx.lineTo(baseX, baseY + 3 * squareSize);
+                                ctx.stroke();
+                            }
+                        } else {
+                            // Columnas adicionales - dibujar bordes en ambos lados
+                            const baseXRight = offsetX + (totalGridWidth / 2 - 1.5 + j * 3) * squareSize;
+                            const baseXLeft = offsetX + (totalGridWidth / 2 - 1.5 - j * 3) * squareSize;
+                            const baseY = offsetY + i * 3 * squareSize;
+                            
+                            // Bordes para el lado derecho
+                            const hasTopNeighbor = i > 0 && cells[i-1][j].is_filled && cell.is_connected_at[0];
+                            const hasRightNeighbor = j < cols-1 && cells[i][j+1].is_filled && cell.is_connected_at[1];
+                            const hasBottomNeighbor = i < rows-1 && cells[i+1][j].is_filled && cell.is_connected_at[2];
+                            const hasLeftNeighbor = cells[i][j-1].is_filled && cell.is_connected_at[3];
+                            
+                            // Lado derecho
+                            if (!hasTopNeighbor) {
+                                ctx.beginPath();
+                                ctx.moveTo(baseXRight, baseY);
+                                ctx.lineTo(baseXRight + 3 * squareSize, baseY);
+                                ctx.stroke();
+                            }
+                            
+                            if (!hasRightNeighbor) {
+                                ctx.beginPath();
+                                ctx.moveTo(baseXRight + 3 * squareSize, baseY);
+                                ctx.lineTo(baseXRight + 3 * squareSize, baseY + 3 * squareSize);
+                                ctx.stroke();
+                            }
+                            
+                            if (!hasBottomNeighbor) {
+                                ctx.beginPath();
+                                ctx.moveTo(baseXRight + 3 * squareSize, baseY + 3 * squareSize);
+                                ctx.lineTo(baseXRight, baseY + 3 * squareSize);
+                                ctx.stroke();
+                            }
+                            
+                            if (!hasLeftNeighbor) {
+                                ctx.beginPath();
+                                ctx.moveTo(baseXRight, baseY + 3 * squareSize);
+                                ctx.lineTo(baseXRight, baseY);
+                                ctx.stroke();
+                            }
+                            
+                            // Lado izquierdo (simétrico)
+                            if (!hasTopNeighbor) {
+                                ctx.beginPath();
+                                ctx.moveTo(baseXLeft, baseY);
+                                ctx.lineTo(baseXLeft + 3 * squareSize, baseY);
+                                ctx.stroke();
+                            }
+                            
+                            // Borde izquierdo del lado izquierdo (equivale al derecho del lado derecho)
+                            if (!hasRightNeighbor) {
+                                ctx.beginPath();
+                                ctx.moveTo(baseXLeft, baseY + 3 * squareSize);
+                                ctx.lineTo(baseXLeft, baseY);
+                                ctx.stroke();
+                            }
+                            
+                            if (!hasBottomNeighbor) {
+                                ctx.beginPath();
+                                ctx.moveTo(baseXLeft + 3 * squareSize, baseY + 3 * squareSize);
+                                ctx.lineTo(baseXLeft, baseY + 3 * squareSize);
+                                ctx.stroke();
+                            }
+                            
+                            // Borde derecho del lado izquierdo (equivale al izquierdo del lado derecho)
+                            if (!hasLeftNeighbor) {
+                                ctx.beginPath();
+                                ctx.moveTo(baseXLeft + 3 * squareSize, baseY);
+                                ctx.lineTo(baseXLeft + 3 * squareSize, baseY + 3 * squareSize);
+                                ctx.stroke();
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        function updateStats(cells) {
+            let filledCount = 0;
+            let maxGroup = 0;
+            let connectionCount = 0;
+
+            for (let i = 0; i < cells.length; i++) {
+                for (let j = 0; j < cells[i].length; j++) {
+                    const cell = cells[i][j];
+                    if (cell.is_filled) {
+                        filledCount++;
+                        maxGroup = Math.max(maxGroup, cell.group_seq);
+                        
+                        // Contar conexiones (dividir entre 2 porque cada conexión se cuenta dos veces)
+                        connectionCount += Object.values(cell.is_connected_at).filter(connected => connected).length;
+                    }
+                }
+            }
+
+            document.getElementById('filledCells').textContent = filledCount;
+            document.getElementById('groupCount').textContent = maxGroup;
+            document.getElementById('connectionCount').textContent = Math.floor(connectionCount / 2);
+        }
+
+        // Generar celdas iniciales al cargar la página
+        window.onload = function() {
+            generateCells();
+        };
+    </script>
+</body>
+</html>

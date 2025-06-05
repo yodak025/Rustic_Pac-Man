@@ -1,0 +1,1 @@
+body{margin:0;padding:0}h1{display:flex;justify-content:center;align-items:center;padding:150px;font-size:50px}button{display:flex;justify-content:center;align-items:center;padding:20px;font-size:20px;margin-left:46%}#game-container{top:0;left:0;width:100vw;height:100vh}#game-canvas{background-color:#000;width:100vw;height:100vh}
