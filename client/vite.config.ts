@@ -11,7 +11,9 @@ export default defineConfig({
       '@': resolve(__dirname, 'src/app'),
       '@scenes': resolve(__dirname, 'src/scenes'),
       '@state': resolve(__dirname, 'src/state'),
-      '@styles': resolve(__dirname, 'src/assets/styles')
+      '@styles': resolve(__dirname, 'src/assets/styles'),
+      '@core': resolve(__dirname, 'src/core'),
+      '@custom-types': resolve(__dirname, 'src/types'),
     }
   },
   build: {

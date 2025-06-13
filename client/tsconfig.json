@@ -11,6 +11,8 @@
       "@scenes/*": ["./src/scenes/*"],
       "@state/*": ["./src/state/*"],
       "@styles/*": ["./src/assets/styles/*"],
+      "@core/*": ["./src/core/*"],
+      "@custom-types/*": ["./src/types/*"],
     }
   }
 }

@@ -1,10 +1,13 @@
 import GameScene from "@scenes/GameScene";
 import useGameState from "@state/store";
-import { gameStatusValue } from "@state/slices/gameStatusSlice";
+import { gameStatusValue } from "@custom-types/gameStateTypes";
+
 
 export default function App() {
 
   const { gameStatus, playGame, pauseGame, winGame, loseGame, resetGame } = useGameState(state => state);
+  
+
   return (
     <div className="p-5 font-sans bg-gray">
       <h1 className="text-2xl font-bold mb-5">Game State Test Interface</h1>

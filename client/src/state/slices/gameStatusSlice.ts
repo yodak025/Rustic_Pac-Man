@@ -1,25 +1,10 @@
 import { type StateCreator } from "zustand";
 import { immer } from "zustand/middleware/immer";
+import { gameStatusValue, type IGameStatus, type IGameState } from "@custom-types/gameStateTypes";
 
-export enum gameStatusValue {
-  NOT_STARTED = "NOT_STARTED",
-  PLAYING = "PLAYING",
-  PAUSED = "PAUSED",
-  LOST = "LOST",
-  WINNED = "WINNED",
-}
-
-export interface IGameStatus {
-  gameStatus: gameStatusValue;
-  playGame: () => void;
-  pauseGame: () => void;
-  loseGame: () => void;
-  winGame: () => void;
-  resetGame: () => void;
-}
 
 export const createGameStatusSlice: StateCreator<
-  IGameStatus,
+  IGameState,
   [["zustand/immer", never]],
   [],
   IGameStatus
