@@ -5,14 +5,11 @@
     { "path": "./tsconfig.node.json" }
   ],
   "compilerOptions": {
-    "target": "ESNext",
-    "module": "ESNext",
-    "moduleResolution": "Node",
-    "types": ["node"],
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/app/*"],
-      "@scenes/*": ["./src/scenes/*"]
+      "@scenes/*": ["./src/scenes/*"],
+      "@state/*": ["./src/state/*"],
     }
   }
 }

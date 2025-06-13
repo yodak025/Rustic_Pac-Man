@@ -22,10 +22,13 @@
     "erasableSyntaxOnly": false,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
+
+    /* Alias */
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/app/*"],
-      "@scenes/*": ["./src/scenes/*"]
+      "@scenes/*": ["./src/scenes/*"],
+      "@state/*": ["./src/state/*"],
     }
   },
   "include": ["src"]
