@@ -30,6 +30,12 @@ export class TileMap {
       })
     }
 )}
+  getRandomEmptyTileCoords(): { x: number, y: number } {
+    const [h, w] = [this.data.length, this.data[0].length];
+    let [x, y] = [Math.floor(Math.random() * w), Math.floor(Math.random() * h)]; 
+    this.set(x, y, -1); 
+    return { x, y };
+  }
 
   // iteradores, búsqueda de vecinos, etc.
 }
