@@ -10,7 +10,8 @@ export default defineConfig({
     alias: {
       '@': resolve(__dirname, 'src/app'),
       '@scenes': resolve(__dirname, 'src/scenes'),
-      '@state': resolve(__dirname, 'src/state')
+      '@state': resolve(__dirname, 'src/state'),
+      '@styles': resolve(__dirname, 'src/assets/styles')
     }
   },
   build: {

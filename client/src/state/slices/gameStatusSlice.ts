@@ -1,7 +1,7 @@
 import { type StateCreator } from "zustand";
 import { immer } from "zustand/middleware/immer";
 
-enum gameStatusValue {
+export enum gameStatusValue {
   NOT_STARTED = "NOT_STARTED",
   PLAYING = "PLAYING",
   PAUSED = "PAUSED",
@@ -11,9 +11,8 @@ enum gameStatusValue {
 
 export interface IGameStatus {
   gameStatus: gameStatusValue;
-  startGame: () => void;
+  playGame: () => void;
   pauseGame: () => void;
-  resumeGame: () => void;
   loseGame: () => void;
   winGame: () => void;
   resetGame: () => void;
@@ -26,17 +25,13 @@ export const createGameStatusSlice: StateCreator<
   IGameStatus
 > = (set) => ({
   gameStatus: gameStatusValue.NOT_STARTED,
-  startGame: () =>
+  playGame: () =>
     set((state) => {
       state.gameStatus = gameStatusValue.PLAYING;
     }),
   pauseGame: () =>
     set((state) => {
       state.gameStatus = gameStatusValue.PAUSED;
-    }),
-  resumeGame: () =>
-    set((state) => {
-      state.gameStatus = gameStatusValue.PLAYING;
     }),
   loseGame: () =>
     set((state) => {

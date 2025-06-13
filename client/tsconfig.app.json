@@ -29,6 +29,7 @@
       "@/*": ["./src/app/*"],
       "@scenes/*": ["./src/scenes/*"],
       "@state/*": ["./src/state/*"],
+      "@styles/*": ["./src/assets/styles/*"],
     }
   },
   "include": ["src"]
