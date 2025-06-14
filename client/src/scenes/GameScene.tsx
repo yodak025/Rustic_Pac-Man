@@ -4,38 +4,51 @@ import TileMesh from "./meshes/maze/TileMesh";
 import useGameState from "@state/store";
 import type { JSX } from "react";
 import { loadMaze } from "../services/api";
-import { useEffect, useState} from "react";
+import { useEffect, useState, useRef} from "react";
 import PacmanMesh from "./meshes/entities/PacmanMesh";
 import BlinkyMesh from "./meshes/entities/BlinkyMesh";
 
 export default function GameScene() {
-  const { tileMap, setTileMap } = useGameState((state) => state);
+  const { tileMap, setTileMap, updateTile } = useGameState((state) => state);
   const [pacmanPosition, setPacmanPosition] = useState<{ x: number; y: number }>({x: -4, y: -3});
   const [blinkyPosition, setBlinkyPosition] = useState<{ x: number; y: number }>({x: -3, y: -3});
-  const [tileMeshesContainer, setTileMeshesContainer] = useState<JSX.Element[]>([]);
-  useEffect(() => {
-    loadMaze().then((maze) => {
-      setTileMap(maze!)
-      
-    });
-    
-  }, [ setTileMap]);
-
-  useEffect(() => {
-    if (!tileMap) return;
-    setPacmanPosition(tileMap!.getRandomEmptyTileCoords());
-    setBlinkyPosition(tileMap!.getRandomEmptyTileCoords());
-    tileMap!.set(0, 0, -1)
-    tileMap!.set(1, 1, -1)
-    tileMap!.forEachTile((_: number, x: number, y: number) => {
-    setTileMeshesContainer(prev => [
-      ...prev,
-      <TileMesh key={`${x}-${y}`} x={x} z={y} />
-    ]);
-  });
-  }, [tileMap]);
-
+  const [isInitialized, setIsInitialized] = useState(false);
+  const isFetched = useRef(false);
   
+  useEffect(() => {
+    if (isFetched.current) return;
+    isFetched.current = true;
+    loadMaze().then((maze) => {
+      if (maze) {
+        setTileMap(maze);
+      }
+    });
+  }, [setTileMap]);
+
+  const renderTileMeshes = () => {
+    if (!tileMap) return null;
+    
+    const meshes: JSX.Element[] = [];
+    tileMap.forEachTile((_: number, x: number, y: number) => {
+      meshes.push(<TileMesh key={`${x}-${y}`} x={x} z={y} />);
+    });
+    return meshes;
+  };
+
+  useEffect(() => {
+    if (!tileMap || isInitialized) return;
+    
+    const newPacmanPosition = tileMap.getRandomTileCoords(0);
+    const newBlinkyPosition = tileMap.getRandomTileCoords(0);
+    
+    updateTile(newPacmanPosition.x, newPacmanPosition.y, -1);
+    
+    setPacmanPosition(newPacmanPosition);
+    setBlinkyPosition(newBlinkyPosition);
+    setIsInitialized(true);
+  }, [tileMap, isInitialized, updateTile]);
+  
+
   
 
   return (
@@ -47,7 +60,7 @@ export default function GameScene() {
       <ambientLight intensity={0.5} />
       <pointLight position={[10, 10, 10]} />
 
-      {tileMeshesContainer}
+       {renderTileMeshes()}
 
       <PacmanMesh x={pacmanPosition!.x} z={pacmanPosition!.y} />
       <BlinkyMesh x={blinkyPosition!.x} z={blinkyPosition!.y} />
