@@ -62,30 +62,43 @@ export default function GameScene() {
 
   useFrame((_, delta)=>{
   const keys = getKeys();
-  const speed = 10;
+  const speed = 8;
   let moved = false;
-  let newPos = { x: pacmanState.position.x, y: pacmanState.position.y };
+  let position = { x: pacmanState.position.x, y: pacmanState.position.y };
   
   if (keys.forward) {
-    newPos.y -= speed * delta;
-    moved = true;
+    const newY = position.y - speed * delta;
+    if (tileMap && tileMap.get(Math.round(position.x), Math.round(newY)) !== 1) {
+      position.y = newY;
+      moved = true;
+    }
   }
   if (keys.backward) {
-    newPos.y += speed * delta;
-    moved = true;
+    const newY = position.y + speed * delta;
+    if (tileMap && tileMap.get(Math.round(position.x), Math.round(newY)) !== 1) {
+      position.y = newY;
+      moved = true;
+    }
   }
   if (keys.left) {
-    newPos.x -= speed * delta;
-    moved = true;
+    const newX = position.x - speed * delta;
+    if (tileMap && tileMap.get(Math.round(newX), Math.round(position.y)) !== 1) {
+      position.x = newX;
+      moved = true;
+    }
   }
   if (keys.right) {
-    newPos.x += speed * delta;
-    moved = true;
+    const newX = position.x + speed * delta;
+    if (tileMap && tileMap.get(Math.round(newX), Math.round(position.y)) !== 1) {
+      position.x = newX;
+      moved = true;
+    }
   }
 
   // Actualizar el estado para forzar re-render
   if (moved) {
-    pacmanState.setPosition(newPos);
+    pacmanState.setPosition(position);
+    updateTile(Math.round(pacmanState.position.x), Math.round(pacmanState.position.y), -1);
   }
 })
 
