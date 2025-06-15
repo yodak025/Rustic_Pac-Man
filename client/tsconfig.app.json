@@ -32,6 +32,7 @@
       "@styles/*": ["./src/assets/styles/*"],
       "@core/*": ["./src/core/*"],
       "@custom-types/*": ["./src/types/*"],
+      "@inputs/*": ["./src/inputs/*"],
     }
   },
   "include": ["src"]

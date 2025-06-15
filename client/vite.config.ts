@@ -14,6 +14,7 @@ export default defineConfig({
       '@styles': resolve(__dirname, 'src/assets/styles'),
       '@core': resolve(__dirname, 'src/core'),
       '@custom-types': resolve(__dirname, 'src/types'),
+      '@inputs': resolve(__dirname, 'src/inputs'),
     }
   },
   build: {
