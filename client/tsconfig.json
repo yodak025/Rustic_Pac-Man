@@ -7,13 +7,15 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/app/*"],
-      "@scenes/*": ["./src/scenes/*"],
-      "@state/*": ["./src/state/*"],
-      "@styles/*": ["./src/assets/styles/*"],
+      "@/*": ["./src/*"],
+      "@main/*": ["./src/app/*"],
+      "@assets/*": ["./src/assets/*"],
       "@core/*": ["./src/core/*"],
+      "@scenes/*": ["./src/scenes/*"],
+      "@services/*": ["./src/services/*"],
+      "@state/*": ["./src/state/*"],
       "@custom-types/*": ["./src/types/*"],
-      "@inputs/*": ["./src/inputs/*"],
+      "@ui/*": ["./src/ui/*"]
     }
   }
 }
