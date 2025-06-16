@@ -17,7 +17,7 @@ interface ITilemap {
   getRandomTileCoords: (value: number) => { x: number; y: number };
 }
 
-const useTilemapState = create(() => {
+const useTilemapState = create(
   immer<ITilemap>((set, get) => ({
     tiles: {},
     width: 0,
@@ -71,7 +71,7 @@ const useTilemapState = create(() => {
         throw new Error(`No tiles with value ${value} found`);
       return matchingTiles[Math.floor(Math.random() * matchingTiles.length)];
     },
-  }));
-});
+  }))
+);
 
 export default useTilemapState;

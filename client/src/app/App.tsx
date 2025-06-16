@@ -1,12 +1,12 @@
 import GameScene from "@scenes/GameScene";
-import useGameState from "@state/store";
-import { gameStatusValue } from "@custom-types/gameStatusValue";
+import {useGameStatusStore} from "@state/store";
+import gameStatusValue from "@custom-types/gameStatusValue";
 import { KeyboardControls } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 
 export default function App() {
   const { gameStatus, playGame, pauseGame, winGame, loseGame, resetGame } =
-    useGameState((state) => state);
+    useGameStatusStore((state) => state);
 
   return (
     <div className="p-5 font-sans bg-gray">

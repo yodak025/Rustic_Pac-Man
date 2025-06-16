@@ -1,6 +1,6 @@
 import useTilemapState from "./useTilemapState";
 import usePacmanState  from "./usePacmanState";
-import useGameStatusStore from "./slices/gameStatusSlice";
+import useGameStatusStore from "./useGameStatusStore";
 
 
 export {

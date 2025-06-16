@@ -1,4 +1,4 @@
-import useGameState from "@state/store";
+import { useTilemapState } from "@state/store";
 import { useMemo } from "react";
 
 interface TileMeshProps {
@@ -7,11 +7,11 @@ interface TileMeshProps {
 }
 
 export default function TileMesh({ x, z }: TileMeshProps) {
-  const { tileMap } = useGameState((state) => state);
+  const {getTile} = useTilemapState((state) => state);
 
    const tileValue = useMemo(() => {
-    return tileMap?.get(x, z) ?? NaN;
-  }, [tileMap, x, z]);
+    return getTile(x, z);
+  }, [getTile, x, z]);
   
   return (
     <>
