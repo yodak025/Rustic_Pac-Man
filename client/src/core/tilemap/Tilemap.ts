@@ -1,10 +1,17 @@
 export class TileMap {
   private readonly data: readonly number[][]
+  public height: number
+  public width: number
 
-  private constructor(data: number[][]) {
+  constructor(
+    data: number[][]) {
     // clone profundo para seguridad
     this.data = data.map(row => [...row])
+    this.height = data.length
+    this.width = data[0]?.length || NaN
+
   }
+
 
   static fromArray(arr: number[][]) {
     return new TileMap(arr)

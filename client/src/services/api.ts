@@ -10,7 +10,7 @@ export const loadMaze = async () => {
       "Content-Type": "application/json",
       },
       body: JSON.stringify({
-      cols: 5,
+      cols: 10,
       rows: 9,
       "max-figure-size": 5,
       }),

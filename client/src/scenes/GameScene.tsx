@@ -9,6 +9,7 @@ import { useEffect, useState, useRef} from "react";
 import PacmanMesh from "./meshes/entities/PacmanMesh";
 import BlinkyMesh from "./meshes/entities/BlinkyMesh";
 import { useKeyboardControls } from "@react-three/drei";
+import MovementSystem from "@core/systems/movementSystem";
 
 export default function GameScene() {
   const { tileMap, setTileMap, updateTile } = useGameState((state) => state);
@@ -16,6 +17,7 @@ export default function GameScene() {
   const [blinkyPosition, setBlinkyPosition] = useState<{ x: number; y: number }>({x: -3, y: -3});
   const [isInitialized, setIsInitialized] = useState(false);
   const isFetched = useRef(false);
+  var movementSystem = useRef<MovementSystem | null>(null!);
   
   // TODO: Hookear este desastre antes de que se me derritan los ojos leyendolo 
 
@@ -43,6 +45,8 @@ export default function GameScene() {
     if (!tileMap || isInitialized) return;
     
     const initialPacmanPosition = tileMap.getRandomTileCoords(0);
+    movementSystem.current = new MovementSystem(tileMap, 5, 0.5);
+
     const newBlinkyPosition = tileMap.getRandomTileCoords(0);
     
     updateTile(initialPacmanPosition.x, initialPacmanPosition.y, -1);
@@ -61,45 +65,19 @@ export default function GameScene() {
   const [_, getKeys] = useKeyboardControls()
 
   useFrame((_, delta)=>{
-  const keys = getKeys();
-  const speed = 8;
-  let moved = false;
-  let position = { x: pacmanState.position.x, y: pacmanState.position.y };
+    if (!movementSystem.current) return;
+    movementSystem.current.move(
+      pacmanState.position,
+      pacmanState.setPosition,
+      getKeys(),
+      delta,
+      ((position) =>{
+        const {x, y} = position;
+        updateTile(Math.round(x), Math.round(y), -1);
+      })
+    )
   
-  if (keys.forward) {
-    const newY = position.y - speed * delta;
-    if (tileMap && tileMap.get(Math.round(position.x), Math.round(newY)) !== 1) {
-      position.y = newY;
-      moved = true;
-    }
-  }
-  if (keys.backward) {
-    const newY = position.y + speed * delta;
-    if (tileMap && tileMap.get(Math.round(position.x), Math.round(newY)) !== 1) {
-      position.y = newY;
-      moved = true;
-    }
-  }
-  if (keys.left) {
-    const newX = position.x - speed * delta;
-    if (tileMap && tileMap.get(Math.round(newX), Math.round(position.y)) !== 1) {
-      position.x = newX;
-      moved = true;
-    }
-  }
-  if (keys.right) {
-    const newX = position.x + speed * delta;
-    if (tileMap && tileMap.get(Math.round(newX), Math.round(position.y)) !== 1) {
-      position.x = newX;
-      moved = true;
-    }
-  }
-
-  // Actualizar el estado para forzar re-render
-  if (moved) {
-    pacmanState.setPosition(position);
-    updateTile(Math.round(pacmanState.position.x), Math.round(pacmanState.position.y), -1);
-  }
+  
 })
 
   return (
