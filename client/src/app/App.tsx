@@ -1,6 +1,6 @@
 import GameScene from "@scenes/GameScene";
 import useGameState from "@state/store";
-import { gameStatusValue } from "@custom-types/gameStateTypes";
+import { gameStatusValue } from "@custom-types/gameStatusValue";
 import { KeyboardControls } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 

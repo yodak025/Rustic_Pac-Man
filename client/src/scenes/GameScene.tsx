@@ -4,7 +4,7 @@ import TileMesh from "./meshes/maze/TileMesh";
 import useGameState from "@state/store";
 import { usePacmanState } from "@state/usePacmanState";
 import type { JSX } from "react";
-import { loadMaze } from "../services/api";
+import { loadMaze } from "./meshes/services/api";
 import { useEffect, useState, useRef} from "react";
 import PacmanMesh from "./meshes/entities/PacmanMesh";
 import BlinkyMesh from "./meshes/entities/BlinkyMesh";

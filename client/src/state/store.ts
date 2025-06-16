@@ -1,15 +1,10 @@
-import { create } from 'zustand';
-import { immer } from 'zustand/middleware/immer';
-import { createGameStatusSlice} from '@state/slices/gameStatusSlice';
-import { createTilemapSlice} from './slices/tilemapSlice';
-import type {  IGameState } from '@custom-types/gameStateTypes';
+import useTilemapState from "./useTilemapState";
+import usePacmanState  from "./usePacmanState";
+import useGameStatusStore from "./slices/gameStatusSlice";
 
 
-const useGameState = create<IGameState>()(
-  immer((...a) => ({ // <- Envolver con immer
-    ...createGameStatusSlice(...a),
-    ...createTilemapSlice(...a),
-  }))
-)
-
-export default useGameState;
+export {
+  useTilemapState,
+  usePacmanState,
+  useGameStatusStore
+}

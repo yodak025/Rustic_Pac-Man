@@ -10,9 +10,10 @@ interface PacmanState {
   setPosition: (position: Position) => void;
   updatePosition: (x: number, y: number) => void;
 }
-
-export const usePacmanState = create<PacmanState>((set) => ({
+const usePacmanState = create<PacmanState>((set) => ({
   position: { x: 0, y: 0 },
   setPosition: (position) => set({ position }),
   updatePosition: (x, y) => set({ position: { x, y } }),
 }));
+
+export default usePacmanState;

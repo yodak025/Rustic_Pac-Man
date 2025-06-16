@@ -1,33 +1,39 @@
-import { type StateCreator } from "zustand";
-import { immer } from "zustand/middleware/immer";
-import { gameStatusValue, type IGameStatus, type IGameState } from "@custom-types/gameStateTypes";
+import { create } from "zustand";
+
+import gameStatusValue from "@custom-types/gameStatusValue";
+
+interface IGameStatus {
+  gameStatus: gameStatusValue;
+  playGame: () => void;
+  pauseGame: () => void;
+  loseGame: () => void;
+  winGame: () => void;
+  resetGame: () => void;
+}
 
 
-export const createGameStatusSlice: StateCreator<
-  IGameState,
-  [["zustand/immer", never]],
-  [],
-  IGameStatus
-> = (set) => ({
+const useGameStatusStore = create<IGameStatus>((set) => ({
   gameStatus: gameStatusValue.NOT_STARTED,
   playGame: () =>
-    set((state) => {
-      state.gameStatus = gameStatusValue.PLAYING;
-    }),
+    set(() => ({
+      gameStatus: gameStatusValue.PLAYING
+    })),
   pauseGame: () =>
-    set((state) => {
-      state.gameStatus = gameStatusValue.PAUSED;
-    }),
+    set(() => ({
+      gameStatus: gameStatusValue.PAUSED
+    })),
   loseGame: () =>
-    set((state) => {
-      state.gameStatus = gameStatusValue.LOST;
-    }),
+    set(() => ({
+      gameStatus: gameStatusValue.LOST
+    })),
   winGame: () =>
-    set((state) => {
-      state.gameStatus = gameStatusValue.WINNED;
-    }),
+    set(() => ({
+      gameStatus: gameStatusValue.WON
+    })),
   resetGame: () =>
-    set((state) => {
-      state.gameStatus = gameStatusValue.NOT_STARTED;
-    }),
-});
+    set(() => ({
+      gameStatus: gameStatusValue.NOT_STARTED
+    })),
+}));
+
+export default useGameStatusStore;
