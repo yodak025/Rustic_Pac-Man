@@ -2,19 +2,20 @@ interface IMovementSystem {
   move: (
     position: { x: number; y: number },
     setPosition: ({ x, y }: { x: number; y: number }) => void,
-    direction: any,
-    delta: number
+    keys: { forward: boolean; backward: boolean; left: boolean; right: boolean },
+    delta: number,
+    tileMap: any,
+    onPositionChange?: (position: { x: number; y: number }) => void
   ) => void;
 }
 
 export default class MovementSystem implements IMovementSystem {
   constructor(
-    private readonly tileMap: any,
     private speed: number,
     private radius: number
   ) {}
 
-  private isValidMove(x: number, y: number, direction: string): boolean {
+  private isValidMove(x: number, y: number, direction: string, tileMap: any): boolean {
     const tileX = Math.round(
       x +
         (direction === "right"
@@ -36,21 +37,22 @@ export default class MovementSystem implements IMovementSystem {
     if (
       tileX < 0 ||
       tileY < 0 ||
-      tileX >= this.tileMap.width ||
-      tileY >= this.tileMap.height
+      tileX >= tileMap.width ||
+      tileY >= tileMap.height
     ) {
       return false; // Out of bounds
     }
-    const tileValue = this.tileMap.get(tileX, tileY);
+    const tileValue = tileMap.getTile(tileX, tileY);
     return tileValue !== 1; // Assuming 1 represents a wall
   }
 
   move(
     position: { x: number; y: number },
     setPosition: ({ x, y }: { x: number; y: number }) => void,
-    keys: any,
+    keys: { forward: boolean; backward: boolean; left: boolean; right: boolean },
     delta: number,
-    onPositionChange?: ({ x, y }: { x: number; y: number }) => void
+    tileMap: any,
+    onPositionChange?: (position: { x: number; y: number }) => void
   ): void {
     let moved = false;
     let currentPosition = { ...position };
@@ -60,7 +62,8 @@ export default class MovementSystem implements IMovementSystem {
       this.isValidMove(
         currentPosition.x,
         currentPosition.y - this.speed * delta,
-        "up"
+        "up",
+        tileMap
       )
     ) {
       currentPosition.y -= this.speed * delta;
@@ -71,7 +74,8 @@ export default class MovementSystem implements IMovementSystem {
       this.isValidMove(
         currentPosition.x,
         currentPosition.y + this.speed * delta,
-        "down"
+        "down",
+        tileMap
       )
     ) {
       currentPosition.y += this.speed * delta;
@@ -82,7 +86,8 @@ export default class MovementSystem implements IMovementSystem {
       this.isValidMove(
         currentPosition.x - this.speed * delta,
         currentPosition.y,
-        "left"
+        "left",
+        tileMap
       )
     ) {
       currentPosition.x -= this.speed * delta;
@@ -93,7 +98,8 @@ export default class MovementSystem implements IMovementSystem {
       this.isValidMove(
         currentPosition.x + this.speed * delta,
         currentPosition.y,
-        "right"
+        "right",
+        tileMap
       )
     ) {
       currentPosition.x += this.speed * delta;

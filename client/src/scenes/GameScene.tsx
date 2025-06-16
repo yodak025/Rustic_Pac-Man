@@ -12,8 +12,7 @@ import { useKeyboardControls } from "@react-three/drei";
 import MovementSystem from "@core/systems/movementSystem";
 
 export default function GameScene() {
-  const { tiles, setTileMap, updateTile, forEachTile, getRandomTileCoords } =
-    useTilemapState((state) => state);
+  const tilemap = useTilemapState((state) => state);
   const pacmanState = usePacmanState((state) => state);
   const [blinkyPosition, setBlinkyPosition] = useState<{
     x: number;
@@ -30,17 +29,17 @@ export default function GameScene() {
     isFetched.current = true;
     loadMaze().then((maze) => {
       if (maze) {
-        setTileMap(maze);
+        tilemap.setTileMap(maze);
         tileMeshes.length = 0;
-        forEachTile((_: number, x: number, y: number) => {
+        tilemap.forEachTile((_: number, x: number, y: number) => {
           tileMeshes.push(<TileMesh key={`${x}-${y}`} x={x} z={y} />);
         });
-        const initialPacmanPosition = getRandomTileCoords(0);
-        movementSystem.current = new MovementSystem(tiles, 5, 0.5);
+        const initialPacmanPosition = tilemap.getRandomTileCoords(0);
+        movementSystem.current = new MovementSystem(7, 0.5);
 
-        const newBlinkyPosition = getRandomTileCoords(0);
+        const newBlinkyPosition = tilemap.getRandomTileCoords(0);
 
-        updateTile(initialPacmanPosition.x, initialPacmanPosition.y, -1);
+        tilemap.updateTile(initialPacmanPosition.x, initialPacmanPosition.y, -1);
 
         pacmanState.setPosition(initialPacmanPosition);
         setBlinkyPosition(newBlinkyPosition);
@@ -51,16 +50,13 @@ export default function GameScene() {
 
   const tileMeshes = useMemo(() => {
     if (!isInitialized) return [];
-    
+
     const meshes: JSX.Element[] = [];
-    forEachTile((_: number, x: number, y: number) => {
+    tilemap.forEachTile((_: number, x: number, y: number) => {
       meshes.push(<TileMesh key={`${x}-${y}`} x={x} z={y} />);
     });
     return meshes;
-  }, [isInitialized, tiles]); // Se recalcula cuando cambia isInitialized o tiles
-
-
-
+  }, [isInitialized, tilemap.tiles, tilemap.updateTile]); // Se recalcula cuando cambia isInitialized o tiles
 
   //? Me veo obligado a usar putos comentarios para separar el código de la escena del juego
   //? Porque hoy es mi puto dia libre y no voy a gastarlo refactorizando este desastre
@@ -76,9 +72,10 @@ export default function GameScene() {
       pacmanState.setPosition,
       getKeys(),
       delta,
-      (position) => {
+      tilemap,
+      (position: any) => {
         const { x, y } = position;
-        updateTile(Math.round(x), Math.round(y), -1);
+        tilemap.updateTile(Math.round(x), Math.round(y), -1);
       }
     );
   });

@@ -1,5 +1,4 @@
 import { useTilemapState } from "@state/store";
-import { useMemo } from "react";
 
 interface TileMeshProps {
   x: number;
@@ -7,11 +6,9 @@ interface TileMeshProps {
 }
 
 export default function TileMesh({ x, z }: TileMeshProps) {
-  const {getTile} = useTilemapState((state) => state);
 
-   const tileValue = useMemo(() => {
-    return getTile(x, z);
-  }, [getTile, x, z]);
+
+   const tileValue = useTilemapState((state) => state.getTile(x, z));
   
   return (
     <>
