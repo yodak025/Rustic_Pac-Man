@@ -19,6 +19,7 @@ interface PacmanState {
   takeDamage: () => void;
   hunt: () => void;
   reStart: () => void;
+  addLive: () => void;
 }
 const usePacmanState = create<PacmanState>((set) => ({
   position: { x: 0, y: 0 },
@@ -49,6 +50,10 @@ const usePacmanState = create<PacmanState>((set) => ({
   reStart: () =>
     set(() => ({
       lives: 3, // Reset lives to default
+    })),
+  addLive: () =>
+    set((state) => ({
+      lives: state.lives + 1, // Increment lives by 1
     })),
 }));
 
