@@ -28,6 +28,7 @@ export default function PacmanMesh() {
     setPosition,
     status,
     lives,
+    hunt
   } = usePacmanState((state) => state);
   const tilemap = useTilemapState((state) => state);
   const [_, getKeys] = useKeyboardControls();
@@ -66,27 +67,18 @@ export default function PacmanMesh() {
           tilemap.updateTile({ x: Math.round(x), y: Math.round(y) }, -1);
           incrementScore(INCREMENT_AMOUNT); // Incrementa el puntaje al comer un pacDot
         }
+        if (tilemap.getTile({ x: Math.round(x), y: Math.round(y) }) === 2) {
+          tilemap.updateTile({ x: Math.round(x), y: Math.round(y) }, -1);
+          hunt(); // Incrementa el puntaje al comer un pellet
+        }
       }
     );
   });
 
   return (
     <mesh position={[x, 0, z]}>
-      <sphereGeometry args={[0.5, 32, 32]} />
-      {status === pacmanStatusValue.INVINCIBLE? (
-        <meshPhysicalMaterial
-          transmission={1} // 1 = completamente translúcido
-          roughness={0.05}
-          thickness={0.1}
-          clearcoat={1}
-          clearcoatRoughness={0.1}
-          reflectivity={0.5}
-          ior={1.5} // índice de refracción
-          color="#a8d0ff"
-        />
-      ) : (
-        <meshStandardMaterial color="yellow" />
-      )}
+      <sphereGeometry args={[0.5, 32, 32]} />      
+        <meshStandardMaterial color={status === pacmanStatusValue.INVINCIBLE ? "orange" : "yellow"} />
     </mesh>
   );
 }

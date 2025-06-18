@@ -10,6 +10,18 @@ export default function Maze() {
   const game = useGameStatusStore((state) => state);
   const [isTilemapReadyToRender, setTilemapRenderState] = useState(false);
 
+  const createRandomPellets = () => { 
+    let remainingPellets = 6
+    while (remainingPellets > 0) {
+      const coords = tilemap.getRandomTileCoords(0);
+      if (tilemap.getTile(coords) === 0) {
+        tilemap.updateTile(coords, 2); // Set pellet tile
+        tilemap.sustractPacDot(); // Decrease pacDots count
+        remainingPellets--;
+      }
+    }
+  }
+
   const useLoadMaze = () => {
     useEffect(() => {
       if (game.status === gameStatusValue.GENERATING_MAZE) {
@@ -17,6 +29,7 @@ export default function Maze() {
           if (maze) {
             tilemap.setTileMap(maze);
             setTilemapRenderState(true);
+            createRandomPellets()
             game.setStatus(gameStatusValue.SETTING_PACMAN);
           }
         });

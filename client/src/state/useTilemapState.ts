@@ -15,6 +15,7 @@ interface ITilemap {
     callback: (value: number, x: number, y: number) => void
   ) => void;
   getRandomTileCoords: (value: number) => { x: number; y: number };
+  sustractPacDot: () => void;
 }
 
 const useTilemapState = create(
@@ -74,6 +75,13 @@ const useTilemapState = create(
         throw new Error(`No tiles with value ${value} found`);
       return matchingTiles[Math.floor(Math.random() * matchingTiles.length)];
     },
+   sustractPacDot: () => {
+      set((state) => {
+        if (state.pacDots > 0) {
+          state.pacDots -= 1;
+        }
+      });
+   } 
   }))
 );
 

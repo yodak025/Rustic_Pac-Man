@@ -6,7 +6,8 @@ interface Position {
   y: number;
 }
 
-const I_MILISECONDS = 3000; // Constant for converting seconds to milliseconds
+const I_PERIOD = 3000; // Constant for converting seconds to milliseconds
+const HUNT_PERIOD = 5000; // Constant for converting seconds to milliseconds
 
 interface PacmanState {
   position: Position;
@@ -16,6 +17,7 @@ interface PacmanState {
   setPosition: (position: Position) => void;
   updatePosition: (x: number, y: number) => void;
   takeDamage: () => void;
+  hunt: () => void;
   reStart: () => void;
 }
 const usePacmanState = create<PacmanState>((set) => ({
@@ -30,18 +32,24 @@ const usePacmanState = create<PacmanState>((set) => ({
         return state; // No change if already invincible
       }
       if (state.lives > 0) {
-        set({ status:pacmanStatusValue.INVINCIBLE }); // Set invincibility state
+        set({ status: pacmanStatusValue.INVINCIBLE }); // Set invincibility state
         setTimeout(() => {
-          set({ status:pacmanStatusValue.COMMON }); // Reset invincibility after I_MILISECONDS
-        }, I_MILISECONDS);
+          set({ status: pacmanStatusValue.COMMON }); // Reset invincibility after I_MILISECONDS
+        }, I_PERIOD);
         return { lives: state.lives - 1 };
       }
       return state; // No change if lives are already 0
     }),
+  hunt: () => {
+    set({ status: pacmanStatusValue.HUNTING }); // Set hunting state
+    setTimeout(() => {
+      set({ status: pacmanStatusValue.COMMON }); // Reset to common after hunt period
+    }, HUNT_PERIOD);
+  },
   reStart: () =>
     set(() => ({
       lives: 3, // Reset lives to default
-    }))
+    })),
 }));
 
 export default usePacmanState;

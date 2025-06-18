@@ -2,6 +2,7 @@ import pacmanStatusValue from "@/types/pacmanStatusValue";
 enum GhostBehaviourMode {
   Chase = "chase",
   Nap = "nap",
+  Escape = "escape",
 }
 
 export default class GhostBehaviourSystem {
@@ -27,6 +28,15 @@ export default class GhostBehaviourSystem {
       case pacmanStatusValue.INVINCIBLE:
         this.mode = GhostBehaviourMode.Nap;
         break;
+      case pacmanStatusValue.HUNTING:
+         if (this.mode === GhostBehaviourMode.Chase) {
+          this.directions.forward = false;
+          this.directions.backward = false;
+          this.directions.left = false;
+          this.directions.right = false;
+         }
+        this.mode = GhostBehaviourMode.Escape;
+        break;
     }
 
     switch (this.mode) {
@@ -39,7 +49,8 @@ export default class GhostBehaviourSystem {
         break;
 
       case GhostBehaviourMode.Chase:
-        const validDirections:any = [];
+      case GhostBehaviourMode.Escape:
+        const validDirections: any = [];
         
         // Check up
         const upTile = getTile({x: Math.round(position.x), y: Math.round(position.y) - 1});
@@ -75,10 +86,14 @@ export default class GhostBehaviourSystem {
         this.directions.left = false;
         this.directions.right = false;
         
-        // Choose the direction with minimum distance
+        // Choose direction based on mode
         if (validDirections.length > 0) {
-          const bestDirection = validDirections.reduce((min: any, current: any) => 
+          const bestDirection = this.mode === GhostBehaviourMode.Chase
+        ? validDirections.reduce((min: any, current: any) => 
             current.distance < min.distance ? current : min
+          )
+        : validDirections.reduce((max: any, current: any) => 
+            current.distance > max.distance ? current : max
           );
           this.directions[bestDirection.direction] = true;
         }
