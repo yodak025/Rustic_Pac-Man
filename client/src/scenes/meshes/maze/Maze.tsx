@@ -35,5 +35,5 @@ export default function Maze() {
   }, [isTilemapReadyToRender]);
 
   useLoadMaze();
-  return game.status === "PLAYING" && tileMeshes;
+  return tileMeshes;
 }

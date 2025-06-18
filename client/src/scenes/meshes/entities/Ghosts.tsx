@@ -18,24 +18,30 @@ export default function Ghosts() {
 
   const useInitGhosts = () => {
     useEffect(() => {
-      if (game.status !== gameStatusValue.SETTING_GHOSTS) return;
+      if (game.status !== gameStatusValue.SETTING_GHOSTS){
+        if (game.status === gameStatusValue.NOT_STARTED) setGhostsRenderState(false);
+        return;
+      } ;
       const position = tilemap.getRandomTileCoords(0);
       setPosition(position, 0);
       addGhost({ position, type: ghostName.BLINKY });
       setGhostsRenderState(true);
       game.setStatus(gameStatusValue.PLAYING);
-    });
+    }, [game.status]);
   };
 
   const ghostMeshes = useMemo(() => {
-    if (!isGhostsReadyToRender) return [];
-    const meshes: JSX.Element[] = [];
-    ghosts.forEach((ghost, index) => {
-      if (ghost.type === ghostName.BLINKY) {
-        meshes.push(<BlinkyMesh key={index} index={index} />);
-      }
-      // Add other ghost types here as needed
-    });
+    let meshes: JSX.Element[] = [];
+    if (!isGhostsReadyToRender) meshes = [];
+    else {
+      ghosts.forEach((ghost, index) => {
+        if (ghost.type === ghostName.BLINKY) {
+          meshes.push(<BlinkyMesh key={index} index={index} />);
+        }
+        // Add other ghost types here as needed
+      });
+    }
+
     return meshes;
   }, [isGhostsReadyToRender]);
 

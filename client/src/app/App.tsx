@@ -22,7 +22,11 @@ export default function App() {
       <div className="flex gap-3 flex-wrap mb-5">
         <button
           className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
-          onClick={() => setStatus(gameStatusValue.GENERATING_MAZE)}
+          onClick={() => {
+            if (gameStatus === gameStatusValue.NOT_STARTED) setStatus(gameStatusValue.GENERATING_MAZE);
+            else if (gameStatus === gameStatusValue.PAUSED) setStatus(gameStatusValue.PLAYING);
+          }
+        }
         >
           Play
         </button>
@@ -35,7 +39,7 @@ export default function App() {
         
         <button
           className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition-colors"
-          onClick={() => setStatus(gameStatusValue.RESTARTING)}
+          onClick={() => setStatus(gameStatusValue.NOT_STARTED)}
         >
           Restart Game
         </button>
