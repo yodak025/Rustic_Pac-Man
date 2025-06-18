@@ -38,9 +38,13 @@ export default function BlinkyMesh({index}: {index:number}){
     );
     // Check if Pacman and Blinky are in the same tile
     if (Math.round(x) === Math.round(pacman.position.x) && Math.round(z) === Math.round(pacman.position.y)) {
-      pacman.status === pacmanStatusValue.HUNTING
-        ? killGhost(index)
-        : pacman.takeDamage();
+      if (pacman.status === pacmanStatusValue.HUNTING) {
+        // If Pacman is hunting, kill the ghost
+        killGhost(index);
+        pacman.addLive(); // Increment Pacman's lives
+      } else {
+        pacman.takeDamage();
+      }
     }
   });
 
