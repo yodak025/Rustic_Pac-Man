@@ -95,7 +95,7 @@ export default class GhostBehaviourSystem {
         : validDirections.reduce((max: any, current: any) => 
             current.distance > max.distance ? current : max
           );
-          this.directions[bestDirection.direction] = true;
+          this.directions[bestDirection.direction] = true; //! Lazy any implicito, revisar
         }
         break;
       default:

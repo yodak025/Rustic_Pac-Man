@@ -5,7 +5,7 @@ import GhostBehaviourSystem from "@/core/systems/ghostBehaviourSystem";
 import useGameFrame from "@core/hooks/useGameFrame";
 import { usePacmanState } from "@state/store";
 import pacmanStatusValue from "@/types/pacmanStatusValue";
-import { kill } from "process";
+
 
 
 

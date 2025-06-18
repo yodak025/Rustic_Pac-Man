@@ -9,7 +9,7 @@ interface IGameStatus {
   // Actions 
   setStatus: (status: gameStatusValue) => void;
   incrementScore: (amount: number) => void;
-  reStartGame: () => void;
+  reStart: () => void;
   setNextLevel: () => void;
 
 }
@@ -25,8 +25,9 @@ const useGameStatusStore = create<IGameStatus>((set) => ({
   ,
   incrementScore: (amount) => set((state) => ({
     score : state.score + amount})),
-  reStartGame: () => set(() => ({
+  reStart: () => set(() => ({
     status: gameStatusValue.NOT_STARTED,
+    level: 1, // Reset level to 1 when restarting the game
     score: 0 // Reset score to 0 when restarting the game
   })),
   setNextLevel: () => set((state) => ({

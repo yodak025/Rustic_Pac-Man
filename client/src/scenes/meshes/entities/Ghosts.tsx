@@ -20,6 +20,7 @@ export default function Ghosts() {
     useEffect(() => {
       if (game.status !== gameStatusValue.SETTING_GHOSTS){
         if (game.status === gameStatusValue.NOT_STARTED) setGhostsRenderState(false);
+        if (game.status === gameStatusValue.GENERATING_MAZE) setGhostsRenderState(false);
         if (game.status === gameStatusValue.WON) setGhostsRenderState(false);
         return;
       } ;
@@ -44,8 +45,6 @@ export default function Ghosts() {
         // Add other ghost types here as needed
       });
     }
-
-
     return meshes;
   }, [isGhostsReadyToRender]);
 
