@@ -10,7 +10,8 @@ export default function Maze() {
   const game = useGameStatusStore((state) => state);
   const [isTilemapReadyToRender, setTilemapRenderState] = useState(false);
 
-  const createRandomPellets = () => { 
+  const createRandomPellets = () => {
+    tilemap.sustractPacDot(); 
     tilemap.sustractPacDot(); //! HAY UN DESFASE DE 1 EN EL CONTADOR DE PACDOTS, REVISALO
     let remainingPellets = 6
     console.log(tilemap);

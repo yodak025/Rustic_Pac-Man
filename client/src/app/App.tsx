@@ -1,5 +1,5 @@
 import GameScene from "@/scenes/GameScene";
-import { useGameStatusStore } from "@state/store";
+import { useGameStatusStore, useTilemapState} from "@state/store";
 import gameStatusValue from "@custom-types/gameStatusValue";
 import { KeyboardControls } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
@@ -24,6 +24,16 @@ export default function App() {
         <Canvas
           className="bg-gradient-to-br from-stone-800 to-stone-600 "
           style={{ height: "100vh" }}
+          onCreated={() => {
+        // Add event listeners for 'i' and 'o' keys
+        window.addEventListener('keydown', (event) => {
+          if (event.key === 'o') {
+            useGameStatusStore.getState().setStatus(gameStatusValue.WON);
+          } else if (event.key === 'i') {
+            useTilemapState.getState().sustractPacDot();
+          }
+        });
+          }}
         >
           <GameScene />
         </Canvas>
