@@ -1,5 +1,5 @@
 import GameScene from "@/scenes/GameScene";
-import {useGameStatusStore, usePacmanState} from "@state/store";
+import {useGameStatusStore, usePacmanState, useTilemapState, useGhostsState} from "@state/store";
 import gameStatusValue from "@custom-types/gameStatusValue";
 import { KeyboardControls } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
@@ -9,6 +9,8 @@ export default function App() {
     useGameStatusStore((state) => state);
 
   const {lives, reStart: reStartPacman} = usePacmanState((state) => state);
+  const tilemap = useTilemapState((state) => state);
+  const ghosts = useGhostsState((state) => state);
 
   return (
     <div className="p-5 font-sans bg-gray">
@@ -24,6 +26,9 @@ export default function App() {
         </pre>
         <pre className="bg-gray-100 p-4 rounded text-sm overflow-auto">
           {JSON.stringify(lives, null, 2)}
+        </pre>
+        <pre className="bg-gray-100 p-4 rounded text-sm overflow-auto">
+          {JSON.stringify(tilemap.pacDots, null, 2)}
         </pre>
       </div>
 
@@ -50,6 +55,9 @@ export default function App() {
           onClick={() => {
             reStartGame(); // Reset game status
             reStartPacman(); // Reset
+            tilemap.reStart(); // Reset tilemap
+            ghosts.reStart(); // Reset ghosts
+            setStatus(gameStatusValue.NOT_STARTED); // Set game status to NOT_STARTED
           }}
         >
           Restart Game
@@ -67,7 +75,7 @@ export default function App() {
             ]}
           >
             <Canvas
-              className="bg-gradient-to-br from-stone-600 to-stone-300 "
+              className="bg-gradient-to-br from-stone-800 to-stone-600 "
               style={{ height: "60vh" }}
             >
               <GameScene />

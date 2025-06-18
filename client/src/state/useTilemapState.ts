@@ -16,6 +16,7 @@ interface ITilemap {
   ) => void;
   getRandomTileCoords: (value: number) => { x: number; y: number };
   sustractPacDot: () => void;
+  reStart: () => void;
 }
 
 const useTilemapState = create(
@@ -77,11 +78,15 @@ const useTilemapState = create(
     },
    sustractPacDot: () => {
       set((state) => {
-        if (state.pacDots > 0) {
           state.pacDots -= 1;
-        }
       });
-   } 
+   },
+    reStart: () =>
+      set(() => ({
+        tiles: {},
+        width: 0,
+        height: 0,
+        pacDots: 0, }))
   }))
 );
 

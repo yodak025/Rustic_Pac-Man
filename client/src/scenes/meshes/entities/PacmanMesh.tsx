@@ -20,7 +20,6 @@ export default function PacmanMesh() {
   const {
     status: gameStatus,
     setStatus,
-    score,
     incrementScore,
   } = useGameStatusStore((state) => state);
   const {
@@ -48,7 +47,7 @@ export default function PacmanMesh() {
   
   //! ESTE COMPONENTE VIOLA S DE SOLID, ARREGLALO
   useGameFrame((_, delta) => {
-    if (score >= tilemap.pacDots * INCREMENT_AMOUNT) {
+    if (tilemap.pacDots <= 0) {
       setStatus(gameStatusValue.WON); // Cambia el estado del juego a WIN si se comen todos los pellets
     }
     if (lives <= 0) {
@@ -66,6 +65,7 @@ export default function PacmanMesh() {
         if (tilemap.getTile({ x: Math.round(x), y: Math.round(y) }) === 0) {
           tilemap.updateTile({ x: Math.round(x), y: Math.round(y) }, -1);
           incrementScore(INCREMENT_AMOUNT); // Incrementa el puntaje al comer un pacDot
+          tilemap.sustractPacDot(); // Disminuye el contador de pacDots
         }
         if (tilemap.getTile({ x: Math.round(x), y: Math.round(y) }) === 2) {
           tilemap.updateTile({ x: Math.round(x), y: Math.round(y) }, -1);

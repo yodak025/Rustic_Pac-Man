@@ -11,7 +11,9 @@ export default function Maze() {
   const [isTilemapReadyToRender, setTilemapRenderState] = useState(false);
 
   const createRandomPellets = () => { 
+    tilemap.sustractPacDot(); //! HAY UN DESFASE DE 1 EN EL CONTADOR DE PACDOTS, REVISALO
     let remainingPellets = 6
+    console.log(tilemap);
     while (remainingPellets > 0) {
       const coords = tilemap.getRandomTileCoords(0);
       if (tilemap.getTile(coords) === 0) {

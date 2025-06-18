@@ -18,6 +18,7 @@ interface GhostsState {
   addGhost: ({position, type}: SingleGhostState) => void;
   setPosition: (position: Position, ghostIndex: number) => void;
   killGhost: (ghostIndex: number) => void;
+  reStart: () => void;
 }
 
 const useGhostsState = create(
@@ -38,7 +39,11 @@ const useGhostsState = create(
         if (state.ghosts[ghostIndex]) {
           state.ghosts[ghostIndex].isDead = true;
         }
-      })
+      }),
+    reStart: () =>
+      set(() => ({
+        ghosts: [],
+      }))
   }))
 );
 
