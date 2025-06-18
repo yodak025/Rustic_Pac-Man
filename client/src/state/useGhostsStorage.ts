@@ -1,20 +1,15 @@
 import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
+import ghostName from "@custom-types/ghostName";
+
 interface Position {
   x: number;
   y: number;
 }
 
-enum ghostType {
-  BLINKY = "Blinky",
-  PINKY = "Pinky",
-  INKY = "Inky",
-  CLYDE = "Clyde",
-}
-
 interface SingleGhostState {
   position: Position;
-  type: ghostType;
+  type: ghostName;
 }
 
 interface GhostsState {

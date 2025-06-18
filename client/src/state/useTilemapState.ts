@@ -9,8 +9,8 @@ interface ITilemap {
 
   // acciones
   setTileMap: (array2d: number[][]) => void;
-  updateTile: (x: number, y: number, newValue: number) => void;
-  getTile: (x: number, y: number) => number;
+  updateTile: (pos:{x:number, y:number}, newValue: number) => void;
+  getTile: (pos:{x:number, y:number}) => number;
   forEachTile: (
     callback: (value: number, x: number, y: number) => void
   ) => void;
@@ -39,15 +39,15 @@ const useTilemapState = create(
       });
     },
 
-    updateTile: (x, y, newValue) => {
+    updateTile: (pos, newValue) => {
       set((state) => {
-        state.tiles[`${x},${y}`] = newValue;
+        state.tiles[`${pos.x},${pos.y}`] = newValue;
       });
     },
 
-    getTile: (x, y) => {
+    getTile: (pos) => {
       const state = get();
-      return state.tiles[`${x},${y}`] ?? NaN;
+      return state.tiles[`${pos.x},${pos.y}`] ?? NaN;
     },
 
     forEachTile: (callback) => {

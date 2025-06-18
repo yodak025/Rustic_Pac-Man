@@ -15,37 +15,51 @@ export default class GhostBehaviourSystem {
   setMode(mode: GhostBehaviourMode) {
     this.mode = mode;
   }
-  decideDirection(getTile:any, position: { x: number; y: number }) {
+  decideDirection(getTile: any, position: { x: number; y: number }, target: { x: number; y: number }) {
     switch (this.mode) {
       case GhostBehaviourMode.Chase:
-        if (!this.directions.backward && getTile(position.x, position.y - 1) !== (NaN || 1)) {
-          this.directions.forward = true;
-          this.directions.backward = false;
-          this.directions.left = false;
-          this.directions.right = false;
-        }else if (!this.directions.forward && getTile(position.x, position.y + 1) !== (NaN || 1)) {
-          this.directions.forward = false;
-          this.directions.backward = true;
-          this.directions.left = false;
-          this.directions.right = false;
+        const validDirections:any = [];
+        
+        // Check up
+        const upTile = getTile({x: Math.round(position.x), y: Math.round(position.y) - 1});
+        if (!this.directions.backward && !isNaN(upTile) && upTile !== 1) {
+          const upDistance = Math.sqrt(Math.pow(position.x - target.x, 2) + Math.pow((position.y - 1) - target.y, 2));
+          validDirections.push({ direction: 'forward', distance: upDistance });
         }
-        else if (!this.directions.right && getTile(position.x - 1, position.y) !== (NaN || 1)) {
-          this.directions.forward = false;
-          this.directions.backward = false;
-          this.directions.left = true;
-          this.directions.right = false;
+        
+        // Check down
+        const downTile = getTile({x: Math.round(position.x), y: Math.round(position.y) + 1});
+        if (!this.directions.forward && !isNaN(downTile) && downTile !== 1) {
+          const downDistance = Math.sqrt(Math.pow(position.x - target.x, 2) + Math.pow((position.y + 1) - target.y, 2));
+          validDirections.push({ direction: 'backward', distance: downDistance });
         }
-        else if (!this.directions.left && getTile(position.x + 1, position.y) !== (NaN || 1)) {
-          this.directions.forward = false;
-          this.directions.backward = false;
-          this.directions.left = false;
-          this.directions.right = true;
-        } else {
-          // If no valid direction is found, stop moving
-          this.directions.forward = false;
-          this.directions.backward = false;
-          this.directions.left = false;
-          this.directions.right = false;
+        
+        // Check left
+        const leftTile = getTile({x: Math.round(position.x) - 1, y: Math.round(position.y)});
+        if (!this.directions.right && !isNaN(leftTile) && leftTile !== 1) {
+          const leftDistance = Math.sqrt(Math.pow((position.x - 1) - target.x, 2) + Math.pow(position.y - target.y, 2));
+          validDirections.push({ direction: 'left', distance: leftDistance });
+        }
+        
+        // Check right
+        const rightTile = getTile({x: Math.round(position.x) + 1, y: Math.round(position.y)});
+        if (!this.directions.left && !isNaN(rightTile) && rightTile !== 1) {
+          const rightDistance = Math.sqrt(Math.pow((position.x + 1) - target.x, 2) + Math.pow(position.y - target.y, 2));
+          validDirections.push({ direction: 'right', distance: rightDistance });
+        }
+        
+        // Reset all directions
+        this.directions.forward = false;
+        this.directions.backward = false;
+        this.directions.left = false;
+        this.directions.right = false;
+        
+        // Choose the direction with minimum distance
+        if (validDirections.length > 0) {
+          const bestDirection = validDirections.reduce((min: any, current: any) => 
+            current.distance < min.distance ? current : min
+          );
+          this.directions[bestDirection.direction] = true;
         }
         break;
       default:

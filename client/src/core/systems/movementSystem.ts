@@ -42,7 +42,7 @@ export default class MovementSystem implements IMovementSystem {
     ) {
       return false; // Out of bounds
     }
-    const tileValue = tileMap.getTile(tileX, tileY);
+    const tileValue = tileMap.getTile({x: tileX, y: tileY});
     return tileValue !== 1; // Assuming 1 represents a wall
   }
 

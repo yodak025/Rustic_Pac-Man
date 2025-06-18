@@ -1,11 +1,11 @@
-import GameScene from "@scenes/GameScene";
+import GameScene from "@/scenes/GameScene";
 import {useGameStatusStore} from "@state/store";
 import gameStatusValue from "@custom-types/gameStatusValue";
 import { KeyboardControls } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 
 export default function App() {
-  const { gameStatus, playGame, pauseGame, winGame, loseGame, resetGame } =
+  const { status: gameStatus, setStatus } =
     useGameStatusStore((state) => state);
 
   return (
@@ -22,37 +22,26 @@ export default function App() {
       <div className="flex gap-3 flex-wrap mb-5">
         <button
           className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
-          onClick={playGame}
+          onClick={() => setStatus(gameStatusValue.GENERATING_MAZE)}
         >
           Play
         </button>
         <button
           className="px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition-colors"
-          onClick={pauseGame}
+          onClick={() => setStatus(gameStatusValue.PAUSED)}
         >
           Pause
         </button>
-        <button
-          className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition-colors"
-          onClick={winGame}
-        >
-          Win
-        </button>
-        <button
-          className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition-colors"
-          onClick={loseGame}
-        >
-          Lose
-        </button>
+        
         <button
           className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition-colors"
-          onClick={resetGame}
+          onClick={() => setStatus(gameStatusValue.RESTARTING)}
         >
-          Reset Game
+          Restart Game
         </button>
       </div>
 
-      {gameStatus === gameStatusValue.PLAYING ? (
+      {gameStatus !== gameStatusValue.NOT_STARTED ? (
         <>
           <KeyboardControls
             map={[
@@ -65,7 +54,6 @@ export default function App() {
             <Canvas
               className="bg-gradient-to-br from-stone-600 to-stone-300 "
               style={{ height: "60vh" }}
-              camera={{ position: [0, 30, 0], rotation: [Math.PI / 2, 0, 0] }}
             >
               <GameScene />
             </Canvas>

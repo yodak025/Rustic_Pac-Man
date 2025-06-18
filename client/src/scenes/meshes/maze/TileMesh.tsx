@@ -8,7 +8,7 @@ interface TileMeshProps {
 export default function TileMesh({ x, z }: TileMeshProps) {
 
 
-   const tileValue = useTilemapState((state) => state.getTile(x, z));
+   const tileValue = useTilemapState((state) => state.getTile({x, y: z}));
   
   return (
     <>
