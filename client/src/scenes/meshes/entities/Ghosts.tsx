@@ -24,7 +24,7 @@ export default function Ghosts() {
       } ;
       const position = tilemap.getRandomTileCoords(0);
       setPosition(position, 0);
-      addGhost({ position, type: ghostName.BLINKY });
+      addGhost({ position, type: ghostName.BLINKY, isDead: false }); //! Implementación de mierda 
       setGhostsRenderState(true);
       game.setStatus(gameStatusValue.PLAYING);
     }, [game.status]);
