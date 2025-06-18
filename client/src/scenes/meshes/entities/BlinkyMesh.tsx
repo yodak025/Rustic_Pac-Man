@@ -7,9 +7,11 @@ import { usePacmanState } from "@state/store";
 
 
 
+//! ESTE COMPONENTE VIOLA DRY, ARREGLALO
+
 export default function BlinkyMesh({index}: {index:number}){
   const tilemap = useTilemapState((state) => state);
-  const pacmanPosition = usePacmanState((state) => state.position);
+  const pacman = usePacmanState((state) => state);
 
   const {x,y: z} = useGhostsState((state) => state.ghosts[index].position);
   const setPosition = useGhostsState((state) => state.setPosition);
@@ -17,7 +19,7 @@ export default function BlinkyMesh({index}: {index:number}){
   const behaviour = useRef<GhostBehaviourSystem>(new GhostBehaviourSystem());
 
   const getBlinkyDirections = (() => {
-      behaviour.current.decideDirection(tilemap.getTile, {x, y: z}, pacmanPosition);
+      behaviour.current.decideDirection(tilemap.getTile, {x, y: z}, pacman);
       return behaviour.current.directions as any;
     });
 
@@ -29,6 +31,10 @@ export default function BlinkyMesh({index}: {index:number}){
       delta,
       tilemap,
     );
+    // Check if Pacman and Blinky are in the same tile
+    if (Math.round(x) === Math.round(pacman.position.x) && Math.round(z) === Math.round(pacman.position.y)) {
+      pacman.takeDamage();
+    }
   });
 
   return (

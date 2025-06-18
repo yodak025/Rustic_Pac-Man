@@ -1,12 +1,14 @@
 import GameScene from "@/scenes/GameScene";
-import {useGameStatusStore} from "@state/store";
+import {useGameStatusStore, usePacmanState} from "@state/store";
 import gameStatusValue from "@custom-types/gameStatusValue";
 import { KeyboardControls } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 
 export default function App() {
-  const { status: gameStatus, setStatus, score } =
+  const { status: gameStatus, setStatus, score, reStartGame} =
     useGameStatusStore((state) => state);
+
+  const {lives, reStart: reStartPacman} = usePacmanState((state) => state);
 
   return (
     <div className="p-5 font-sans bg-gray">
@@ -19,6 +21,9 @@ export default function App() {
         </pre>
         <pre className="bg-gray-100 p-4 rounded text-sm overflow-auto">
           {JSON.stringify(score, null, 2)}
+        </pre>
+        <pre className="bg-gray-100 p-4 rounded text-sm overflow-auto">
+          {JSON.stringify(lives, null, 2)}
         </pre>
       </div>
 
@@ -42,7 +47,10 @@ export default function App() {
         
         <button
           className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition-colors"
-          onClick={() => setStatus(gameStatusValue.NOT_STARTED)}
+          onClick={() => {
+            reStartGame(); // Reset game status
+            reStartPacman(); // Reset
+          }}
         >
           Restart Game
         </button>

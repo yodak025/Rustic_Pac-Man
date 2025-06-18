@@ -8,7 +8,6 @@ import ghostName from "@/types/ghostName";
 import type { JSX } from "react";
 import BlinkyMesh from "@scenes/meshes/entities/BlinkyMesh";
 import { useEffect, useMemo, useState } from "react";
-import useGameFrame from "@/core/hooks/useGameFrame";
 
 export default function Ghosts() {
   const [isGhostsReadyToRender, setGhostsRenderState] = useState(false);

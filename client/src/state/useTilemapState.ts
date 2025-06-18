@@ -5,7 +5,7 @@ interface ITilemap {
   tiles: Record<string, number>;
   width: number;
   height: number;
-  pellets: number;
+  pacDots: number;
 
   // acciones
   setTileMap: (array2d: number[][]) => void;
@@ -22,7 +22,7 @@ const useTilemapState = create(
     tiles: {},
     width: 0,
     height: 0,
-    pellets: 0,
+    pacDots: 0,
 
     setTileMap: (array2d) => {
       set((state) => {
@@ -34,7 +34,7 @@ const useTilemapState = create(
           row.forEach((value, x) => {
             tiles[`${x},${y}`] = value;
             if (value === 0) {
-              state.pellets += 1; // Count pellets
+              state.pacDots += 1; // Count pacDots
             }
           });
         });

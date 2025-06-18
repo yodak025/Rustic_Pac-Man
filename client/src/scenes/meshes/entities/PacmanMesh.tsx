@@ -5,9 +5,11 @@ import {
   useGameStatusStore,
 } from "@state/store";
 import gameStatusValue from "@/types/gameStatusValue";
+import pacmanStatusValue from "@/types/pacmanStatusValue";
 import { useEffect, useRef } from "react";
 import MovementSystem from "@/core/systems/movementSystem";
 import { useKeyboardControls } from "@react-three/drei";
+
 
 const INCREMENT_AMOUNT = 10; // Cantidad de puntos por pellet
 
@@ -24,6 +26,8 @@ export default function PacmanMesh() {
   const {
     position: { x, y: z },
     setPosition,
+    status,
+    lives,
   } = usePacmanState((state) => state);
   const tilemap = useTilemapState((state) => state);
   const [_, getKeys] = useKeyboardControls();
@@ -40,11 +44,15 @@ export default function PacmanMesh() {
   };
 
   useInitPacman();
-
+  
+  //! ESTE COMPONENTE VIOLA S DE SOLID, ARREGLALO
   useGameFrame((_, delta) => {
-    if (score >= tilemap.pellets * INCREMENT_AMOUNT) {
-            setStatus(gameStatusValue.WON); // Cambia el estado del juego a WIN si se comen todos los pellets
-          }
+    if (score >= tilemap.pacDots * INCREMENT_AMOUNT) {
+      setStatus(gameStatusValue.WON); // Cambia el estado del juego a WIN si se comen todos los pellets
+    }
+    if (lives <= 0) {
+      setStatus(gameStatusValue.LOST); // Cambia el estado del juego a GAME_OVER si se pierden todas las vidas
+    }
     movement.current.move(
       { x, y: z },
       setPosition,
@@ -56,10 +64,8 @@ export default function PacmanMesh() {
         //-- Si es un pellet, actualiza el tile y aumenta el puntaje
         if (tilemap.getTile({ x: Math.round(x), y: Math.round(y) }) === 0) {
           tilemap.updateTile({ x: Math.round(x), y: Math.round(y) }, -1);
-          incrementScore(INCREMENT_AMOUNT); // Incrementa el puntaje al comer un pellet
-          
+          incrementScore(INCREMENT_AMOUNT); // Incrementa el puntaje al comer un pacDot
         }
-        
       }
     );
   });
@@ -67,7 +73,20 @@ export default function PacmanMesh() {
   return (
     <mesh position={[x, 0, z]}>
       <sphereGeometry args={[0.5, 32, 32]} />
-      <meshStandardMaterial color="yellow" />
+      {status === pacmanStatusValue.INVINCIBLE? (
+        <meshPhysicalMaterial
+          transmission={1} // 1 = completamente translúcido
+          roughness={0.05}
+          thickness={0.1}
+          clearcoat={1}
+          clearcoatRoughness={0.1}
+          reflectivity={0.5}
+          ior={1.5} // índice de refracción
+          color="#a8d0ff"
+        />
+      ) : (
+        <meshStandardMaterial color="yellow" />
+      )}
     </mesh>
   );
 }
