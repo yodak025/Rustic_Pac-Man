@@ -5,7 +5,7 @@ import { KeyboardControls } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 
 export default function App() {
-  const { status: gameStatus, setStatus } =
+  const { status: gameStatus, setStatus, score } =
     useGameStatusStore((state) => state);
 
   return (
@@ -16,6 +16,9 @@ export default function App() {
         <h3 className="text-lg font-semibold mb-3">Current State:</h3>
         <pre className="bg-gray-100 p-4 rounded text-sm overflow-auto">
           {JSON.stringify(gameStatus, null, 2)}
+        </pre>
+        <pre className="bg-gray-100 p-4 rounded text-sm overflow-auto">
+          {JSON.stringify(score, null, 2)}
         </pre>
       </div>
 

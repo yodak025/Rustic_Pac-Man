@@ -9,13 +9,18 @@ import { useEffect, useRef } from "react";
 import MovementSystem from "@/core/systems/movementSystem";
 import { useKeyboardControls } from "@react-three/drei";
 
+const INCREMENT_AMOUNT = 10; // Cantidad de puntos por pellet
+
 export default function PacmanMesh() {
   const movement = useRef<MovementSystem>(new MovementSystem(7, 0.5));
 
   //-- acceso al estado de juego
-  const { status: gameStatus, setStatus } = useGameStatusStore(
-    (state) => state
-  );
+  const {
+    status: gameStatus,
+    setStatus,
+    score,
+    incrementScore,
+  } = useGameStatusStore((state) => state);
   const {
     position: { x, y: z },
     setPosition,
@@ -37,6 +42,9 @@ export default function PacmanMesh() {
   useInitPacman();
 
   useGameFrame((_, delta) => {
+    if (score >= tilemap.pellets * INCREMENT_AMOUNT) {
+            setStatus(gameStatusValue.WON); // Cambia el estado del juego a WIN si se comen todos los pellets
+          }
     movement.current.move(
       { x, y: z },
       setPosition,
@@ -45,7 +53,13 @@ export default function PacmanMesh() {
       tilemap,
       (position) => {
         const { x, y } = position;
-        tilemap.updateTile({ x: Math.round(x), y: Math.round(y) }, -1);
+        //-- Si es un pellet, actualiza el tile y aumenta el puntaje
+        if (tilemap.getTile({ x: Math.round(x), y: Math.round(y) }) === 0) {
+          tilemap.updateTile({ x: Math.round(x), y: Math.round(y) }, -1);
+          incrementScore(INCREMENT_AMOUNT); // Incrementa el puntaje al comer un pellet
+          
+        }
+        
       }
     );
   });

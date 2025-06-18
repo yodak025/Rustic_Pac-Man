@@ -14,7 +14,7 @@ export default function TileMesh({ x, z }: TileMeshProps) {
     <>
       {tileValue === 1 && (
       <mesh position={[x, 0, z]}>
-        <boxGeometry args={[0.95, 1, 0.95]} />
+        <boxGeometry args={[0.95, 0.5, 0.95]} />
         <meshStandardMaterial color="cyan" />
       </mesh>
       )}

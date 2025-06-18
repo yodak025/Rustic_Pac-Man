@@ -1,12 +1,7 @@
-import { useFrame } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
-import TileMesh from "@scenes/meshes/maze/TileMesh";
-import { useTilemapState, usePacmanState, useGhostsState } from "@state/store";
+import { useTilemapState} from "@state/store";
 import { PerspectiveCamera } from "@react-three/drei";
 
-import type { JSX } from "react";
-import { loadMaze } from "@services/api";
-import { useEffect, useState, useRef, useMemo} from "react";
 import PacmanMesh from "@scenes/meshes/entities/PacmanMesh";
 import Ghosts from "./meshes/entities/Ghosts";
 import Maze from "./meshes/maze/Maze";
@@ -14,6 +9,7 @@ import Maze from "./meshes/maze/Maze";
 
 export default function GameScene() {
   const tilemap = useTilemapState((state) => state);
+
   
   return (
     <>
