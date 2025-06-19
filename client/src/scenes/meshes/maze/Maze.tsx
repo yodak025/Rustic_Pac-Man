@@ -11,8 +11,6 @@ export default function Maze() {
   const [isTilemapReadyToRender, setTilemapRenderState] = useState(false);
 
   const createRandomPellets = () => {
-    tilemap.sustractPacDot(); 
-    tilemap.sustractPacDot(); //! HAY UN DESFASE DE 1 EN EL CONTADOR DE PACDOTS, REVISALO
     let remainingPellets = 6
     console.log(tilemap);
     while (remainingPellets > 0) {
@@ -30,6 +28,7 @@ export default function Maze() {
       if (game.status === gameStatusValue.GENERATING_MAZE) {
         loadMaze().then((maze) => {
           if (maze) {
+            tilemap.reStart();
             tilemap.setTileMap(maze);
             setTilemapRenderState(true);
             createRandomPellets()

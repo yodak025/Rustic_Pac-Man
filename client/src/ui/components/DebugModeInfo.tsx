@@ -29,16 +29,16 @@ const formatValue = (value: any): string => {
 };
 
 return (
-  <div className="fixed top-10 right-0 bottom-0 z-50 w-1/3 text-green-400 font-mono text-xs overflow-y-auto p-4 border-l border-green-500">
-    <div className="flex justify-between items-center mb-4">
-      <h2 className="text-lg font-bold">Debug State Info</h2>
-      <button 
+    <div className="fixed top-10 left-0 bottom-0 z-50 w-1/3 text-green-400 font-mono text-xs overflow-y-auto p-4 border-r border-green-500">
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-lg font-bold">Debug State Info</h2>
+        <button 
         onClick={onClose}
         className="bg-red-600 hover:bg-red-700 text-white px-2 py-1 rounded"
-      >
+        >
         Close
-      </button>
-    </div>
+        </button>
+      </div>
 
     <div className="space-y-6">
       <section>

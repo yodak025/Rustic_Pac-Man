@@ -14,7 +14,7 @@ import { useKeyboardControls } from "@react-three/drei";
 const INCREMENT_AMOUNT = 10; // Cantidad de puntos por pellet
 
 export default function PacmanMesh() {
-  const movement = useRef<MovementSystem>(new MovementSystem(7, 0.5));
+  const movement = useRef<MovementSystem>(new MovementSystem(15, 0.5));
 
   //-- acceso al estado de juego
   const {
@@ -39,6 +39,7 @@ export default function PacmanMesh() {
       const initialPosition = tilemap.getRandomTileCoords(0);
       setPosition(initialPosition);
       tilemap.updateTile(initialPosition, -1); // Actualiza el tile de Pacman
+      tilemap.sustractPacDot(); // Disminuye el contador de pacDots
       setStatus(gameStatusValue.SETTING_GHOSTS);
     }, [gameStatus]);
   };
