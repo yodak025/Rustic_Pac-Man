@@ -8,6 +8,40 @@ from maze_generation.gen import CellConnectionsGenerator
 from maze_generation.get_tiles import get_tiles
 import numpy as np
 
+UP = 0
+RIGHT = 1
+DOWN = 2
+LEFT = 3
+
+
+def ghost_home(cells: np.ndarray, cols):
+    i = 3 * cols
+    x = i%cols
+    y = i // cols
+    c = cells[y, x]
+    c.is_filled = True
+    c.is_connected_at[LEFT] = c.is_connected_at[RIGHT] = c.is_connected_at[DOWN] = True
+
+    i += 1
+    x = i%cols
+    y = i // cols
+    c = cells[y, x]
+    c.is_filled = True
+    c.is_connected_at[LEFT] = c.is_connected_at[DOWN] = True
+
+    i += cols-1
+    x = i%cols
+    y = i // cols
+    c = cells[y, x]
+    c.is_filled = True
+    c.is_connected_at[RIGHT] = c.is_connected_at[UP] = c.is_connected_at[LEFT] = True
+
+    i += 1
+    x = i%cols
+    y = i // cols
+    c = cells[y, x]
+    c.is_filled = True
+    c.is_connected_at[LEFT] = c.is_connected_at[UP] = True
 
 
 class MazeState: 
@@ -17,7 +51,10 @@ class MazeState:
     def create_new_maze(self, rows, cols, max_figure_size):
         """Crea un nuevo laberinto con el número de filas y columnas especificado"""
         self.cells = create_cell_array(rows, cols)
-        reset(self.cells)
+        def set_ghost_home(cells):
+            """Establece la casa de los fantasmas en el laberinto"""
+            ghost_home(cells, cols)
+        reset(self.cells, set_ghost_home)
         generator = CellConnectionsGenerator(self.cells, max_figure_size)
         generator.generate()
 
