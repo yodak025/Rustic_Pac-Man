@@ -1,17 +1,21 @@
 import { useGameStatusStore, usePacmanState } from '@state/store';
 import gameStatusValue from '@/types/gameStatusValue';
 import InGameMenu from '@ui/components/InGameMenu';
+import DebugModeInfo from '@ui/components/DebugModeInfo';
 import { useEffect } from 'react';
 
 
 const HUD = () => {
-  const { level, score, status, setStatus } = useGameStatusStore((state) => (state));
+  const { level, isDebugMode, score, status, setStatus, toggleDebugMode } = useGameStatusStore((state) => (state));
   const { lives } = usePacmanState((state) => (state));
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
         setStatus(gameStatusValue.PAUSED);
+      }
+      if (event.key === '3') {
+        toggleDebugMode();
       }
     };
 
@@ -38,6 +42,12 @@ const HUD = () => {
       </div>
 
       {status === gameStatusValue.PAUSED && <InGameMenu />}
+
+      <DebugModeInfo 
+        isOpen={isDebugMode}
+        onClose={toggleDebugMode}
+      />
+
     </>
   );
 };
