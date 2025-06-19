@@ -1,7 +1,7 @@
 import { useGhostsState, useTilemapState } from "@/state/store";
 import { useRef } from "react";
 import MovementSystem from "@core/systems/movementSystem";
-import GhostBehaviourSystem from "@/core/systems/ghostBehaviourSystem";
+import GhostBehaviorSystem from "@/core/systems/ghostBehaviorSystem";
 import useGameFrame from "@core/hooks/useGameFrame";
 import { usePacmanState } from "@state/store";
 import pacmanStatusValue from "@/types/pacmanStatusValue";
@@ -18,7 +18,7 @@ export default function BlinkyMesh({ index }: { index: number }) {
   const setPosition = useGhostsState((state) => state.setPosition);
   const killGhost = useGhostsState((state) => state.killGhost);
   const movement = useRef<MovementSystem>(new MovementSystem(5, 0.5));
-  const behaviour = useRef<GhostBehaviourSystem>(new GhostBehaviourSystem());
+  const behaviour = useRef<GhostBehaviorSystem>(new GhostBehaviorSystem());
   const rotation = useRef<[x:number, y:number, z:number]>([0, 0, 0]);
 
   const getBlinkyDirections = () => {

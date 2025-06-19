@@ -1,13 +1,13 @@
 import pacmanStatusValue from "@/types/pacmanStatusValue";
-enum GhostBehaviourMode {
+enum GhostBehaviorMode {
   Chase = "chase",
   Nap = "nap",
   Escape = "escape",
 }
 
-export default class GhostBehaviourSystem {
+export default class GhostBehaviorSystem {
   constructor(
-    private mode: GhostBehaviourMode = GhostBehaviourMode.Chase,
+    private mode: GhostBehaviorMode = GhostBehaviorMode.Chase,
     public directions: {
       forward: boolean;
       backward: boolean;
@@ -15,7 +15,7 @@ export default class GhostBehaviourSystem {
       right: boolean;
     } = { forward: true, backward: false, left: false, right: false }
   ) {}
-  setMode(mode: GhostBehaviourMode) {
+  setMode(mode: GhostBehaviorMode) {
     this.mode = mode;
   }
   //! Lazy anys más adelante
@@ -23,24 +23,24 @@ export default class GhostBehaviourSystem {
 
     switch (pacman.status) {
       case pacmanStatusValue.COMMON:
-        this.mode = GhostBehaviourMode.Chase;
+        this.mode = GhostBehaviorMode.Chase;
         break;
       case pacmanStatusValue.INVINCIBLE:
-        this.mode = GhostBehaviourMode.Nap;
+        this.mode = GhostBehaviorMode.Nap;
         break;
       case pacmanStatusValue.HUNTING:
-         if (this.mode === GhostBehaviourMode.Chase) {
+         if (this.mode === GhostBehaviorMode.Chase) {
           this.directions.forward = false;
           this.directions.backward = false;
           this.directions.left = false;
           this.directions.right = false;
          }
-        this.mode = GhostBehaviourMode.Escape;
+        this.mode = GhostBehaviorMode.Escape;
         break;
     }
 
     switch (this.mode) {
-      case GhostBehaviourMode.Nap:
+      case GhostBehaviorMode.Nap:
         // Reset all directions
         this.directions.forward = false;
         this.directions.backward = false;
@@ -48,8 +48,8 @@ export default class GhostBehaviourSystem {
         this.directions.right = false;
         break;
 
-      case GhostBehaviourMode.Chase:
-      case GhostBehaviourMode.Escape:
+      case GhostBehaviorMode.Chase:
+      case GhostBehaviorMode.Escape:
         const validDirections: any = [];
         
         // Check up
@@ -88,7 +88,7 @@ export default class GhostBehaviourSystem {
         
         // Choose direction based on mode
         if (validDirections.length > 0) {
-          const bestDirection = this.mode === GhostBehaviourMode.Chase
+          const bestDirection = this.mode === GhostBehaviorMode.Chase
         ? validDirections.reduce((min: any, current: any) => 
             current.distance < min.distance ? current : min
           )
