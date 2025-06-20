@@ -6,23 +6,14 @@
 # ? ...
 # ? Que Dios nos pille confesados.
 
-import sys
-from pathlib import Path
-project_root = Path(__file__).resolve(
-).parent  # Ajustar según el archivo
-sys.path.insert(0, str(project_root))
 
 import numpy as np
 import random as rd
-from cell import Cell
-
-UP = 0
-RIGHT = 1
-DOWN = 2
-LEFT = 3
+from .cell import Cell
+from .directions import UP, RIGHT, DOWN, LEFT
 
 class CellConnectionsGenerator:
-    def __init__(self, cells: np.ndarray, max_figure_size: int, seed: int = None) -> None:
+    def __init__(self, cells: np.ndarray, max_figure_size: int, seed: int | None = None) -> None:
         # Tamaño máximo de cada figura
         self.MAX_FIGURE_SIZE: int = max_figure_size
         # Tamaño para recalcular el centro
@@ -32,7 +23,7 @@ class CellConnectionsGenerator:
     
         self.MAX_LONG_FIGURES: int = 1
         # Probabilidad de la mierda super específica
-        self.SINGLE_CELL_JOIN_PROB: int = 0.35
+        self.SINGLE_CELL_JOIN_PROB: float = 0.35
 
         self.GROW_PROB_AT_SIZE: dict = { 
             1: 1,
@@ -49,14 +40,14 @@ class CellConnectionsGenerator:
 
         self.cells: np.ndarray = cells
 
-        self.center_cell: Cell = None
-        self.firts_cell: Cell = None
-        self.newest_cell: Cell = None
+        self.center_cell: Cell  
+        self.firts_cell: Cell 
+        self.newest_cell: Cell 
 
 
         self.open_cells: list = []
 
-        self.dir: int = None
+        self.dir: int 
 
         self.filled_cells_count: int = 0
         self.groups_count: int = 0
@@ -150,7 +141,7 @@ class CellConnectionsGenerator:
             #-- Entonces creamos una figura en forma de L
             l_corner_cell: Cell = self.firts_cell.next[RIGHT].next[RIGHT]
             is_open_direction_at: dict = {}
-            direction: int = None
+            direction: int | None = None
 
             #-- Puede ser hacia arriba o hacia abajo
             is_open_direction_at[UP] = self._is_open_cell(l_corner_cell, UP, 7, 7) 
@@ -171,8 +162,8 @@ class CellConnectionsGenerator:
                 self.long_figures += 1
                 self.figure_size += 2
                 return True
-        else:
-            return False
+            
+        return False
 
 
     def _grow_figure(self) -> bool:
@@ -228,7 +219,7 @@ class CellConnectionsGenerator:
 
                 if(len(directions) > 0):
                     direction: int = rd.choice(directions)
-                    long_leg_cell: int = self.center_cell.next[direction]
+                    long_leg_cell: Cell = self.center_cell.next[direction]
                     self._connect_cell(long_leg_cell, direction)
                     self._fill_cell(long_leg_cell.next[direction]) 
                     self.long_figures += 1

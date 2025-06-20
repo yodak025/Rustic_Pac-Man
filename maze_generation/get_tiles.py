@@ -1,5 +1,6 @@
-from cell import Cell, create_cell_array
 import numpy as np
+from .cell import Cell
+from .directions import UP, RIGHT, DOWN, LEFT
 
 # ? Control de Dislexia:
 # ?     eje 0 = rows = i = y = vertical,
@@ -8,13 +9,7 @@ import numpy as np
 # ?     row size = number of elements in a row = number of cols = shape[1]
 # ?     col size = number of elements in a col = number of rows = shape[0]
 
-UP = 0
-RIGHT = 1
-DOWN = 2
-LEFT = 3
-
-
-def get_tiles(cells: np.ndarray[Cell]) -> np.ndarray[str]:
+def get_tiles(cells: np.ndarray) -> np.ndarray:
 
     # TODO - Explicar números mágicos
     tiles_demirow_size = cells.shape[1] * 3
@@ -39,7 +34,7 @@ def get_tiles(cells: np.ndarray[Cell]) -> np.ndarray[str]:
         if x < 0 or x >= aux_row_size or y < 0 or y >= aux_col_size:
             return None
         x -= 2
-        return tiles[y, tiles_demirow_size + x]
+        return tiles[y, tiles_demirow_size + x] 
 
     def set_aux_tile(y, x, cell):
         if x < 0 or x >= aux_row_size or y < 0 or y >= aux_col_size:
@@ -47,11 +42,14 @@ def get_tiles(cells: np.ndarray[Cell]) -> np.ndarray[str]:
         x -= 2
         aux_tiles[y, x] = cell
 
-    def get_aux_tile(y, x):
+    def get_aux_tile(y, x) -> Cell | None:
         if x < 0 or x >= aux_row_size or y < 0 or y >= aux_col_size:
             return None
         x -= 2
-        return aux_tiles[y, x]
+        return aux_tiles[y, x] 
+    # ! Este error se debe a que el compilador no entiende que 
+    # ! esto es un Cell porque no se como tipar un np.ndarray de Cells. 
+    # ! Funciona bien en tiempo de ejecución
 
     # Se rellena el array auxiliar con referencias a las celdas
     # Esto es una fumada, involucra un offset de 2 y en general
@@ -81,10 +79,10 @@ def get_tiles(cells: np.ndarray[Cell]) -> np.ndarray[str]:
                         (not prev_up and not curr.is_connected_at[UP])):
                     set_tile(i, j, '.')
             # Caminos asociados al borde inferior y derecho-izquierdo 
-            elif (((prev_left and not prev_left.is_connected_at[RIGHT])
-                   or get_tile(i - 1, j)) or
-                  ((prev_up and not prev_up.is_connected_at[DOWN])
-                   or get_tile(i - 1, j))):
+            elif ((prev_left and (not prev_left.is_connected_at[RIGHT])
+                   or get_tile(i , j - 1) == '.') or
+                  (prev_up and (not prev_up.is_connected_at[DOWN])
+                   or get_tile(i - 1, j) == '.')):
                 set_tile(i, j, '.')
 
             if( get_tile(i - 1, j) == '.' and
@@ -92,10 +90,52 @@ def get_tiles(cells: np.ndarray[Cell]) -> np.ndarray[str]:
                 get_tile(i - 1, j - 1) == '_')):
                 set_tile(i, j, '.')
 
+
+    no_tunnel = True
+    for i in range(cells.shape[0]):
+        c = cells[i, cells.shape[1] - 1]
+        if c.is_top_tunnel:
+            set_tile(3*i + 1, tiles_demirow_size , '.')
+            set_tile(3*i + 1, tiles_demirow_size - 1, '.')
+            no_tunnel = False
+            print(f"Se ha encontrado un túnel superior en la fila {i}")
+    if no_tunnel:
+        print("No hay túneles superiores, se rellenan con paredes")
+
     # Se rellenan los tiles de las paredes siendo cualquier celda 
     # vacía colindante a un tile con un camino
 
     i, j = 0, 0
+    
+    
+
+    # Erase pellets in the tunnels
+    def erase_until_intersection(x, y, get_tile_func, set_tile_func):
+        """Erase pellets in a tunnel path until reaching an intersection."""
+        while True:
+            adj = []
+            if get_tile_func(y, x-1) == '.':
+                adj.append((x-1, y))
+            if get_tile_func(y, x+1) == '.':
+                adj.append((x+1, y))
+            if get_tile_func(y-1, x) == '.':
+                adj.append((x, y-1))
+            if get_tile_func(y+1, x) == '.':
+                adj.append((x, y+1))
+            
+            if len(adj) == 1:
+                set_tile_func(y, x, '_')
+                x, y = adj[0]
+            else:
+                break
+
+    # Check for tunnels on the right edge
+    x = tiles_demirow_size - 1
+    for y in range(tiles_col_size):
+        if get_tile(y, x) == '.':
+            # Uncomment to enable tunnel pellet erasure
+            erase_until_intersection(x, y, get_tile, set_tile)
+            pass
     
     for i in range(aux_col_size):
         for j in range(aux_row_size):
@@ -109,6 +149,7 @@ def get_tiles(cells: np.ndarray[Cell]) -> np.ndarray[str]:
                     get_tile(i + 1, j - 1) == '.' or
                     get_tile(i + 1, j + 1) == '.'):
                     set_tile(i, j, '|')
+    
     
     return tiles
 

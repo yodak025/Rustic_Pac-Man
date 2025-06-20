@@ -6,24 +6,13 @@
 # ? ...
 # ? Que Dios nos pille confesados.
 
-# TODO - A partir de aquí estaría bien hacer un poco de control de errores
-# TODO - Arreglar la siguiente chapuza:
-import sys
-from pathlib import Path
-project_root = Path(__file__).resolve(
-).parent  # Ajustar según el archivo
-sys.path.insert(0, str(project_root))
 
 from typing import Callable as Def
 import numpy as np
-from cell import Cell
+from .cell import Cell
+from .directions import UP, RIGHT, DOWN, LEFT
 
-# TODO - Generalizar estas constantes de alguna manera
-UP = 0
-RIGHT = 1
-DOWN = 2
-LEFT = 3
-
+# TODO - Control de errores
 
 def link_cells(cells: np.ndarray) -> None:
     rows, cols = cells.shape
@@ -40,7 +29,7 @@ def link_cells(cells: np.ndarray) -> None:
                 cell.next[RIGHT] = cells[i, j + 1]
 
 
-def reset(cells: np.ndarray, manual_connections: Def[[np.ndarray], None] = None) -> None:
+def reset(cells: np.ndarray, manual_connections: Def[[np.ndarray],None] | None = None) -> None:
     link_cells(cells)
     if manual_connections:
         manual_connections(cells)

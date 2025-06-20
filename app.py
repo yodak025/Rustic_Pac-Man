@@ -1,21 +1,21 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-
+from maze_generation.directions import UP, RIGHT, DOWN, LEFT
 from flask import Flask, jsonify, render_template, send_from_directory, request
 from maze_generation.cell import create_cell_array, Cell
 from maze_generation.reset import reset
 from maze_generation.gen import CellConnectionsGenerator
 from maze_generation.get_tiles import get_tiles
+from maze_generation.is_desirable import is_desirable
+from maze_generation.tunnels import TunnelsGenerator
 import numpy as np
-
-UP = 0
-RIGHT = 1
-DOWN = 2
-LEFT = 3
+import numpy.typing as npt
+import typing as t
 
 
-def ghost_home(cells: np.ndarray, cols):
-    i = 3 * cols
+
+def ghost_home(cells, cols):
+    i = 3 * cols 
     x = i%cols
     y = i // cols
     c = cells[y, x]
@@ -44,19 +44,33 @@ def ghost_home(cells: np.ndarray, cols):
     c.is_connected_at[LEFT] = c.is_connected_at[UP] = True
 
 
+
+
 class MazeState: 
     def __init__(self):
-        self.cells = None
+        self.cells: np.ndarray | None = None
 
     def create_new_maze(self, rows, cols, max_figure_size):
         """Crea un nuevo laberinto con el número de filas y columnas especificado"""
-        self.cells = create_cell_array(rows, cols)
-        def set_ghost_home(cells):
-            """Establece la casa de los fantasmas en el laberinto"""
-            ghost_home(cells, cols)
-        reset(self.cells, set_ghost_home)
-        generator = CellConnectionsGenerator(self.cells, max_figure_size)
-        generator.generate()
+        while True:
+            print("vuelta")
+            self.cells = create_cell_array(rows, cols)
+            def set_ghost_home(cells):
+                """Establece la casa de los fantasmas en el laberinto"""
+                ghost_home(cells, cols)
+            reset(self.cells, set_ghost_home)
+            cell_connections = CellConnectionsGenerator(self.cells, max_figure_size)
+            cell_connections.generate()
+            if not is_desirable(self.cells):
+                print("Laberinto no deseable, generando de nuevo...")
+                continue
+            tunnels = TunnelsGenerator(self.cells)
+            tunnels.generate()
+            if tunnels.is_valid_cell_map:
+                print("Laberinto generado correctamente")
+                break
+
+
 
     def get_tiles_as_json(self):
         """Convierte las celdas a un formato JSON serializable"""

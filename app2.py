@@ -1,21 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import sys
-from pathlib import Path
-import json
-
-# Añadir el directorio maze_generation al path
-project_root = Path(__file__).resolve().parent.parent
-maze_gen_path = project_root / "maze_generation"
-sys.path.insert(0, str(maze_gen_path))
-
 from flask import Flask, jsonify, render_template, request
-from cell import create_cell_array, Cell
-from reset import reset
-from gen import CellConnectionsGenerator
-from get_tiles import get_tiles
-from testing_tiles import parse_tiles
+from maze_generation.cell import create_cell_array, Cell
+from maze_generation.reset import reset
+from maze_generation.gen import CellConnectionsGenerator
+from maze_generation.get_tiles import get_tiles
+from maze_generation.tunnels import TunnelsGenerator
+from maze_generation.is_desirable import is_desirable
 import numpy as np
 
 def cell_to_dict(cell: Cell) -> dict:
@@ -57,10 +49,18 @@ class MazeState:
         return cells_array_to_json(self.cells)
     def create_new_maze(self, rows, cols, max_figure_size):
         """Crea un nuevo laberinto con el número de filas y columnas especificado"""
-        self.cells = create_cell_array(rows, cols)
-        reset(self.cells)
-        generator = CellConnectionsGenerator(self.cells, max_figure_size)
-        generator.generate()
+        while True:
+            self.cells = create_cell_array(rows, cols)
+            reset(self.cells)
+            generator = CellConnectionsGenerator(self.cells, max_figure_size)
+            generator.generate()
+            if not is_desirable(self.cells):
+                continue
+            tunnels_generator = TunnelsGenerator(self.cells)
+            tunnels_generator.generate()
+            if not tunnels_generator.is_valid_cell_map:
+                continue
+            break
 
     def get_tiles_as_json(self):
         """Convierte las celdas a un formato JSON serializable"""

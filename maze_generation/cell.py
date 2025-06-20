@@ -4,12 +4,7 @@
 
 import numpy as np
 from typing import Dict
-
-# TODO - Generalizar estas constantes de alguna manera
-UP = 0
-RIGHT = 1
-DOWN = 2
-LEFT = 3
+from .directions import UP, RIGHT, DOWN, LEFT
 
 
 class Cell:
@@ -23,8 +18,20 @@ class Cell:
 
         self.is_connected_at: Dict[int, bool] = connections
         self.next = nexts
+        
+        #!- Actualmente en desuso
         self.is_raise_height_candidate = False
         self.is_shrink_width_candidate = False
+
+        #-- propiedades asociadas a la fase de generación de túneles
+        self.is_edge_tunnel_candidate = False
+        self.is_void_tunnel_candidate = False
+        self.is_single_dead_end_candidate = False
+        self.single_dead_end_direction: int | None = None
+        self.is_double_dead_end_candidate = False
+
+        self.is_top_tunnel = False
+        self.is_bottom_tunnel = False
 
     def __eq__(self, other):
         if isinstance(other, Cell):
@@ -39,14 +46,14 @@ class Cell:
         return False
 
 
-def create_cell_array(rows: int, cols: int) -> np.ndarray[Cell]:
+def create_cell_array(rows: int, cols: int) -> np.ndarray:
     empty_connections: Dict[int, bool] = {
         UP: False,
         RIGHT: False,
         DOWN: False,
         LEFT: False
     }
-    empty_nexts: Dict[int, Cell] = {
+    empty_nexts: Dict[int, Cell | None] = {
         UP: None,
         RIGHT: None,
         DOWN: None,
