@@ -15,7 +15,7 @@ export default function TileMesh({ x, z }: TileMeshProps) {
 
   return (
     <>
-      {tileValue !== ( 1 && -2) && (
+      {(tileValue !==  1 && tileValue !== -2) && (
         <group position={[x, 0, z]}>
           <mesh position={[0, -0.3, 0]}>
               <boxGeometry args={[1, 0.1, 1]} />

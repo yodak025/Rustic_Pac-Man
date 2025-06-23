@@ -70,7 +70,7 @@ export default class MovementSystem implements IMovementSystem {
       }
 
       const tileValue = tileMap.getTile({x: tileX, y: tileY});
-      if (tileValue === 1) { // Assuming 1 represents a wall
+      if ((tileValue === 1)) { // Assuming 1 represents a wall, -4 represents a ghost
         return false;
       }
     }

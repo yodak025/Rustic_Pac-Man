@@ -22,7 +22,7 @@ export default function BlinkyMesh({ index }: { index: number }) {
   const rotation = useRef<[x:number, y:number, z:number]>([0, 0, 0]);
 
   const getBlinkyDirections = () => {
-    behaviour.current.decideDirection(tilemap.getTile, { x, y: z }, pacman);
+    behaviour.current.decideDirection(tilemap, { x, y: z }, pacman);
     const dirs = behaviour.current.directions;
     if (dirs.left) rotation.current = [0, -Math.PI / 2, 0];
     if (dirs.right) rotation.current = [0, Math.PI / 2, 0];
