@@ -39,7 +39,7 @@ def is_desirable(cells: np.ndarray) -> bool:
         for x in range(col_count - 1):
             if ((is_hori(x, y) and is_hori(x, y + 1)) or 
                 (is_vert(x, y) and is_vert(x + 1, y))):
-                return False
+                return True
                 # ? Si se tiene una pareja de figuras de 2 celdas
                 if x == 0:
                     # ? Descartamos las que se encuenten en el centro 

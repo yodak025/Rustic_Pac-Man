@@ -1,6 +1,7 @@
 import numpy as np
 from .cell import Cell
 from .directions import UP, RIGHT, DOWN, LEFT
+from typing import Callable as Def
 
 # ? Control de Dislexia:
 # ?     eje 0 = rows = i = y = vertical,
@@ -9,7 +10,7 @@ from .directions import UP, RIGHT, DOWN, LEFT
 # ?     row size = number of elements in a row = number of cols = shape[1]
 # ?     col size = number of elements in a col = number of rows = shape[0]
 
-def get_tiles(cells: np.ndarray) -> np.ndarray:
+def get_tiles(cells: np.ndarray, set_manual_tiles: Def[[Def[[int, int, str], None]], None]) -> np.ndarray:
 
     # TODO - Explicar números mágicos
     tiles_demirow_size = cells.shape[1] * 3
@@ -137,6 +138,7 @@ def get_tiles(cells: np.ndarray) -> np.ndarray:
             erase_until_intersection(x, y, get_tile, set_tile)
             pass
     
+    #-- Rellenar los tiles de las paredes
     for i in range(aux_col_size):
         for j in range(aux_row_size):
             if get_tile(i, j) == '_':
@@ -149,7 +151,9 @@ def get_tiles(cells: np.ndarray) -> np.ndarray:
                     get_tile(i + 1, j - 1) == '.' or
                     get_tile(i + 1, j + 1) == '.'):
                     set_tile(i, j, '|')
-    
+
+    #-- Modificaciones manuales
+    set_manual_tiles(set_tile)
     
     return tiles
 

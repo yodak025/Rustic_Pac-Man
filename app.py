@@ -12,9 +12,10 @@ import numpy as np
 import numpy.typing as npt
 import typing as t
 
+#! Y QUE PASA SIEL PROBLEMA EN LA GENERACIÓN ES QUE NO ESTÁS RECORRIENDO LOS RANGOS COMPLETOS EN GET_TILES????
+#! PARAMETROS INICIALES IGUAL VARÍAN EL RESULTADO
 
-
-def ghost_home(cells, cols):
+def ghost_home_cells(cells, cols):
     i = 3 * cols 
     x = i%cols
     y = i // cols
@@ -44,6 +45,19 @@ def ghost_home(cells, cols):
     c.is_connected_at[LEFT] = c.is_connected_at[UP] = True
 
 
+def set_ghost_home_door_tiles(set_tiles) -> None:
+    #-- 
+    set_tiles(11,2,"d")
+    set_tiles(12,2,"h")
+    set_tiles(13,2,"h")
+    set_tiles(14,2,"h")
+    set_tiles(12,3,"h")
+    set_tiles(13,3,"h")
+    set_tiles(14,3,"h")
+    set_tiles(12,4,"h")
+    set_tiles(13,4,"h")
+    set_tiles(14,4,"h")
+
 
 
 class MazeState: 
@@ -57,7 +71,7 @@ class MazeState:
             self.cells = create_cell_array(rows, cols)
             def set_ghost_home(cells):
                 """Establece la casa de los fantasmas en el laberinto"""
-                ghost_home(cells, cols)
+                ghost_home_cells(cells, cols)
             reset(self.cells, set_ghost_home)
             cell_connections = CellConnectionsGenerator(self.cells, max_figure_size)
             cell_connections.generate()
@@ -74,11 +88,15 @@ class MazeState:
 
     def get_tiles_as_json(self):
         """Convierte las celdas a un formato JSON serializable"""
-        tiles = get_tiles(self.cells)
+        tiles = get_tiles(self.cells, set_ghost_home_door_tiles)
         numeric_tiles = np.where(tiles == '.', 0, 
                         np.where(tiles == '|', 1, 
-                        np.where(tiles == '_', -1, 
-                        -1))).astype(int)
+                        np.where(tiles == '_', -2, 
+                        np.where(tiles == 'h', -3,
+                        np.where(tiles == 'd', -4,
+                        np.where(tiles == '-', 3, 
+                        -1)))))).astype(int)
+        
         return numeric_tiles.tolist()
 
 

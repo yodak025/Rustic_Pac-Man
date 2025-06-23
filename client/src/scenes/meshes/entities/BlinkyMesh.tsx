@@ -58,12 +58,12 @@ export default function BlinkyMesh({ index }: { index: number }) {
   const { nodes, materials } = useGLTF("assets/blinky-model.glb") as any;
 
   const escapeMaterial = materials.Material.clone();
-  escapeMaterial.color.setHex(0x0000ff);
+  escapeMaterial.color.setHex(0x0000ee);
   const deadMaterial = materials.Material.clone();
   deadMaterial.color.setHex(0x000000);
 
   return (
-    <group position={[x, 0, z]} scale={0.5} rotation={rotation.current} dispose={null}>
+    <group position={[x, 0.5, z]} scale={0.5} rotation={rotation.current} dispose={null}>
       <mesh
         geometry={nodes.Sphere004.geometry}
         material= {materials["Material.004"]}
