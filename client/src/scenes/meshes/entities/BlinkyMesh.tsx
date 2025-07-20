@@ -1,8 +1,8 @@
 import { useGhostsState, useTilemapState } from "@/state/store";
 import { useRef } from "react";
-import MovementSystem from "@/game/core/systems/movementSystem";
-import GhostBehaviorSystem from "@/game/core/systems/ghostBehaviorSystem";
-import useGameFrame from "@/game/core/hooks/useGameFrame";
+import MovementSystem from "@core/systems/movementSystem";
+import GhostBehaviorSystem from "@/core/systems/ghostBehaviorSystem";
+import useGameFrame from "@core/hooks/useGameFrame";
 import { usePacmanState } from "@state/store";
 import pacmanStatusValue from "@/types/pacmanStatusValue";
 import { useGLTF } from "@react-three/drei";
@@ -22,7 +22,7 @@ export default function BlinkyMesh({ index }: { index: number }) {
   const rotation = useRef<[x:number, y:number, z:number]>([0, 0, 0]);
 
   const getBlinkyDirections = () => {
-    behaviour.current.decideDirection(tilemap, { x, y: z }, pacman);
+    behaviour.current.decideDirection(tilemap.getTile, { x, y: z }, pacman);
     const dirs = behaviour.current.directions;
     if (dirs.left) rotation.current = [0, -Math.PI / 2, 0];
     if (dirs.right) rotation.current = [0, Math.PI / 2, 0];
@@ -58,12 +58,12 @@ export default function BlinkyMesh({ index }: { index: number }) {
   const { nodes, materials } = useGLTF("assets/blinky-model.glb") as any;
 
   const escapeMaterial = materials.Material.clone();
-  escapeMaterial.color.setHex(0x0000ee);
+  escapeMaterial.color.setHex(0x0000ff);
   const deadMaterial = materials.Material.clone();
   deadMaterial.color.setHex(0x000000);
 
   return (
-    <group position={[x, 0.5, z]} scale={0.5} rotation={rotation.current} dispose={null}>
+    <group position={[x, 0, z]} scale={0.5} rotation={rotation.current} dispose={null}>
       <mesh
         geometry={nodes.Sphere004.geometry}
         material= {materials["Material.004"]}

@@ -1,6 +1,6 @@
 import { useTilemapState, useGameStatusStore } from "@state/store";
 import gameStatusValue from "@/types/gameStatusValue";
-import TileMesh from "@game/meshes/maze/TileMesh";
+import TileMesh from "@scenes/meshes/maze/TileMesh";
 import { useEffect, useMemo, useState } from "react";
 import { loadMaze } from "@/services/api";
 import type { JSX } from "react";
@@ -11,6 +11,8 @@ export default function Maze() {
   const [isTilemapReadyToRender, setTilemapRenderState] = useState(false);
 
   const createRandomPellets = () => {
+    tilemap.sustractPacDot(); 
+    tilemap.sustractPacDot(); //! HAY UN DESFASE DE 1 EN EL CONTADOR DE PACDOTS, REVISALO
     let remainingPellets = 6
     console.log(tilemap);
     while (remainingPellets > 0) {
@@ -28,11 +30,10 @@ export default function Maze() {
       if (game.status === gameStatusValue.GENERATING_MAZE) {
         loadMaze().then((maze) => {
           if (maze) {
-            tilemap.reStart();
             tilemap.setTileMap(maze);
             setTilemapRenderState(true);
             createRandomPellets()
-            game.setStatus(gameStatusValue.PLAYING);
+            game.setStatus(gameStatusValue.SETTING_PACMAN);
           }
         });
       }
