@@ -1,4 +1,4 @@
-import GameScene from "@/scenes/GameScene";
+import GameScene from "@/game/GameScene";
 import { useGameStatusStore, useTilemapState} from "@state/store";
 import gameStatusValue from "@custom-types/gameStatusValue";
 import { KeyboardControls } from "@react-three/drei";
@@ -9,7 +9,7 @@ import LoadingScreen from "@ui/layout/LoadingScreen";
 
 export default function App() {
   const { status: gameStatus } = useGameStatusStore((state) => state);
-
+ //<HUD />
   return gameStatus !== gameStatusValue.NOT_STARTED ? (
     <>
       <KeyboardControls
@@ -20,7 +20,7 @@ export default function App() {
           { name: "right", keys: ["ArrowRight", "d"] },
         ]}
       >
-        <HUD />
+        
         <Canvas
           className="bg-gradient-to-br from-stone-800 to-stone-600 "
           style={{ height: "100vh" }}

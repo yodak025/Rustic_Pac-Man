@@ -1,6 +1,6 @@
 import { useTilemapState, useGameStatusStore } from "@state/store";
 import gameStatusValue from "@/types/gameStatusValue";
-import TileMesh from "@scenes/meshes/maze/TileMesh";
+import TileMesh from "@game/meshes/maze/TileMesh";
 import { useEffect, useMemo, useState } from "react";
 import { loadMaze } from "@/services/api";
 import type { JSX } from "react";
@@ -32,7 +32,7 @@ export default function Maze() {
             tilemap.setTileMap(maze);
             setTilemapRenderState(true);
             createRandomPellets()
-            game.setStatus(gameStatusValue.SETTING_PACMAN);
+            game.setStatus(gameStatusValue.PLAYING);
           }
         });
       }

@@ -1,8 +1,8 @@
 import { useGhostsState, useTilemapState } from "@/state/store";
 import { useRef } from "react";
-import MovementSystem from "@core/systems/movementSystem";
-import GhostBehaviorSystem from "@/core/systems/ghostBehaviorSystem";
-import useGameFrame from "@core/hooks/useGameFrame";
+import MovementSystem from "@/game/core/systems/movementSystem";
+import GhostBehaviorSystem from "@/game/core/systems/ghostBehaviorSystem";
+import useGameFrame from "@/game/core/hooks/useGameFrame";
 import { usePacmanState } from "@state/store";
 import pacmanStatusValue from "@/types/pacmanStatusValue";
 import { useGLTF } from "@react-three/drei";
