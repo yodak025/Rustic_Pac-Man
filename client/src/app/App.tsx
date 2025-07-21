@@ -6,41 +6,33 @@ import { Canvas } from "@react-three/fiber";
 import MainMenu from "@ui/layout/MainMenu";
 import HUD from "@ui/layout/HUD";
 import LoadingScreen from "@ui/layout/LoadingScreen";
+import { RusticGameEngine } from "@/core/engine";
+import { useEffect } from "react";
 
 export default function App() {
   const { status: gameStatus } = useGameStatusStore((state) => state);
 
+  useEffect(() => {
+    let engine = new RusticGameEngine
+    engine.start() 
+  }, [])
+  
+
   return gameStatus !== gameStatusValue.NOT_STARTED ? (
     <>
-      <KeyboardControls
-        map={[
-          { name: "forward", keys: ["ArrowUp", "w"] },
-          { name: "backward", keys: ["ArrowDown", "s"] },
-          { name: "left", keys: ["ArrowLeft", "a"] },
-          { name: "right", keys: ["ArrowRight", "d"] },
-        ]}
-      >
+
         <HUD />
         <Canvas
           className="bg-gradient-to-br from-stone-800 to-stone-600 "
           style={{ height: "100vh" }}
-          onCreated={() => {
-        // Add event listeners for 'i' and 'o' keys
-        window.addEventListener('keydown', (event) => {
-          if (event.key === 'o') {
-            useGameStatusStore.getState().setStatus(gameStatusValue.WON);
-          } else if (event.key === 'i') {
-            useTilemapState.getState().sustractPacDot();
+          onLoad={
+            () =>{
+              
+            }
           }
-        });
-          }}
         >
           <GameScene />
         </Canvas>
-      </KeyboardControls>
-      {(gameStatus === gameStatusValue.GENERATING_MAZE ||
-        gameStatus === gameStatusValue.SETTING_PACMAN ||
-        gameStatus === gameStatusValue.SETTING_GHOSTS) && <LoadingScreen />}
     </>
   ) : (
     <MainMenu />

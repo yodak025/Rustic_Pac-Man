@@ -12,19 +12,7 @@ import { useEffect } from "react";
 export default function GameScene() {
   const tilemap = useTilemapState((state) => state);
   const game = useGameStatusStore((state) => state);
-  const ghosts = useGhostsState((state) => state);
-
-  //! ESTO ES POSIBLE QUE ESTÉ VIOLANDO S DE SOLID, REVISALO
-  useEffect(() => {
-    if (game.status === gameStatusValue.WON) {
-      // Reset game state
-      tilemap.reStart();
-      ghosts.reStart();
-      game.setNextLevel()
-      game.setStatus(gameStatusValue.GENERATING_MAZE);
-    }
-  }, [game.status])
-
+  
   
   return (
     <>
@@ -40,7 +28,6 @@ export default function GameScene() {
       <pointLight position={[10, 10, 10]} />
 
       <Maze />
-      <Ghosts />
       <PacmanMesh />
 
       {/* Controls for camera movement */}
