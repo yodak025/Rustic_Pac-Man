@@ -1,4 +1,4 @@
-import { useGameStatusStore, usePacmanState } from '@state/store';
+import { useGameStatusStore } from '@state/store';
 import gameStatusValue from '@/types/gameStatusValue';
 import InGameMenu from '@ui/components/InGameMenu';
 import { useEffect } from 'react';
@@ -6,7 +6,7 @@ import { useEffect } from 'react';
 
 const HUD = () => {
   const { level, score, status, setStatus } = useGameStatusStore((state) => (state));
-  const { lives } = usePacmanState((state) => (state));
+  const  lives  = 3
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {

@@ -1,16 +1,16 @@
-import {useGameStatusStore, usePacmanState, useTilemapState, useGhostsState} from "@state/store";
+import {useGameStatusStore, useTilemapState} from "@state/store";
 import gameStatusValue from '@/types/gameStatusValue';
 
 const InGameMenu = () => {
   const game = useGameStatusStore((state) => state);
-  const pacman = usePacmanState((state) => state);
+  //const pacman = usePacmanState((state) => state);
   const tilemap = useTilemapState((state) => state);
-  const ghosts = useGhostsState((state) => state);
+  //const ghosts = useGhostsState((state) => state);
   const reStart = () => {
     game.reStart()
-    pacman.reStart();
+    //pacman.reStart();
     tilemap.reStart();
-    ghosts.reStart();
+    //ghosts.reStart();
   }
 
   const handleContinue = () => {

@@ -1,5 +1,5 @@
 import { OrbitControls } from "@react-three/drei";
-import { useTilemapState, useGameStatusStore, useGhostsState} from "@state/store";
+import { useTilemapState, useGameStatusStore} from "@state/store";
 import { PerspectiveCamera } from "@react-three/drei";
 
 import PacmanMesh from "@scenes/meshes/entities/PacmanMesh";
