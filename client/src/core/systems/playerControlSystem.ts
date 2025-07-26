@@ -1,7 +1,11 @@
-import useECSStore from '../../state/useECSStore';
-import { Direction } from '../../state/components';
-import type { Playable, DirectionComponent } from '../../state/components';
-
+import useECSStore from "../../state/useECSStore";
+import { Direction } from "@custom-types/gameComponents";
+import type {
+  DirectionComponent,
+  Playable,
+} from "@custom-types/gameComponents";
+import usePacmanStore from "@/state/usePacmanStore";
+import type { Entity } from "../../state/useECSStore";
 interface KeyState {
   w: boolean;
   a: boolean;
@@ -9,38 +13,31 @@ interface KeyState {
   d: boolean;
 }
 
-export function playerControlSystem(keyState: KeyState, entityIds: string[]): void {
-  const { getEntity, setEntity } = useECSStore.getState();
+export function playerControlSystem(keyState: KeyState): void {
+  const setDirection = usePacmanStore.getState().pacman.actions.setDirection; //! Implementación sesgada 
+  const entities: Entity[] = [];
+  entities.push(usePacmanStore.getState().pacman);
 
-  entityIds.forEach(id => {
-    const entity = getEntity(id);
-    if (!entity) return;
-
+  entities.forEach((entity) => {
     const playable = entity.components.playable as Playable;
-    const directionComponent = entity.components.direction as DirectionComponent;
+    const directionComponent = entity.components
+      .direction as DirectionComponent;
 
     // Check if entity has required components and is playable
     if (!playable || !playable.value || !directionComponent) {
       return;
     }
 
-    // Determine direction based on key state
-    let newDirection = Direction.STOP;
-
     if (keyState.w) {
-      newDirection = Direction.UP;
+      setDirection(Direction.UP);
     } else if (keyState.s) {
-      newDirection = Direction.DOWN;
+      setDirection(Direction.DOWN);
     } else if (keyState.a) {
-      newDirection = Direction.LEFT;
+      setDirection(Direction.LEFT);
     } else if (keyState.d) {
-      newDirection = Direction.RIGHT;
+      setDirection(Direction.RIGHT);
+    } else {
+      setDirection(Direction.STOP);
     }
-
-    // Update direction component
-    directionComponent.direction = newDirection;
-
-    // Update the entity in the store
-    setEntity(entity);
   });
 }

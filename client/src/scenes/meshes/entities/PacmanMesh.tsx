@@ -1,46 +1,32 @@
 import useGameFrame from "@core/hooks/useGameFrame";
-import {
-  usePacmanState,
-  useTilemapState,
-  useGameStatusStore,
-  useECSStore
-} from "@state/store";
+import usePacmanStore from "@/state/usePacmanStore";
+
 import gameStatusValue from "@/types/gameStatusValue";
 import pacmanStatusValue from "@/types/pacmanStatusValue";
 import { useEffect, useState } from "react";
-import type { Position } from "@state/components";
+import type { Position } from "@custom-types/gameComponents";
 
 export default function PacmanMesh() {
   const [position, setPosition] = useState<[number, number, number]>([0, 0, 0]);
 
-  //-- acceso al estado de juego
-  const {
-    status: gameStatus,
-    setStatus,
-  } = useGameStatusStore((state) => state);
-
-  //-- acceso al store ECS para obtener la posición de Pacman
-  const { getEntity } = useECSStore((state) => state);
+  const pacmanPosition = usePacmanStore.getState().pacman.components.position as Position;
 
   //-- Hook para seguir la posición de la entidad Pacman
   const useTrackPacmanPosition = () => {
     useEffect(() => {
       const interval = setInterval(() => {
-        const pacmanEntity = getEntity('pacman');
-        if (pacmanEntity && pacmanEntity.components.position) {
-          const entityPosition = pacmanEntity.components.position as Position;
-          setPosition([entityPosition.x, 0, entityPosition.y]);
-        }
+        
+        setPosition([pacmanPosition.x, 0 , pacmanPosition.y]);
       }, 16); // ~60fps
 
       return () => clearInterval(interval);
-    }, [getEntity]);
+    }, [pacmanPosition]);
   };
 
   useTrackPacmanPosition();
   
   //-- Hook para inicializar a Pacman
-  const useInitPacman = () => {
+/*   const useInitPacman = () => {
     useEffect(() => {
       if (gameStatus !== gameStatusValue.SETTING_PACMAN) return;
     
@@ -48,7 +34,7 @@ export default function PacmanMesh() {
     }, [gameStatus]);
   };
 
-  useInitPacman();
+  useInitPacman(); */
 
   return (
     <mesh position={position}>

@@ -1,51 +1,48 @@
 import useECSStore from '../../state/useECSStore';
-import { Direction } from '../../state/components';
-import type { Position, MovementTimer, DirectionComponent } from '../../state/components';
+import { Direction } from '@custom-types/gameComponents';
+import type { Position, MovementTimer, DirectionComponent } from '@custom-types/gameComponents';
+import type { Entity } from '@custom-types/gameEntities';
+import usePacmanStore from '@/state/usePacmanStore';
 
-export function movementSystem(deltaTime: number, entityIds: string[]): void {
-  const { getEntity, setEntity } = useECSStore.getState();
-
-  entityIds.forEach(id => {
-    const entity = getEntity(id);
-    if (!entity) return;
-
+export function movementSystem(deltaTime: number): void {
+  const setPosition = usePacmanStore.getState().pacman.actions.setPosition;
+  const incrementMovementTimer = usePacmanStore.getState().pacman.actions.incrementMovementTimer;
+  const entities: Entity[]  = []
+  entities.push(usePacmanStore.getState().pacman);
+  entities.forEach(entity => {
     const position = entity.components.position as Position;
     const movementTimer = entity.components.movementTimer as MovementTimer;
-    const directionComponent = entity.components.direction as DirectionComponent;
+    const direction = entity.components.direction as Direction;
 
     // Check if entity has all required components
-    if (!position || !movementTimer || !directionComponent) {
+    if (!position || !movementTimer || !direction) {
       return;
     }
 
-    // Increment elapsed time by deltaTime
-    movementTimer.elapsed += deltaTime;
 
     // Check if elapsed time is greater than interval
-    if (movementTimer.elapsed > movementTimer.interval) {
+    if (incrementMovementTimer(deltaTime)) {
       // Subtract interval from elapsed
-      movementTimer.elapsed -= movementTimer.interval;
-
+      console.log(`Moving entity ${entity.id} with direction ${direction}`);
       // Check direction component and move if not stopped
-      if (directionComponent.direction !== Direction.STOP) {
-        switch (directionComponent.direction) {
+      if (direction !== Direction.STOP) {
+        switch (direction) {
           case Direction.UP:
-            position.y -= 1;
+            setPosition({ x: position.x, y: position.y - 1 } as Position);
             break;
           case Direction.DOWN:
-            position.y += 1;
+            setPosition({ x: position.x, y: position.y + 1 } as Position);
             break;
           case Direction.LEFT:
-            position.x -= 1;
+            setPosition({ x: position.x - 1, y: position.y } as Position);
             break;
           case Direction.RIGHT:
-            position.x += 1;
+            setPosition({ x: position.x + 1, y: position.y } as Position);
             break;
         }
+        console.log(`Entity ${entity.id} moved to position (${position.x}, ${position.y})`);
       }
     }
 
-    // Update the entity in the store
-    setEntity(entity);
   });
 }

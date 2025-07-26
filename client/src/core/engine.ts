@@ -1,9 +1,8 @@
-import useECSStore from '../state/useECSStore';
-import type { Entity } from '../state/useECSStore';
+import usePacmanStore from '@/state/usePacmanStore';
 import { movementSystem } from './systems/discreteMovementSystem';
 import { playerControlSystem } from './systems/playerControlSystem';
-import { Direction } from '../state/components';
-import type { Position, MovementTimer, DirectionComponent, Playable } from '../state/components';
+
+import type { Position, MovementTimer, Direction, Playable } from '@custom-types/gameComponents';
 
 export class RusticGameEngine {
   private isRunning: boolean = false;
@@ -14,7 +13,7 @@ export class RusticGameEngine {
 
   constructor() {
     this.setupKeyboardListeners();
-    this.createPacmanEntity();
+    this.initPacmanEntity();
   }
 
   private setupKeyboardListeners(): void {
@@ -53,24 +52,12 @@ export class RusticGameEngine {
     });
   }
 
-  private createPacmanEntity(): void {
-    const pacmanComponents = {
-      position: { x: 0, y: 0 } as Position,
-      movementTimer: { elapsed: 0, interval: 200 } as MovementTimer,
-      direction: { direction: Direction.STOP } as DirectionComponent,
-      playable: { value: true } as Playable
-    };
-
-    this.createEntity('pacman', pacmanComponents);
-    this.playableEntities.push('pacman');
+  private initPacmanEntity(): void {
+    const pacmanStore = usePacmanStore.getState().pacman;
+    pacmanStore.actions.setPosition({ x: 0, y: 0 } as Position);
+    pacmanStore.actions.setMovementTimerInterval(100);
   }
 
-  createEntity(id: string, components: Record<string, any>): Entity {
-    const entity: Entity = { id, components };
-    const { setEntity } = useECSStore.getState();
-    setEntity(entity);
-    return entity;
-  }
 
   start(): void {
     if (this.isRunning) {
@@ -101,8 +88,8 @@ export class RusticGameEngine {
     this.lastTime = currentTime;
 
     // Run systems
-    playerControlSystem(this.keyState, this.playableEntities);
-    movementSystem(deltaTime, this.playableEntities);
+    playerControlSystem(this.keyState);
+    movementSystem(deltaTime);
     
     this.animationFrameId = requestAnimationFrame(() => this.gameLoop());
   }
