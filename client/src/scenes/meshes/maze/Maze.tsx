@@ -3,9 +3,14 @@ import gameStatusValue from "@/types/gameStatusValue";
 import TileMesh from "@scenes/meshes/maze/TileMesh";
 import { useEffect, useMemo, useState } from "react";
 import { loadMaze } from "@/services/api";
+import useMazeState from "@/state/useMazeState";
 import type { JSX } from "react";
 
+import Wall from "@scenes/meshes/maze/Wall";
+
 export default function Maze() {
+  const mazeState = useMazeState((state) => state.maze);
+
   const tilemap = useTilemapState((state) => state);
   const game = useGameStatusStore((state) => state);
   const [isTilemapReadyToRender, setTilemapRenderState] = useState(false);
@@ -27,14 +32,18 @@ export default function Maze() {
   };
 
   const tileMeshes = useMemo(() => {
-    if (!isTilemapReadyToRender) return [];
-
+    if (!mazeState.isLoaded) return [];
     const meshes: JSX.Element[] = [];
-    tilemap.forEachTile((_: number, x: number, y: number) => {
-      meshes.push(<TileMesh key={`${x},${y}`} x={x} z={y} />);
-    });
+
+    for (const wallId in mazeState.walls) {
+      meshes.push(
+        <Wall key={wallId} id={wallId} />
+      );
+    }
+
+    mazeState.walls
     return meshes;
-  }, [isTilemapReadyToRender]);
+  }, [mazeState.isLoaded]);
 
   useLoadMaze();
   return tileMeshes;

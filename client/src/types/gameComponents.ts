@@ -27,3 +27,11 @@ export interface DirectionComponent {
 export interface Playable {
   value: boolean;
 }
+
+export interface Collectable {
+  value: boolean;
+}
+
+export interface Collidable {
+  value: boolean;
+}
