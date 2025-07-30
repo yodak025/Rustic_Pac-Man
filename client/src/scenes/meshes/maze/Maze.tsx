@@ -1,7 +1,7 @@
 import { useGameStatusStore } from "@state/store";
 import gameStatusValue from "@/types/gameStatusValue";
 import { useEffect, useMemo } from "react";
-import useMazeState from "@/state/useMazeState";
+import useMazeState from "@/state/useMazeStore";
 import type { JSX } from "react";
 
 import Wall from "@scenes/meshes/maze/Wall";

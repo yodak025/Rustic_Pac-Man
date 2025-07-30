@@ -1,5 +1,5 @@
 
-import useMazeState from "@/state/useMazeState";
+import useMazeState from "@/state/useMazeStore";
 import { useTexture } from "@react-three/drei";
 import { useGameStatusStore } from "@state/store";
 

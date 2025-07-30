@@ -1,11 +1,10 @@
-import useECSStore from "../../state/useECSStore";
 import { Direction } from "@custom-types/gameComponents";
 import type {
   DirectionComponent,
   Playable,
 } from "@custom-types/gameComponents";
 import usePacmanStore from "@/state/usePacmanStore";
-import type { Entity } from "../../state/useECSStore";
+import type { Entity } from "@custom-types/gameEntities";
 interface KeyState {
   w: boolean;
   a: boolean;

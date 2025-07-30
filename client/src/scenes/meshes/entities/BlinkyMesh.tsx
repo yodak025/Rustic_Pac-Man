@@ -1,8 +1,11 @@
 import { useGLTF } from "@react-three/drei";
+import useGhostsStore from "@/state/useGhostsStore";
 
 //! ESTE COMPONENTE VIOLA DRY, ARREGLALO
 
 export default function BlinkyMesh() {
+  const {x, y: z} = useGhostsStore((state) => state.blinky.components.position);
+
   const { nodes, materials } = useGLTF("assets/blinky-model.glb") as any;
 
   const escapeMaterial = materials.Material.clone();
@@ -11,7 +14,7 @@ export default function BlinkyMesh() {
   deadMaterial.color.setHex(0x000000);
 
   return (
-    <group position={[14, 0, 14]} scale={0.5} dispose={null}>
+    <group position={[x, 0, z]} scale={0.5} dispose={null}>
       <mesh
         geometry={nodes.Sphere004.geometry}
         material={materials["Material.004"]}

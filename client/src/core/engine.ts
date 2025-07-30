@@ -1,9 +1,11 @@
 import usePacmanStore from '@/state/usePacmanStore';
+import useGhostsStore from '@/state/useGhostsStore';
 import { movementSystem } from './systems/discreteMovementSystem';
 import { playerControlSystem } from './systems/playerControlSystem';
+import { ghostBehaviorSystem } from './systems/ghostBehaviorSystem';
 
 import { loadMaze } from '@/services/api';
-import useMazeState from '@/state/useMazeState';
+import useMazeState from '@/state/useMazeStore';
 
 import type { Position, MovementTimer, Direction, Playable } from '@custom-types/gameComponents';
 import PacmanMesh from '@/scenes/meshes/entities/PacmanMesh';
@@ -25,9 +27,11 @@ export class RusticGameEngine {
 
     this.setupKeyboardListeners();
     this.initPacmanEntity();
+    this.initBlinkyEntity();
   }
 
   private setupKeyboardListeners(): void {
+    //! Yo creo que esto se podría encapsular 
     window.addEventListener('keydown', (event) => {
       switch (event.key.toLowerCase()) {
         case 'w':
@@ -68,6 +72,12 @@ export class RusticGameEngine {
     pacmanStore.actions.setPosition({ x: 14, y: 16 } as Position);
     pacmanStore.actions.setMovementTimerInterval(200);
   }
+  private initBlinkyEntity(): void {
+    const pacmanStore = useGhostsStore.getState().blinky;
+    pacmanStore.actions.setPosition({ x: 14, y: 14 } as Position);
+    pacmanStore.actions.setMovementTimerInterval(1000);
+  }
+
 
   private async initMazeEntities(): Promise<void> {
     const mazeTiles = await loadMaze();
@@ -123,7 +133,8 @@ export class RusticGameEngine {
     this.lastTime = currentTime;
 
     // Run systems
-    playerControlSystem(this.keyState);
+    playerControlSystem(this.keyState); 
+    ghostBehaviorSystem(deltaTime);
     movementSystem(deltaTime);
     
     this.animationFrameId = requestAnimationFrame(() => this.gameLoop());
