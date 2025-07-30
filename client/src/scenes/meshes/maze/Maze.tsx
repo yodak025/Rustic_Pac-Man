@@ -7,6 +7,7 @@ import useMazeState from "@/state/useMazeState";
 import type { JSX } from "react";
 
 import Wall from "@scenes/meshes/maze/Wall";
+import PacDot from "@scenes/meshes/maze/PacDot";
 
 export default function Maze() {
   const mazeState = useMazeState((state) => state.maze);
@@ -40,7 +41,12 @@ export default function Maze() {
         <Wall key={wallId} id={wallId} />
       );
     }
-
+    for (const pacDotsId in mazeState.collectables.pacDots) {
+      meshes.push(
+        <PacDot key={pacDotsId} id={pacDotsId} />
+      );
+    }
+    
     mazeState.walls
     return meshes;
   }, [mazeState.isLoaded]);

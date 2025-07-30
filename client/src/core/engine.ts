@@ -65,14 +65,14 @@ export class RusticGameEngine {
 
   private initPacmanEntity(): void {
     const pacmanStore = usePacmanStore.getState().pacman;
-    pacmanStore.actions.setPosition({ x: 0, y: 0 } as Position);
-    pacmanStore.actions.setMovementTimerInterval(100);
+    pacmanStore.actions.setPosition({ x: 14, y: 16 } as Position);
+    pacmanStore.actions.setMovementTimerInterval(200);
   }
 
   private async initMazeEntities(): Promise<void> {
     const mazeTiles = await loadMaze();
     const WALL = 1;
-    const PAC_DOT = 2;
+    const PAC_DOT = 0;
 
     const mazeState = useMazeState.getState();
     

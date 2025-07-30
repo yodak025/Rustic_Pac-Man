@@ -135,7 +135,7 @@ def get_tiles(cells: np.ndarray, set_manual_tiles: Def[[Def[[int, int, str], Non
     for y in range(tiles_col_size):
         if get_tile(y, x) == '.':
             # Uncomment to enable tunnel pellet erasure
-            erase_until_intersection(x, y, get_tile, set_tile)
+            # erase_until_intersection(x, y, get_tile, set_tile)
             pass
     
     #-- Rellenar los tiles de las paredes

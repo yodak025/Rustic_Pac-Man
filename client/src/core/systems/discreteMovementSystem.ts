@@ -3,6 +3,16 @@ import { Direction } from '@custom-types/gameComponents';
 import type { Position, MovementTimer, DirectionComponent } from '@custom-types/gameComponents';
 import type { Entity } from '@custom-types/gameEntities';
 import usePacmanStore from '@/state/usePacmanStore';
+import useMazeState from '@/state/useMazeState';
+
+const askForMovement = (position: Position, onValidMove:(position: Position) => void): void => {
+  const { x, y } = position;
+  if (useMazeState.getState().isWallAt({ x, y })) {
+    return;
+  }
+  onValidMove({ x, y });
+
+}
 
 export function movementSystem(deltaTime: number): void {
   const setPosition = usePacmanStore.getState().pacman.actions.setPosition;
@@ -28,16 +38,24 @@ export function movementSystem(deltaTime: number): void {
       if (direction !== Direction.STOP) {
         switch (direction) {
           case Direction.UP:
-            setPosition({ x: position.x, y: position.y - 1 } as Position);
+            askForMovement({ x: position.x, y: position.y - 1 }, (newPosition) => {
+              setPosition(newPosition);
+            });
             break;
           case Direction.DOWN:
-            setPosition({ x: position.x, y: position.y + 1 } as Position);
+            askForMovement({ x: position.x, y: position.y + 1 }, (newPosition) => {
+              setPosition(newPosition);
+            });
             break;
           case Direction.LEFT:
-            setPosition({ x: position.x - 1, y: position.y } as Position);
+            askForMovement({ x: position.x - 1, y: position.y }, (newPosition) => {
+              setPosition(newPosition);
+            });
             break;
           case Direction.RIGHT:
-            setPosition({ x: position.x + 1, y: position.y } as Position);
+            askForMovement({ x: position.x + 1, y: position.y }, (newPosition) => {
+              setPosition(newPosition);
+            });
             break;
         }
         console.log(`Entity ${entity.id} moved to position (${position.x}, ${position.y})`);
