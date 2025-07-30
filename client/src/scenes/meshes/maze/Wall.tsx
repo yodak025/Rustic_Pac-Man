@@ -1,6 +1,6 @@
 import useMazeState from "@/state/useMazeState";
 import { useTexture } from "@react-three/drei";
-import { useTilemapState, useGameStatusStore } from "@state/store";
+import { useGameStatusStore } from "@state/store";
 
 export default function Wall({ id }: { id: string }) {
   const level = useGameStatusStore((state) => state.level);

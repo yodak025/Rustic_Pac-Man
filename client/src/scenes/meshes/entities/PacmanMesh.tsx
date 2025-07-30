@@ -1,4 +1,3 @@
-import useGameFrame from "@core/hooks/useGameFrame";
 import usePacmanStore from "@/state/usePacmanStore";
 
 import gameStatusValue from "@/types/gameStatusValue";

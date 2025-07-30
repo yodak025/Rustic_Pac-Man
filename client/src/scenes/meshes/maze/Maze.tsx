@@ -1,8 +1,6 @@
-import { useTilemapState, useGameStatusStore } from "@state/store";
+import { useGameStatusStore } from "@state/store";
 import gameStatusValue from "@/types/gameStatusValue";
-import TileMesh from "@scenes/meshes/maze/TileMesh";
-import { useEffect, useMemo, useState } from "react";
-import { loadMaze } from "@/services/api";
+import { useEffect, useMemo } from "react";
 import useMazeState from "@/state/useMazeState";
 import type { JSX } from "react";
 
@@ -12,22 +10,12 @@ import PacDot from "@scenes/meshes/maze/PacDot";
 export default function Maze() {
   const mazeState = useMazeState((state) => state.maze);
 
-  const tilemap = useTilemapState((state) => state);
   const game = useGameStatusStore((state) => state);
-  const [isTilemapReadyToRender, setTilemapRenderState] = useState(false);
-
-  
 
   const useLoadMaze = () => {
     useEffect(() => {
       if (game.status === gameStatusValue.GENERATING_MAZE) {
-        loadMaze().then((maze) => {
-          if (maze) {
-            tilemap.setTileMap(maze);
-            setTilemapRenderState(true);
-            game.setStatus(gameStatusValue.SETTING_PACMAN);
-          }
-        });
+        game.setStatus(gameStatusValue.SETTING_PACMAN);
       }
     }, [game.status, game.setStatus]);
   };
@@ -37,17 +25,13 @@ export default function Maze() {
     const meshes: JSX.Element[] = [];
 
     for (const wallId in mazeState.walls) {
-      meshes.push(
-        <Wall key={wallId} id={wallId} />
-      );
+      meshes.push(<Wall key={wallId} id={wallId} />);
     }
     for (const pacDotsId in mazeState.collectables.pacDots) {
-      meshes.push(
-        <PacDot key={pacDotsId} id={pacDotsId} />
-      );
+      meshes.push(<PacDot key={pacDotsId} id={pacDotsId} />);
     }
-    
-    mazeState.walls
+
+    mazeState.walls;
     return meshes;
   }, [mazeState.isLoaded]);
 
