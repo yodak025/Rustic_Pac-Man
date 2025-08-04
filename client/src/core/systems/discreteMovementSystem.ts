@@ -28,7 +28,7 @@ export function movementSystem(deltaTime: number): void {
     return;
   }
 
-  const entities = []; //! Esto es un Lazy Any porque Entity no sabe lo que son sus actions
+  const entities: Entity[] = []; //! Esto es un Lazy Any porque Entity no sabe lo que son sus actions
   entities.push(usePacmanStore.getState().pacman);
   entities.push(useGhostsStore.getState().blinky);
   entities.forEach((entity) => {
@@ -85,10 +85,16 @@ export function movementSystem(deltaTime: number): void {
               }
             );
             break;
+            
         }
         console.log(
           `Entity ${entity.id} moved to position (${position.x}, ${position.y})`
         );
+      }
+      else { //! ALTAMENTE ACOPLADO Y MUY FRAGIL
+        // TODO - Me sangran los ojos 
+        return //? Esto evita que se ejecute el incrementMovementTimer, dejando a pacman ready para el siguiente movimiento
+        //? Esto evita el input lag a costa de renunciar a todo atisbo de cordura en el desarrollo.
       }
       
     }
