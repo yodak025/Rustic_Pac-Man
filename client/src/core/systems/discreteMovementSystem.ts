@@ -42,9 +42,11 @@ export function movementSystem(deltaTime: number): void {
     }
     const setPosition = entity.actions.setPosition;
     const incrementMovementTimer = entity.actions.incrementMovementTimer;
+    const isTimeToMove = entity.actions.isTimeToMove;
 
     // Check if elapsed time is greater than interval
-    if (incrementMovementTimer(deltaTime)) {
+    if (isTimeToMove(deltaTime)) {
+      
       // Subtract interval from elapsed
       console.log(`Moving entity ${entity.id} with direction ${direction}`);
       // Check direction component and move if not stopped
@@ -55,6 +57,7 @@ export function movementSystem(deltaTime: number): void {
               { x: position.x, y: position.y - 1 },
               (newPosition) => {
                 setPosition(newPosition);
+                //TODO - Por qué pasas un callback? define la función dentro, KISS
               }
             );
             break;
@@ -87,6 +90,8 @@ export function movementSystem(deltaTime: number): void {
           `Entity ${entity.id} moved to position (${position.x}, ${position.y})`
         );
       }
+      
     }
+    incrementMovementTimer(deltaTime)
   });
 }

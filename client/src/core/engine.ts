@@ -133,9 +133,11 @@ export class RusticGameEngine {
     this.lastTime = currentTime;
 
     // Run systems
+    // TODO - Coleguita, esto de aquí es una chapuza monumental.
+    // TODO - Los sistemas no conmutan. Hay que crear un sistema de eventos. 
     playerControlSystem(this.keyState); 
     ghostBehaviorSystem(deltaTime);
-    movementSystem(deltaTime);
+    movementSystem(deltaTime); //! LOS INTERVALOS DE MOVIMIENTO ESTÁN ACOPLADOS, NO TOQUES EL ORDEN DE EJECUCIÓN
     
     this.animationFrameId = requestAnimationFrame(() => this.gameLoop());
   }

@@ -13,7 +13,8 @@ interface Pacman extends Entity {
     setPosition: (position: Position) => void;
     setMovementTimerInterval: (interval: number) => void;
     setDirection: (direction: Direction) => void;
-    incrementMovementTimer: (delta: number) => boolean;
+    incrementMovementTimer: (delta: number) => void;
+    isTimeToMove: (delta: number) => boolean;
   }
 }
 
@@ -22,7 +23,7 @@ interface IPacmanState {
 }
 
 const usePacmanStore = create<IPacmanState>()(
-  immer((set) => ({
+  immer((set, get) => ({
     pacman: {
       id: "pacman",
       components: {
@@ -48,7 +49,6 @@ const usePacmanStore = create<IPacmanState>()(
           });
         },
         incrementMovementTimer: (delta: number) => {
-          let shouldMove = false;
           set((state) => {
             state.pacman.components.movementTimer.elapsed += delta;
             if (
@@ -57,10 +57,12 @@ const usePacmanStore = create<IPacmanState>()(
             ) {
               state.pacman.components.movementTimer.elapsed -=
                 state.pacman.components.movementTimer.interval;
-              shouldMove = true;
             }
           });
-          return shouldMove;
+        },
+        isTimeToMove: (delta: number) => {
+          const { elapsed, interval } = get().pacman.components.movementTimer;
+          return (elapsed + delta) >= interval;
         },
       }
     },

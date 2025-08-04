@@ -4,6 +4,9 @@ import useMazeState from "@/state/useMazeStore";
 import { Direction } from "@custom-types/gameComponents";
 
 export function ghostBehaviorSystem(deltaTime: number): void {
+  if (!useGhostsStore.getState().blinky.actions.isTimeToMove(deltaTime)) {
+    return;
+  }
   //! Implementación sesgada para un jugador y un fantasma de tipo Blinky
   const { x: ghx, y: ghy } =
     useGhostsStore.getState().blinky.components.position;
@@ -14,12 +17,12 @@ export function ghostBehaviorSystem(deltaTime: number): void {
   const setDirection = useGhostsStore.getState().blinky.actions.setDirection;
 
   const decide = () => {
-    //? Esto es una pequeña macarrada caprichosa. 
+    //? Esto es una pequeña macarrada caprichosa.
     //? El fantasma decide su dirección en función de la posición del Pacman
     //? y de su propia dirección actual, para no retroceder.
     //? Está implementado como un mapa de candidatos a dirección
     //? y se elige la dirección con menor distancia Euclidea al Pacman.
-    
+
     const candidates = new Map<Direction, number>();
 
     if (direction != Direction.LEFT && !isWallAt({ x: ghx + 1, y: ghy })) {
@@ -42,7 +45,7 @@ export function ghostBehaviorSystem(deltaTime: number): void {
     }
     if (direction != Direction.DOWN && !isWallAt({ x: ghx, y: ghy - 1 })) {
       candidates.set(
-        Direction.UP, 
+        Direction.UP,
         Math.sqrt(Math.pow(ghx - px, 2) + Math.pow(ghy - 1 - py, 2))
       );
     }

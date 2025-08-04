@@ -12,7 +12,8 @@ interface Ghost extends Entity {
     setPosition: (position: Position) => void;
     setMovementTimerInterval: (interval: number) => void;
     setDirection: (direction: Direction) => void;
-    incrementMovementTimer: (delta: number) => boolean;
+    incrementMovementTimer: (delta: number) => void;
+    isTimeToMove: (delta: number) => boolean;
   }
 }
 
@@ -21,7 +22,7 @@ interface IGhostsState {
 }
 
 const useGhostsStore = create<IGhostsState>()(
-  immer((set) => ({
+  immer((set, get) => ({
     blinky: {
       id: "blinky",
       components: {
@@ -46,7 +47,6 @@ const useGhostsStore = create<IGhostsState>()(
           });
         },
         incrementMovementTimer: (delta: number) => {
-          let shouldMove = false;
           set((state) => {
             state.blinky.components.movementTimer.elapsed += delta;
             if (
@@ -55,10 +55,12 @@ const useGhostsStore = create<IGhostsState>()(
             ) {
               state.blinky.components.movementTimer.elapsed -=
                 state.blinky.components.movementTimer.interval;
-              shouldMove = true;
             }
           });
-          return shouldMove;
+        },
+        isTimeToMove: (delta: number) => {
+          const { elapsed, interval } = get().blinky.components.movementTimer;
+          return (elapsed + delta) >= interval;
         },
       }
     },
