@@ -35,3 +35,7 @@ export interface Collectable {
 export interface Collidable {
   value: boolean;
 }
+
+export interface Health {
+  value: number; 
+}

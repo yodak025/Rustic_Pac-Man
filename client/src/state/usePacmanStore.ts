@@ -6,6 +6,7 @@ import {
   type MovementTimer,
   Direction,
   type Playable,
+  type Health
 } from "@custom-types/gameComponents";
 
 interface Pacman extends Entity {
@@ -15,6 +16,7 @@ interface Pacman extends Entity {
     setDirection: (direction: Direction) => void;
     incrementMovementTimer: (delta: number) => void;
     isTimeToMove: (delta: number) => boolean;
+    takeDamage: (amount: number) => void;
   }
 }
 
@@ -31,6 +33,7 @@ const usePacmanStore = create<IPacmanState>()(
         movementTimer: { elapsed: 0, interval: 100 } as MovementTimer,
         direction: Direction.RIGHT as Direction,
         playable: { value: true } as Playable,
+        health: { value: 3 } as Health, // Default health value
       },
       actions: {
         setPosition: (position: Position) => {
@@ -64,6 +67,12 @@ const usePacmanStore = create<IPacmanState>()(
           const { elapsed, interval } = get().pacman.components.movementTimer;
           return (elapsed + delta) >= interval;
         },
+        takeDamage: (amount: number) => {
+          set((state) => {
+            const currentHealth = state.pacman.components.health.value;
+            state.pacman.components.health.value = Math.max(currentHealth - amount, 0);
+          });
+        }
       }
     },
   }))

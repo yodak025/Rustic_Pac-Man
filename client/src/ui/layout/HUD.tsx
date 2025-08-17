@@ -2,11 +2,12 @@ import { useGameStatusStore } from '@state/store';
 import gameStatusValue from '@/types/gameStatusValue';
 import InGameMenu from '@ui/components/InGameMenu';
 import { useEffect } from 'react';
+import usePacmanStore from '@/state/usePacmanStore';
 
 
 const HUD = () => {
   const { level, score, status, setStatus } = useGameStatusStore((state) => (state));
-  const  lives  = 3
+  const  lives  = usePacmanStore((state) => state.pacman.components.health.value);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {

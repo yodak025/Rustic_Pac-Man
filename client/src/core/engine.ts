@@ -3,12 +3,16 @@ import useGhostsStore from '@/state/useGhostsStore';
 import { movementSystem } from './systems/discreteMovementSystem';
 import { playerControlSystem } from './systems/playerControlSystem';
 import { ghostBehaviorSystem } from './systems/ghostBehaviorSystem';
+import { collisionSystem } from './systems/collisionSystem';
+
+import useGameStatusStore from '@/state/useGameStatusStore';
 
 import { loadMaze } from '@/services/api';
 import useMazeState from '@/state/useMazeStore';
 
 import type { Position, MovementTimer, Direction, Playable } from '@custom-types/gameComponents';
 import PacmanMesh from '@/scenes/meshes/entities/PacmanMesh';
+import { use } from 'react';
 
 export class RusticGameEngine {
   private isRunning: boolean = false;
@@ -28,6 +32,7 @@ export class RusticGameEngine {
     this.setupKeyboardListeners();
     this.initPacmanEntity();
     this.initBlinkyEntity();
+    useGameStatusStore.getState().setStatus('PLAYING'); //  Lazy Any porque esto está mal encapsulado y prefiero gastar el tiempo arreglándolo después
   }
 
   private setupKeyboardListeners(): void {
@@ -73,9 +78,9 @@ export class RusticGameEngine {
     pacmanStore.actions.setMovementTimerInterval(200);
   }
   private initBlinkyEntity(): void {
-    const pacmanStore = useGhostsStore.getState().blinky;
-    pacmanStore.actions.setPosition({ x: 14, y: 14 } as Position);
-    pacmanStore.actions.setMovementTimerInterval(1000);
+    const blinkyStore = useGhostsStore.getState().blinky;
+    blinkyStore.actions.setPosition({ x: 14, y: 14 } as Position);
+    blinkyStore.actions.setMovementTimerInterval(1000);
   }
 
 
@@ -125,6 +130,14 @@ export class RusticGameEngine {
 
   private gameLoop(): void {
     if (!this.isRunning) {
+      if (useGameStatusStore.getState().status === 'PLAYING') {
+        this.start(); // Restart the game loop if it was stopped
+      } else{
+        return
+      }
+    }
+    if (useGameStatusStore.getState().status !== 'PLAYING') {
+      this.stop(); // Stop the game loop if the game is not in 'PLAYING' status
       return;
     }
 
@@ -137,7 +150,9 @@ export class RusticGameEngine {
     // TODO - Los sistemas no conmutan. Hay que crear un sistema de eventos. 
     playerControlSystem(this.keyState); 
     ghostBehaviorSystem(deltaTime);
+    collisionSystem(deltaTime); 
     movementSystem(deltaTime); //! LOS INTERVALOS DE MOVIMIENTO ESTÁN ACOPLADOS, NO TOQUES EL ORDEN DE EJECUCIÓN
+
     
     this.animationFrameId = requestAnimationFrame(() => this.gameLoop());
   }
