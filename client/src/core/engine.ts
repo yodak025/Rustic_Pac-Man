@@ -133,11 +133,13 @@ export class RusticGameEngine {
       if (useGameStatusStore.getState().status === 'PLAYING') {
         this.start(); // Restart the game loop if it was stopped
       } else{
+        this.animationFrameId = requestAnimationFrame(() => this.gameLoop());
         return
       }
     }
     if (useGameStatusStore.getState().status !== 'PLAYING') {
       this.stop(); // Stop the game loop if the game is not in 'PLAYING' status
+      this.animationFrameId = requestAnimationFrame(() => this.gameLoop());
       return;
     }
 
