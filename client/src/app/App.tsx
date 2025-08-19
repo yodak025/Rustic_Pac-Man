@@ -10,15 +10,8 @@ import { useEffect } from "react";
 export default function App() {
   const { status: gameStatus } = useGameStatusStore((state) => state);
 
-  useEffect(() => {
-    let engine = new RusticGameEngine
-    engine.start() 
-  }, [])
-  
-
   return gameStatus !== gameStatusValue.NOT_STARTED ? (
     <>
-
         <HUD />
         <Canvas
           className="bg-gradient-to-b from-stone-300 to-stone-800 "
