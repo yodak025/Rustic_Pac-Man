@@ -22,6 +22,8 @@ export class RusticGameEngine {
   private playableEntities: string[] = [];
 
   constructor() {
+    useGameStatusStore.getState().setLoadingState(); //! Igual tiene sentido almacenar el store
+
     //? Asumo que la asincronía de la carga del laberinto justifica este orden de inicialización
     this.initMazeEntities().then(() => {
       console.log('Maze entities initialized');
@@ -32,7 +34,7 @@ export class RusticGameEngine {
     this.setupKeyboardListeners();
     this.initPacmanEntity();
     this.initBlinkyEntity();
-    useGameStatusStore.getState().setStatus('PLAYING'); //  Lazy Any porque esto está mal encapsulado y prefiero gastar el tiempo arreglándolo después
+    useGameStatusStore.getState().setPlayingState(); 
   }
 
   private setupKeyboardListeners(): void {
@@ -77,12 +79,12 @@ export class RusticGameEngine {
     pacmanStore.actions.setPosition({ x: 14, y: 16 } as Position);
     pacmanStore.actions.setMovementTimerInterval(200);
   }
+
   private initBlinkyEntity(): void {
     const blinkyStore = useGhostsStore.getState().blinky;
     blinkyStore.actions.setPosition({ x: 14, y: 14 } as Position);
-    blinkyStore.actions.setMovementTimerInterval(1000);
+    blinkyStore.actions.setMovementTimerInterval(300);
   }
-
 
   private async initMazeEntities(): Promise<void> {
     const mazeTiles = await loadMaze();
@@ -152,7 +154,7 @@ export class RusticGameEngine {
     // TODO - Los sistemas no conmutan. Hay que crear un sistema de eventos. 
     playerControlSystem(this.keyState); 
     ghostBehaviorSystem(deltaTime);
-    collisionSystem(deltaTime); 
+    collisionSystem(deltaTime); //! Cogido con papel de fumar 
     movementSystem(deltaTime); //! LOS INTERVALOS DE MOVIMIENTO ESTÁN ACOPLADOS, NO TOQUES EL ORDEN DE EJECUCIÓN
 
     
