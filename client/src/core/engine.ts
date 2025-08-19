@@ -101,17 +101,18 @@ export class RusticGameEngine {
   
   load(): void {
 
-    //? Asumo que la asincronía de la carga del laberinto justifica este orden de inicialización
+    //! Maneja la promesa como un hombre joder, esto es lo mas cobarde que he visto en mi vida
     this.initMazeEntities().then(() => {
       console.log('Maze entities initialized');
+      this.setupKeyboardListeners();
+      this.initPacmanEntity();
+      this.initBlinkyEntity();
+      useGameStatusStore.getState().setPlayingStatus(); 
     }).catch((error) => {
       console.error('Error initializing maze entities:', error);
     });
 
-    this.setupKeyboardListeners();
-    this.initPacmanEntity();
-    this.initBlinkyEntity();
-    useGameStatusStore.getState().setPlayingStatus(); 
+    
   }
 
   start(): void {
