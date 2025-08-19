@@ -7,11 +7,11 @@ interface IGameStatus {
   score: number;
   level: number; 
   // Status setters
-  setLoadingState: () => void;
-  setPlayingState: () => void;
-  setPauseState: () => void;
-  setRestartingState: () => void;
-  setGameOverState: (won: boolean) => void;
+  setLoadingStatus: () => void;
+  setPlayingStatus: () => void;
+  setPauseStatus: () => void;
+  setRestartingStatus: () => void;
+  setGameOverStatus: (won: boolean) => void;
   // Game actions
   incrementScore: (amount: number) => void;
   reStart: () => void;
@@ -24,11 +24,11 @@ const useGameStatusStore = create<IGameStatus>((set) => ({
   level: 1,
   
   // Status setters
-  setLoadingState: () => set(() => ({ status: gameStatusValue.LOADING })),
-  setPlayingState: () => set(() => ({ status: gameStatusValue.PLAYING })),
-  setPauseState: () => set(() => ({ status: gameStatusValue.PAUSED })),
-  setRestartingState: () => set(() => ({ status: gameStatusValue.RESTARTING })),
-  setGameOverState: (won) => set(() => ({ 
+  setLoadingStatus: () => set(() => ({ status: gameStatusValue.LOADING })),
+  setPlayingStatus: () => set(() => ({ status: gameStatusValue.PLAYING })),
+  setPauseStatus: () => set(() => ({ status: gameStatusValue.PAUSED })),
+  setRestartingStatus: () => set(() => ({ status: gameStatusValue.RESTARTING })),
+  setGameOverStatus: (won) => set(() => ({ 
     status: won ? gameStatusValue.WON : gameStatusValue.LOST 
   })),
   

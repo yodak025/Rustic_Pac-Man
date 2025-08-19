@@ -14,10 +14,20 @@ const InGameMenu = () => {
   }
 
   const handleContinue = () => {
-    game.setStatus(gameStatusValue.PLAYING);
+    game.setPlayingStatus();
   };
 
   const handleRestart = () => {
+    console.log("\n \n\n\n\n\n\n\n\n\n\n");
+    console.log("Hola, Diego del futuro!");
+    console.log("Verdad que te habías olvidado de mí?");
+    console.log("Espero que estés disfrutando de tu día.");
+    console.log("....");
+    console.log("El reset lleva roto desde el sprint 1.");
+    console.log("igual va siendo hora de arreglarlo, no?");
+    console.log("\n \n\n\n\n\n\n\n\n\n\n");
+    game.setRestartingStatus();
+    // Reset all game entities
     reStart();
     game.setStatus(gameStatusValue.NOT_STARTED);
     //!!! CHAPUZA DE CONCURRENCIA EXTREMA

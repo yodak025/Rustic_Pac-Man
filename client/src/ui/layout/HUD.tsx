@@ -6,19 +6,19 @@ import usePacmanStore from '@/state/usePacmanStore';
 
 
 const HUD = () => {
-  const { level, score, status, setStatus } = useGameStatusStore((state) => (state));
+  const { level, score, status, setPauseStatus } = useGameStatusStore((state) => (state));
   const  lives  = usePacmanStore((state) => state.pacman.components.health.value);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
-        setStatus(gameStatusValue.PAUSED);
+        setPauseStatus();
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [setStatus]);
+  }, [setPauseStatus]);
 
   return (
     <>

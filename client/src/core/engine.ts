@@ -11,6 +11,7 @@ import { loadMaze } from '@/services/api';
 import useMazeState from '@/state/useMazeStore';
 
 import type { Position, MovementTimer, Direction, Playable } from '@custom-types/gameComponents';
+import gameStatusValue from '@custom-types/gameStatusValue';
 import PacmanMesh from '@/scenes/meshes/entities/PacmanMesh';
 import { use } from 'react';
 
@@ -22,19 +23,7 @@ export class RusticGameEngine {
   private playableEntities: string[] = [];
 
   constructor() {
-    useGameStatusStore.getState().setLoadingState(); //! Igual tiene sentido almacenar el store
-
-    //? Asumo que la asincronía de la carga del laberinto justifica este orden de inicialización
-    this.initMazeEntities().then(() => {
-      console.log('Maze entities initialized');
-    }).catch((error) => {
-      console.error('Error initializing maze entities:', error);
-    });
-
-    this.setupKeyboardListeners();
-    this.initPacmanEntity();
-    this.initBlinkyEntity();
-    useGameStatusStore.getState().setPlayingState(); 
+    
   }
 
   private setupKeyboardListeners(): void {
@@ -109,7 +98,21 @@ export class RusticGameEngine {
     })
     mazeState.setMazeLoaded(true); // Set maze as loaded
   }
+  
+  load(): void {
 
+    //? Asumo que la asincronía de la carga del laberinto justifica este orden de inicialización
+    this.initMazeEntities().then(() => {
+      console.log('Maze entities initialized');
+    }).catch((error) => {
+      console.error('Error initializing maze entities:', error);
+    });
+
+    this.setupKeyboardListeners();
+    this.initPacmanEntity();
+    this.initBlinkyEntity();
+    useGameStatusStore.getState().setPlayingStatus(); 
+  }
 
   start(): void {
     if (this.isRunning) {
@@ -132,12 +135,17 @@ export class RusticGameEngine {
 
   private gameLoop(): void {
     if (!this.isRunning) {
-      if (useGameStatusStore.getState().status === 'PLAYING') {
-        this.start(); // Restart the game loop if it was stopped
-      } else{
-        this.animationFrameId = requestAnimationFrame(() => this.gameLoop());
-        return
+      switch (useGameStatusStore.getState().status) {
+        case gameStatusValue.LOADING:
+          this.load()
+          break;
+        case gameStatusValue.PLAYING:
+          this.start();
+          break;
+        default:
+          break;
       }
+
     }
     if (useGameStatusStore.getState().status !== 'PLAYING') {
       this.stop(); // Stop the game loop if the game is not in 'PLAYING' status

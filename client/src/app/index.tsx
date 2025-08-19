@@ -4,7 +4,6 @@ import { RusticGameEngine } from '@/core/engine'
 import '@assets/styles/globals.css'
 import App from '@main/App'
 
-
 let engine = new RusticGameEngine
     engine.start() 
 
