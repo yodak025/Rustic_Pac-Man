@@ -10,7 +10,7 @@ import { useEffect } from "react";
 export default function App() {
   const { status: gameStatus } = useGameStatusStore((state) => state);
 
-  return gameStatus !== gameStatusValue.NOT_STARTED ? (
+  return gameStatus === gameStatusValue.PLAYING ? (
     <>
         <HUD />
         <Canvas
