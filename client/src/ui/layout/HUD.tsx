@@ -1,27 +1,29 @@
-import { useGameStatusStore } from '@state/store';
-import gameStatusValue from '@/types/gameStatusValue';
-import InGameMenu from '@ui/components/InGameMenu';
-import DebugBar from '../components/DebugBar';
-import { useEffect, useState } from 'react';
-import usePacmanStore from '@/state/usePacmanStore';
-import ConfigManager from '@/services/ConfigManager';
-
+import { useGameStatusStore } from "@state/store";
+import gameStatusValue from "@/types/gameStatusValue";
+import InGameMenu from "@ui/components/InGameMenu";
+import DebugBar from "@ui/components/DebugBar";
+import MazeViewer from "@ui/components/mazeViewer";
+import { useEffect, useState } from "react";
+import usePacmanStore from "@state/usePacmanStore";
+import ConfigManager from "@services/ConfigManager";
 
 const HUD = () => {
-  const { level, score, status, setPauseStatus } = useGameStatusStore((state) => (state));
-  const  lives  = usePacmanStore((state) => state.pacman.components.health.value);
-  
-  const debugConfig = new ConfigManager().getDebugConfig()
+  const { level, score, status, setPauseStatus } = useGameStatusStore(
+    (state) => state
+  );
+  const lives = usePacmanStore((state) => state.pacman.components.health.value);
+
+  const debugConfig = new ConfigManager().getDebugConfig();
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
+      if (event.key === "Escape") {
         setPauseStatus();
       }
     };
 
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
   }, [setPauseStatus]);
 
   return (
@@ -31,17 +33,20 @@ const HUD = () => {
           <span>Vidas:</span>
           <div className="flex gap-1 bg-black">
             {Array.from({ length: lives }, (_, index) => (
-              <span key={index} className="text-red-500">❤️</span>
+              <span key={index} className="text-red-500">
+                ❤️
+              </span>
             ))}
           </div>
         </div>
-        
+
         <div className="flex gap-6 bg-black">
           <div>Nivel: {level}</div>
           <div>Puntuación: {score.toLocaleString()}</div>
         </div>
       </div>
       {debugConfig.debug && <DebugBar />}
+      {debugConfig.debug && <MazeViewer />}
 
       {status === gameStatusValue.PAUSED && <InGameMenu />}
     </>
