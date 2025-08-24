@@ -1,13 +1,17 @@
 import { useGameStatusStore } from '@state/store';
 import gameStatusValue from '@/types/gameStatusValue';
 import InGameMenu from '@ui/components/InGameMenu';
-import { useEffect } from 'react';
+import DebugBar from '../components/DebugBar';
+import { useEffect, useState } from 'react';
 import usePacmanStore from '@/state/usePacmanStore';
+import ConfigManager from '@/services/ConfigManager';
 
 
 const HUD = () => {
   const { level, score, status, setPauseStatus } = useGameStatusStore((state) => (state));
   const  lives  = usePacmanStore((state) => state.pacman.components.health.value);
+  
+  const debugConfig = new ConfigManager().getDebugConfig()
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -37,6 +41,7 @@ const HUD = () => {
           <div>Puntuación: {score.toLocaleString()}</div>
         </div>
       </div>
+      {debugConfig.debug && <DebugBar />}
 
       {status === gameStatusValue.PAUSED && <InGameMenu />}
     </>
