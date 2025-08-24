@@ -5,7 +5,7 @@ import gameStatusValue from '@/types/gameStatusValue';
 const MainMenu: React.FC = () => {
   const game = useGameStatusStore((state) => state);
   const handlePlay = () => {
-    game.setLoadingStatus();
+    game.setReadyToLoadStatus();
   };
 
   return (

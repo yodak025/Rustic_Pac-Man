@@ -46,9 +46,7 @@ export function movementSystem(deltaTime: number): void {
 
     // Check if elapsed time is greater than interval
     if (isTimeToMove(deltaTime)) {
-      
       // Subtract interval from elapsed
-      console.log(`Moving entity ${entity.id} with direction ${direction}`);
       // Check direction component and move if not stopped
       if (direction !== Direction.STOP) {
         switch (direction) {
@@ -87,9 +85,6 @@ export function movementSystem(deltaTime: number): void {
             break;
             
         }
-        console.log(
-          `Entity ${entity.id} moved to position (${position.x}, ${position.y})`
-        );
       }
       else { //! ALTAMENTE ACOPLADO Y MUY FRAGIL
         // TODO - Me sangran los ojos 

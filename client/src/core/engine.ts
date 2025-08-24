@@ -10,7 +10,7 @@ import useGameStatusStore from '@/state/useGameStatusStore';
 import { loadMaze } from '@/services/api';
 import useMazeState from '@/state/useMazeStore';
 
-import type { Position, MovementTimer, Direction, Playable } from '@custom-types/gameComponents';
+import type { Position} from '@custom-types/gameComponents';
 import gameStatusValue from '@custom-types/gameStatusValue';
 import PacmanMesh from '@/scenes/meshes/entities/PacmanMesh';
 import { use } from 'react';
@@ -20,8 +20,6 @@ export class RusticGameEngine {
   private animationFrameId: number | null = null;
   private lastTime: number = 0;
   private keyState = { w: false, a: false, s: false, d: false };
-  private playableEntities: string[] = [];
-
   constructor() {
     
   }
@@ -78,8 +76,7 @@ export class RusticGameEngine {
   private async initMazeEntities(): Promise<void> {
     const mazeTiles = await loadMaze();
     const WALL = 1;
-    const PAC_DOT = 0;
-
+    const PAC_DOT = 10;
     const mazeState = useMazeState.getState();
     
     if (!mazeTiles) {
@@ -100,7 +97,6 @@ export class RusticGameEngine {
   }
   
   load(): void {
-
     //! Maneja la promesa como un hombre joder, esto es lo mas cobarde que he visto en mi vida
     this.initMazeEntities().then(() => {
       console.log('Maze entities initialized');
@@ -111,15 +107,12 @@ export class RusticGameEngine {
     }).catch((error) => {
       console.error('Error initializing maze entities:', error);
     });
-
-    
   }
 
   start(): void {
     if (this.isRunning) {
       return;
     }
-    
     this.isRunning = true;
     this.lastTime = performance.now();
     this.gameLoop();
@@ -137,8 +130,9 @@ export class RusticGameEngine {
   private gameLoop(): void {
     if (!this.isRunning) {
       switch (useGameStatusStore.getState().status) {
-        case gameStatusValue.LOADING:
+        case gameStatusValue.READY_TO_LOAD:
           this.load()
+          useGameStatusStore.getState().setLoadingStatus();
           break;
         case gameStatusValue.PLAYING:
           this.start();

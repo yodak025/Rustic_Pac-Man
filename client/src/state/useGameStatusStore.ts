@@ -7,6 +7,7 @@ interface IGameStatus {
   score: number;
   level: number; 
   // Status setters
+  setReadyToLoadStatus: () => void;
   setLoadingStatus: () => void;
   setPlayingStatus: () => void;
   setPauseStatus: () => void;
@@ -23,7 +24,8 @@ const useGameStatusStore = create<IGameStatus>((set) => ({
   score: 0,
   level: 1,
   
-  // Status setters
+  // Status settersç
+  setReadyToLoadStatus: () => set(() => ({ status: gameStatusValue.READY_TO_LOAD })),
   setLoadingStatus: () => set(() => ({ status: gameStatusValue.LOADING })),
   setPlayingStatus: () => set(() => ({ status: gameStatusValue.PLAYING })),
   setPauseStatus: () => set(() => ({ status: gameStatusValue.PAUSED })),
