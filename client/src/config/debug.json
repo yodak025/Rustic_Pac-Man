@@ -1,0 +1,9 @@
+{
+  "debug": true,
+  "tools":{
+    "infoBar": {
+      "isDisplayed": true
+
+    }
+  }
+}
