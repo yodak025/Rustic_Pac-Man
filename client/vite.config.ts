@@ -16,6 +16,7 @@ export default defineConfig({
       '@services': resolve(__dirname, 'src/services'),
       '@state': resolve(__dirname, 'src/state'),
       '@custom-types': resolve(__dirname, 'src/types'),
+      '@config': resolve(__dirname, 'src/config'),
       '@ui': resolve(__dirname, 'src/ui'),
     }
   },

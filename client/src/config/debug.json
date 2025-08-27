@@ -1,0 +1,11 @@
+{
+  "debug": true,
+  "tools":{
+    "infoBar": {
+      "isDisplayed": true
+    },
+    "mazeViewer": {
+      "isDisplayed": true
+    }
+  }
+}

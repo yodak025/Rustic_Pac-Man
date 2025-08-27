@@ -58,7 +58,6 @@ export function movementSystem(deltaTime: number): void {
       const setPosition = entity.actions.setPosition;
       
       // Subtract interval from elapsed
-      console.log(`Moving entity ${entity.id} with direction ${direction}`);
       // Check direction component and move if not stopped
       switch (direction) {
         case Direction.UP:

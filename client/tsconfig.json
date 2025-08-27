@@ -15,6 +15,7 @@
       "@services/*": ["./src/services/*"],
       "@state/*": ["./src/state/*"],
       "@custom-types/*": ["./src/types/*"],
+      "@config/*": ["./src/config/*"],
       "@ui/*": ["./src/ui/*"]
     }
   }

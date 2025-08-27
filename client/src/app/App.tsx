@@ -4,13 +4,11 @@ import gameStatusValue from "@custom-types/gameStatusValue";
 import { Canvas } from "@react-three/fiber";
 import MainMenu from "@ui/layout/MainMenu";
 import HUD from "@ui/layout/HUD";
-import { RusticGameEngine } from "@/core/engine";
-import { useEffect } from "react";
 
 export default function App() {
   const { status: gameStatus } = useGameStatusStore((state) => state);
 
-  return gameStatus !== gameStatusValue.NOT_STARTED ? (
+  return gameStatus === gameStatusValue.PLAYING ? (
     <>
         <HUD />
         <Canvas
