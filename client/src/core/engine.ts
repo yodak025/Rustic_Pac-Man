@@ -76,7 +76,7 @@ export class RusticGameEngine {
   private async initMazeEntities(): Promise<void> {
     const mazeTiles = await loadMaze();
     const WALL = 1;
-    const PAC_DOT = 10;
+    const PAC_DOT = 0;
     const mazeState = useMazeState.getState();
     
     if (!mazeTiles) {
