@@ -15,12 +15,11 @@ export enum Direction {
   UP = 'UP',
   DOWN = 'DOWN',
   LEFT = 'LEFT',
-  RIGHT = 'RIGHT',
-  STOP = 'STOP'
+  RIGHT = 'RIGHT'
 }
 
 export interface DirectionComponent {
-  direction: Direction;
+  directions: Array<Direction>;
 }
 
 // Playable component - marks entities as player-controllable

@@ -55,6 +55,7 @@ const useMazeState = create<MazeState>()(
             position: position as Position,
             collidable: { value: true } as Collidable,
           },
+          actions: {}
         }
       }),
 
@@ -67,7 +68,8 @@ const useMazeState = create<MazeState>()(
           components: {
             position: position as Position,
             collectable: { value: true } as Collectable,
-          }
+          },
+          actions: {}
         }
       }),
 
@@ -80,7 +82,8 @@ const useMazeState = create<MazeState>()(
           components: {
             position: position as Position,
             collectable: { value: true } as Collectable,
-          }
+          },
+          actions: {}
         }
       }),
 

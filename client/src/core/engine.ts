@@ -12,8 +12,7 @@ import useMazeState from '@/state/useMazeStore';
 
 import type { Position, MovementTimer, Direction, Playable } from '@custom-types/gameComponents';
 import gameStatusValue from '@custom-types/gameStatusValue';
-import PacmanMesh from '@/scenes/meshes/entities/PacmanMesh';
-import { use } from 'react';
+
 
 export class RusticGameEngine {
   private isRunning: boolean = false;

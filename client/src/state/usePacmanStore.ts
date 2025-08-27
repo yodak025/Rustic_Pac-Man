@@ -13,7 +13,8 @@ interface Pacman extends Entity {
   actions:{
     setPosition: (position: Position) => void;
     setMovementTimerInterval: (interval: number) => void;
-    setDirection: (direction: Direction) => void;
+    clearDirections: () => void;
+    addDirection: (direction: Direction) => void;
     incrementMovementTimer: (delta: number) => void;
     isTimeToMove: (delta: number) => boolean;
     takeDamage: (amount: number) => void;
@@ -31,7 +32,7 @@ const usePacmanStore = create<IPacmanState>()(
       components: {
         position: { x: 0, y: 0 } as Position,
         movementTimer: { elapsed: 0, interval: 100 } as MovementTimer,
-        direction: Direction.RIGHT as Direction,
+        directions: Array<Direction>(), 
         playable: { value: true } as Playable,
         health: { value: 3 } as Health, // Default health value
       },
@@ -46,9 +47,14 @@ const usePacmanStore = create<IPacmanState>()(
             state.pacman.components.movementTimer.interval = interval;
           });
         },
-        setDirection: (direction: Direction) => {
+        clearDirections: () => {
           set((state) => {
-            state.pacman.components.direction = direction;
+            state.pacman.components.directions = [];
+          });
+        },
+        addDirection: (direction: Direction) => {
+          set((state) => {
+            state.pacman.components.directions = [...state.pacman.components.directions, direction];
           });
         },
         incrementMovementTimer: (delta: number) => {

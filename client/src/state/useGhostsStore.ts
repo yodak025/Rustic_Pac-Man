@@ -11,7 +11,8 @@ interface Ghost extends Entity {
   actions:{
     setPosition: (position: Position) => void;
     setMovementTimerInterval: (interval: number) => void;
-    setDirection: (direction: Direction) => void;
+    clearDirections: () => void;
+    addDirection: (direction: Direction) => void;
     incrementMovementTimer: (delta: number) => void;
     isTimeToMove: (delta: number) => boolean;
   }
@@ -28,7 +29,7 @@ const useGhostsStore = create<IGhostsState>()(
       components: {
         position: { x: 0, y: 0 } as Position,
         movementTimer: { elapsed: 0, interval: 100 } as MovementTimer,
-        direction: Direction.RIGHT as Direction,
+        directions: [Direction.RIGHT as Direction],
       },
       actions: {
         setPosition: (position: Position) => {
@@ -41,9 +42,14 @@ const useGhostsStore = create<IGhostsState>()(
             state.blinky.components.movementTimer.interval = interval;
           });
         },
-        setDirection: (direction: Direction) => {
+        clearDirections: () => {
           set((state) => {
-            state.blinky.components.direction = direction;
+            state.blinky.components.directions = [];
+          });
+        },
+        addDirection: (direction: Direction) => {
+          set((state) => {
+            state.blinky.components.directions = [...state.blinky.components.directions, direction];
           });
         },
         incrementMovementTimer: (delta: number) => {

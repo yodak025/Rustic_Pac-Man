@@ -13,30 +13,29 @@ interface KeyState {
 }
 
 export function playerControlSystem(keyState: KeyState): void {
-  const setDirection = usePacmanStore.getState().pacman.actions.setDirection; //! Implementación sesgada 
+  const clearDirections = usePacmanStore.getState().pacman.actions.clearDirections;
+  const addDirection = usePacmanStore.getState().pacman.actions.addDirection; //! Implementación sesgada 
   const entities: Entity[] = [];
   entities.push(usePacmanStore.getState().pacman);
 
   entities.forEach((entity) => {
     const playable = entity.components.playable as Playable;
-    const directionComponent = entity.components
-      .direction as DirectionComponent;
+    const directionComponent = entity.components.directions as DirectionComponent;
 
     // Check if entity has required components and is playable
     if (!playable || !playable.value || !directionComponent) {
       return;
     }
+    clearDirections(); // Clear previous directions
 
     if (keyState.w) {
-      setDirection(Direction.UP);
-    } else if (keyState.s) {
-      setDirection(Direction.DOWN);
-    } else if (keyState.a) {
-      setDirection(Direction.LEFT);
-    } else if (keyState.d) {
-      setDirection(Direction.RIGHT);
-    } else {
-      setDirection(Direction.STOP);
+      addDirection(Direction.UP);
+    } if (keyState.s) {
+      addDirection(Direction.DOWN);
+    } if (keyState.a) {
+      addDirection(Direction.LEFT);
+    } if (keyState.d) {
+      addDirection(Direction.RIGHT);
     }
   });
 }
