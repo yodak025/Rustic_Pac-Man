@@ -16,6 +16,12 @@ interface Maze {
     pacDots: Record<string, CollectableEntity>;
     pellets: Record<string, CollectableEntity>;
   };
+  info: {
+    pacdots: {
+      total: number;
+      current: number;
+    };
+  };
   isLoaded: boolean; // Optional property to indicate if the maze is loaded
 }
 
@@ -27,7 +33,9 @@ interface MazeState {
   createPacDot: (position: Position) => void;
   createPellet: (position: Position) => void;
   isWallAt: (position: Position) => boolean;
-  collectableAt: (position: Position) => string | null; // TODO: Implement this action
+  findCollectableAt: (position: Position) => string | null;
+  removePacDot: (position: Position) => void;
+  initializeMaze: (pacdots: number) => void;
   setMazeLoaded: (isLoaded: boolean) => void; // Action to set maze loaded state
 }
 
@@ -41,6 +49,12 @@ const useMazeState = create<MazeState>()(
       collectables: {
         pacDots: {},
         pellets: {},
+      },
+      info: {
+        pacdots: {
+          total: 0,
+          current: 0,
+        },
       },
       isLoaded: false, // Initialize as not loaded
     },
@@ -94,17 +108,49 @@ const useMazeState = create<MazeState>()(
       return key in state.maze.walls;
     },
 
-    // TODO: Implement collectableAt action
-    // This action should:
-    // 1. Generate position key from the given Position
-    // 2. Check if there's a pacDot at that position, return "pacDot" if found
-    // 3. Check if there's a pellet at that position, return "pellet" if found
-    // 4. Return null if no collectable is found at that position
-    // Future enhancement: Could return an object with type and entity data instead of just a string
-    collectableAt: (position: Position): string | null => {
-      // Implementation pending
+    // Find collectable at the specified position
+    findCollectableAt: (position: Position): string | null => {
+      const key = positionToKey(position);
+      const state = get();
+      
+      if (key in state.maze.collectables.pacDots) {
+        return "pacDot";
+      }
+      
+      if (key in state.maze.collectables.pellets) {
+        return "pellet";
+      }
+      
       return null;
     },
+
+    // Remove a pac dot at the specified position
+    removePacDot: (position: Position) =>
+      set((state) => {
+        const key = positionToKey(position);
+        
+        // Check if pacdot exists at position, return early if not
+        if (!(key in state.maze.collectables.pacDots)) {
+          return;
+        }
+        
+        // Remove the pacdot
+        delete state.maze.collectables.pacDots[key];
+        
+        // Decrement current pacdots count
+        state.maze.info.pacdots.current--;
+      }),
+
+    // Initialize maze with pacdot count
+    initializeMaze: (pacdots: number) =>
+      set((state) => {
+        state.maze.walls = {};
+        state.maze.collectables.pacDots = {};
+        state.maze.collectables.pellets = {};
+        state.maze.info.pacdots.total = pacdots;
+        state.maze.info.pacdots.current = pacdots;
+        state.maze.isLoaded = false;
+      }),
 
     setMazeLoaded: (isLoaded: boolean) =>
       set((state) => {

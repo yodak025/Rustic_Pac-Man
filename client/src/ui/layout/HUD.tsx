@@ -5,7 +5,8 @@ import DebugBar from "@ui/components/DebugBar";
 import MazeViewer from "@ui/components/mazeViewer";
 import { useEffect, useState } from "react";
 import usePacmanStore from "@state/usePacmanStore";
-import ConfigManager from "@services/ConfigManager";
+import ConfigManager from "@services/configManager";
+
 
 const HUD = () => {
   const { level, score, status, setPauseStatus } = useGameStatusStore(

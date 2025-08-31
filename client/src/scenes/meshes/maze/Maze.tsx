@@ -6,6 +6,7 @@ import type { JSX } from "react";
 
 import Wall from "@scenes/meshes/maze/Wall";
 import PacDot from "@scenes/meshes/maze/PacDot";
+import Floor from "@scenes/meshes/maze/Floor";
 
 export default function Maze() {
   const mazeState = useMazeState((state) => state.maze);
@@ -14,27 +15,43 @@ export default function Maze() {
 
   const useLoadMaze = () => {
     useEffect(() => {
-      if (game.status === gameStatusValue.GENERATING_MAZE) {
-        game.setStatus(gameStatusValue.SETTING_PACMAN);
+      if (game.status === gameStatusValue.LOADING) {
+        game.setPlayingStatus();
       }
-    }, [game.status, game.setStatus]);
+    }, [game.status, game.setPlayingStatus]);
   };
 
-  const tileMeshes = useMemo(() => {
+  // Memo para walls y floors - solo se actualiza cuando cambia el estado del laberinto
+  const staticMazeElements = useMemo(() => {
     if (!mazeState.isLoaded) return [];
     const meshes: JSX.Element[] = [];
 
+    // Agregar walls
     for (const wallId in mazeState.walls) {
-      meshes.push(<Wall key={wallId} id={wallId} />);
-    }
-    for (const pacDotsId in mazeState.collectables.pacDots) {
-      meshes.push(<PacDot key={pacDotsId} id={pacDotsId} />);
+      meshes.push(<Wall key={`wall-${wallId}`} id={wallId} />);
     }
 
-    mazeState.walls;
+    // Agregar floors para todas las posiciones de pacDots
+    for (const pacDotsId in mazeState.collectables.pacDots) {
+      const position = mazeState.collectables.pacDots[pacDotsId].components.position;
+      meshes.push(<Floor key={`floor-${pacDotsId}`} x={position.x} z={position.y} />);
+    }
+
     return meshes;
-  }, [mazeState.isLoaded]);
+  }, [mazeState.isLoaded, mazeState.walls]);
+
+  // Memo para pacDots - se actualiza cuando cambian los pacDots
+  const pacDotMeshes = useMemo(() => {
+    if (!mazeState.isLoaded) return [];
+    const meshes: JSX.Element[] = [];
+
+    for (const pacDotsId in mazeState.collectables.pacDots) {
+      meshes.push(<PacDot key={`pacdot-${pacDotsId}`} id={pacDotsId} />);
+    }
+
+    return meshes;
+  }, [mazeState.isLoaded, mazeState.collectables.pacDots]);
 
   useLoadMaze();
-  return tileMeshes;
+  return [...staticMazeElements, ...pacDotMeshes];
 }
