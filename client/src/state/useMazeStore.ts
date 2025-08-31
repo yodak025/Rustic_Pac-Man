@@ -35,7 +35,8 @@ interface MazeState {
   isWallAt: (position: Position) => boolean;
   findCollectableAt: (position: Position) => string | null;
   removePacDot: (position: Position) => void;
-  initializeMaze: (pacdots: number) => void;
+  initializeMazeEntities: () => void;
+  initializeMazeInfo: (pacdots: number) => void;
   setMazeLoaded: (isLoaded: boolean) => void; // Action to set maze loaded state
 }
 
@@ -111,16 +112,13 @@ const useMazeState = create<MazeState>()(
     // Find collectable at the specified position
     findCollectableAt: (position: Position): string | null => {
       const key = positionToKey(position);
-      const state = get();
-      
+      const state = get();    
       if (key in state.maze.collectables.pacDots) {
         return "pacDot";
       }
-      
       if (key in state.maze.collectables.pellets) {
         return "pellet";
       }
-      
       return null;
     },
 
@@ -133,23 +131,24 @@ const useMazeState = create<MazeState>()(
         if (!(key in state.maze.collectables.pacDots)) {
           return;
         }
-        
         // Remove the pacdot
         delete state.maze.collectables.pacDots[key];
-        
         // Decrement current pacdots count
-        state.maze.info.pacdots.current--;
+        state.maze.info.pacdots.current++;
       }),
 
     // Initialize maze with pacdot count
-    initializeMaze: (pacdots: number) =>
+    initializeMazeEntities: () =>
       set((state) => {
         state.maze.walls = {};
         state.maze.collectables.pacDots = {};
         state.maze.collectables.pellets = {};
-        state.maze.info.pacdots.total = pacdots;
-        state.maze.info.pacdots.current = pacdots;
         state.maze.isLoaded = false;
+      }),
+      initializeMazeInfo: (pacdots: number) =>
+      set((state) => {
+        state.maze.info.pacdots.total = pacdots;
+        state.maze.info.pacdots.current = 0;
       }),
 
     setMazeLoaded: (isLoaded: boolean) =>

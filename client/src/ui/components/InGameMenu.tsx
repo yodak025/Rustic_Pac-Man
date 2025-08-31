@@ -7,10 +7,13 @@ const InGameMenu = () => {
   //# const tilemap = useTilemapState((state) => state);
   //# const ghosts = useGhostsState((state) => state);
   const reStart = () => {
-    game.reStart()
+    //game.reStart()
     //# pacman.reStart();
     //# tilemap.reStart();
     //# ghosts.reStart();
+    // FIXME: This is a provisional solution and a massive hack
+    // Reloading the page to ensure all game state is completely reset
+    //window.location.reload();
   }
 
   const handleContinue = () => {

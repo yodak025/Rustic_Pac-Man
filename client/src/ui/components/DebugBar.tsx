@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from "react"
 import usePacmanStore from "@/state/usePacmanStore";
 import useGhostsStore from "@/state/useGhostsStore";
+import { useGameStatusStore } from "@state/store";
 
 export default function DebugBar() {
   const [debugBar, setDebugBarState] = useState(false);
+
+  const gameStatus = useGameStatusStore((state) => state.status);
   
   // Separar las subscripciones del store para evitar el bucle infinito
   const pacmanPosition = usePacmanStore(state => state.pacman.components.position);
@@ -32,6 +35,13 @@ export default function DebugBar() {
       <div className="mb-4">
       <h3 className="font-bold border-b border-red-600 pb-1">Debug Panel</h3>
       </div>
+
+      <details className="mb-3">
+      <summary className="font-medium cursor-pointer hover:text-red-400">Game Status</summary>
+      <div className="pl-2 mt-1">
+        <p>{`Value: ${gameStatus}`}</p>
+      </div>
+      </details>
       
       <details className="mb-3">
       <summary className="font-medium cursor-pointer hover:text-red-400">Pacman</summary>

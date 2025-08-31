@@ -10,13 +10,13 @@ const LoadingScreen: React.FC = () => {
   useEffect(() => {
     // Determinar el progreso objetivo basado en el estado del juego
     switch (game.status) {
-      case gameStatusValue.GENERATING_MAZE:
+      case gameStatusValue.LOADING_CORE:
         setTargetProgress(33);
         break;
-      case gameStatusValue.SETTING_PACMAN:
+      case gameStatusValue.LOADING_GRAPHICS:
         setTargetProgress(66);
         break;
-      case gameStatusValue.SETTING_GHOSTS:
+      case gameStatusValue.GRAPHICS_LOADED:
         setTargetProgress(100);
         break;
       default:
@@ -56,19 +56,20 @@ const LoadingScreen: React.FC = () => {
 
   const getLoadingText = () => {
     switch (game.status) {
-      case gameStatusValue.GENERATING_MAZE:
+      case gameStatusValue.LOADING_CORE:
+      case gameStatusValue.CORE_LOADED:
         return 'GENERANDO LABERINTO...';
-      case gameStatusValue.SETTING_PACMAN:
-        return 'CONFIGURANDO PAC-MAN...';
-      case gameStatusValue.SETTING_GHOSTS:
-        return 'CONFIGURANDO FANTASMAS...';
+      case gameStatusValue.LOADING_GRAPHICS:
+        return 'CARGANDO MUNDO...';
+      case gameStatusValue.GRAPHICS_LOADED:
+        return 'TODO LISTO!';
       default:
         return 'CARGANDO...';
     }
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black text-yellow-400">
+    <div className="fixed inset-0 z-5000 flex flex-col items-center justify-center bg-black text-yellow-400">
       <h1 className="text-6xl font-bold mb-8 text-yellow-400 font-mono tracking-wider">
         RUSTIC PAC-MAN
       </h1>

@@ -1,9 +1,10 @@
 import { useGameStatusStore } from "@state/store";
+import useMazeState from "@/state/useMazeStore";
 import gameStatusValue from "@/types/gameStatusValue";
 import InGameMenu from "@ui/components/InGameMenu";
 import DebugBar from "@ui/components/DebugBar";
 import MazeViewer from "@ui/components/mazeViewer";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import usePacmanStore from "@state/usePacmanStore";
 import ConfigManager from "@services/configManager";
 
@@ -13,6 +14,7 @@ const HUD = () => {
     (state) => state
   );
   const lives = usePacmanStore((state) => state.pacman.components.health.value);
+  const {total: pdt, current:pdc} = useMazeState((state) => state.maze.info.pacdots)
 
   const debugConfig = new ConfigManager().getDebugConfig();
 
@@ -43,7 +45,7 @@ const HUD = () => {
 
         <div className="flex gap-6 bg-black">
           <div>Nivel: {level}</div>
-          <div>Puntuación: {score.toLocaleString()}</div>
+          <div>PacDots: {`${pdc}/${pdt}`}</div>
         </div>
       </div>
       {debugConfig.debug && <DebugBar />}

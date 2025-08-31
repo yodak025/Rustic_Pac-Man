@@ -1,11 +1,38 @@
 import { OrbitControls } from "@react-three/drei";
 import { PerspectiveCamera } from "@react-three/drei";
+import { useProgress } from "@react-three/drei";
+
+import { useGameStatusStore } from "@state/store";
 
 import PacmanMesh from "@scenes/meshes/entities/PacmanMesh";
 import BlinkyMesh from "@scenes/meshes/entities/BlinkyMesh";
 import Maze from "./meshes/maze/Maze";
+import { useEffect } from "react";
+import gameStatusValue from "@/types/gameStatusValue";
 
 export default function GameScene() {
+  const { progress, active, loaded, total } = useProgress();
+  const game = useGameStatusStore((state) => state);
+  console.log('GameScene render - game status:', game.status, 'progress:', progress, 'loaded:', loaded, 'total:', total);
+
+  useEffect(() => {
+    if (
+      game.status === gameStatusValue.CORE_LOADED &&
+      loaded === total &&
+      total > 0
+    ) {
+      game.setLoadingGraphicsStatus();
+      console.log("Loading graphics...");
+    }
+  }, [game]);
+
+  useEffect(() => {
+    if (game.status === gameStatusValue.LOADING_GRAPHICS && progress === 100) {
+      game.setGraphicsLoadedStatus();
+      console.log("Graphics loaded!");
+    }
+  }, [active, progress, game.status]);
+
   return (
     <>
       <PerspectiveCamera
@@ -22,7 +49,6 @@ export default function GameScene() {
       <Maze />
       <PacmanMesh />
       <BlinkyMesh />
-
 
       {/* Controls for camera movement */}
       {/* <OrbitControls target={[14, 0, 19]} /> */}

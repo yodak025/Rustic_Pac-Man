@@ -8,7 +8,10 @@ interface IGameStatus {
   level: number; 
   // Status setters
   setReadyToLoadStatus: () => void;
-  setLoadingStatus: () => void;
+  setLoadingCoreStatus: () => void;
+  setCoreLoadedStatus: () => void;
+  setLoadingGraphicsStatus: () => void;
+  setGraphicsLoadedStatus: () => void;
   setPlayingStatus: () => void;
   setPauseStatus: () => void;
   setRestartingStatus: () => void;
@@ -24,9 +27,12 @@ const useGameStatusStore = create<IGameStatus>((set) => ({
   score: 0,
   level: 1,
   
-  // Status settersç
+  // Status setters
   setReadyToLoadStatus: () => set(() => ({ status: gameStatusValue.READY_TO_LOAD })),
-  setLoadingStatus: () => set(() => ({ status: gameStatusValue.LOADING })),
+  setLoadingCoreStatus: () => set(() => ({ status: gameStatusValue.LOADING_CORE })),
+  setCoreLoadedStatus: () => set(() => ({ status: gameStatusValue.CORE_LOADED })),
+  setLoadingGraphicsStatus: () => set(() => ({ status: gameStatusValue.LOADING_GRAPHICS })),
+  setGraphicsLoadedStatus: () => set(() => ({ status: gameStatusValue.GRAPHICS_LOADED })),
   setPlayingStatus: () => set(() => ({ status: gameStatusValue.PLAYING })),
   setPauseStatus: () => set(() => ({ status: gameStatusValue.PAUSED })),
   setRestartingStatus: () => set(() => ({ status: gameStatusValue.RESTARTING })),

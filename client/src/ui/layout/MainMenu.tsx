@@ -6,6 +6,7 @@ const MainMenu: React.FC = () => {
   const game = useGameStatusStore((state) => state);
   const handlePlay = () => {
     game.setReadyToLoadStatus();
+    console.log('Game status set to READY_TO_LOAD');
   };
 
   return (

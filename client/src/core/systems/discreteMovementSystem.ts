@@ -25,10 +25,8 @@ export function movementSystem(deltaTime: number): void {
     setPosition(position);
 
     const collectable = useMazeState.getState().findCollectableAt(position);
-    console.log(collectable);
     if (collectable) {
       if (collectable=="pacDot") {
-        console.log("Pacdot collected at", position);
         useMazeState.getState().removePacDot(position);
       }
     }

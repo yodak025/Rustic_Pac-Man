@@ -4,6 +4,7 @@ import { movementSystem } from './systems/discreteMovementSystem';
 import { playerControlSystem } from './systems/playerControlSystem';
 import { ghostBehaviorSystem } from './systems/ghostBehaviorSystem';
 import { collisionSystem } from './systems/collisionSystem';
+import endgameConditions from './endgameConditions';
 
 import useGameStatusStore from '@/state/useGameStatusStore';
 
@@ -12,6 +13,7 @@ import useMazeState from '@/state/useMazeStore';
 
 import type { Position} from '@custom-types/gameComponents';
 import gameStatusValue from '@custom-types/gameStatusValue';
+import { use } from 'react';
 
 
 export class RusticGameEngine {
@@ -63,6 +65,7 @@ export class RusticGameEngine {
   private initPacmanEntity(): void {
     const pacmanStore = usePacmanStore.getState().pacman;
     pacmanStore.actions.setPosition({ x: 14, y: 16 } as Position);
+    pacmanStore.actions.setHealth(3); 
     pacmanStore.actions.setMovementTimerInterval(200);
   }
 
@@ -77,6 +80,8 @@ export class RusticGameEngine {
     const WALL = 1;
     const PAC_DOT = 0;
     const mazeState = useMazeState.getState();
+    let pacDotCounter = 0;
+    mazeState.initializeMazeEntities()
     
     if (!mazeTiles) {
       console.error('Failed to load maze tiles');
@@ -89,10 +94,12 @@ export class RusticGameEngine {
           mazeState.createWall(localPosition);
         } else if (tile === PAC_DOT) {
           mazeState.createPacDot(localPosition);
+          pacDotCounter++;
         }
       });
     })
     mazeState.setMazeLoaded(true); // Set maze as loaded
+    mazeState.initializeMazeInfo(pacDotCounter);
   }
   
   load(): void {
@@ -100,9 +107,13 @@ export class RusticGameEngine {
     this.initMazeEntities().then(() => {
       console.log('Maze entities initialized');
       this.setupKeyboardListeners();
+      console.log('Keyboard listeners set up');
       this.initPacmanEntity();
+      console.log('Pacman entity initialized');
       this.initBlinkyEntity();
-      useGameStatusStore.getState().setPlayingStatus(); 
+      console.log('Blinky entity initialized');
+      useGameStatusStore.getState().setCoreLoadedStatus(); 
+      console.log('Core loaded!'); 
     }).catch((error) => {
       console.error('Error initializing maze entities:', error);
     });
@@ -130,8 +141,14 @@ export class RusticGameEngine {
     if (!this.isRunning) {
       switch (useGameStatusStore.getState().status) {
         case gameStatusValue.READY_TO_LOAD:
+        case gameStatusValue.WON:
+        case gameStatusValue.LOST:
           this.load()
-          useGameStatusStore.getState().setLoadingStatus();
+          useGameStatusStore.getState().setLoadingCoreStatus();
+          console.log('Loading core...');
+          break;
+        case gameStatusValue.GRAPHICS_LOADED:
+          useGameStatusStore.getState().setPlayingStatus();
           break;
         case gameStatusValue.PLAYING:
           this.start();
@@ -150,6 +167,8 @@ export class RusticGameEngine {
     const currentTime = performance.now();
     const deltaTime = currentTime - this.lastTime;
     this.lastTime = currentTime;
+
+    endgameConditions()
 
     // Run systems
     // TODO - Coleguita, esto de aquí es una chapuza monumental.

@@ -18,6 +18,7 @@ interface Pacman extends Entity {
     incrementMovementTimer: (delta: number) => void;
     isTimeToMove: (delta: number) => boolean;
     takeDamage: (amount: number) => void;
+    setHealth: (health: number) => void;
   }
 }
 
@@ -78,7 +79,12 @@ const usePacmanStore = create<IPacmanState>()(
             const currentHealth = state.pacman.components.health.value;
             state.pacman.components.health.value = Math.max(currentHealth - amount, 0);
           });
-        }
+        },
+        setHealth: (health: number) => {
+          set((state) => {
+            state.pacman.components.health.value = health;
+          });
+        },
       }
     },
   }))
