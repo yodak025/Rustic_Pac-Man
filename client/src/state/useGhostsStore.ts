@@ -52,6 +52,7 @@ const useGhostsStore = create<IGhostsState>()(
             state.blinky.components.directions = [...state.blinky.components.directions, direction];
           });
         },
+        //! [BUG] Fuente del bug asociado a la velocidad infinita con la pantalla parada
         incrementMovementTimer: (delta: number) => {
           set((state) => {
             state.blinky.components.movementTimer.elapsed += delta;
