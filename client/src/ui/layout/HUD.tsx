@@ -3,7 +3,7 @@ import useMazeState from "@/state/useMazeStore";
 import gameStatusValue from "@/types/gameStatusValue";
 import InGameMenu from "@ui/components/InGameMenu";
 import DebugBar from "@ui/components/DebugBar";
-import MazeViewer from "@ui/components/mazeViewer";
+import MazeViewer from "@/ui/components/MazeViewer";
 import { useEffect } from "react";
 import usePacmanStore from "@state/usePacmanStore";
 import ConfigManager from "@services/configManager";

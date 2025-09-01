@@ -32,7 +32,7 @@ export default function MazeViewer() {
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === '2') {
+      if (event.key === '@') {
         setSidebarVisible(prevState => !prevState);
       }
     };
