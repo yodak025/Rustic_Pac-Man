@@ -3,6 +3,7 @@ import { useGameStatusStore } from "@state/store";
 import gameStatusValue from "@custom-types/gameStatusValue";
 import { Canvas } from "@react-three/fiber";
 import MainMenu from "@ui/layout/MainMenu";
+import DeathScreen from "@ui/layout/DeathScreen";
 import HUD from "@ui/layout/HUD";
 import LoadingScreen from "@/ui/layout/LoadingScreen";
 import { Suspense, useMemo } from "react";
@@ -36,7 +37,6 @@ export default function App() {
     // Loading screen cases
     case gameStatusValue.READY_TO_LOAD:
     case gameStatusValue.LOADING_CORE:
-    case gameStatusValue.LOST: // Provisional, should have its own screen later
     case gameStatusValue.WON: // Provisional, should have its own screen later
     case gameStatusValue.RESTARTING:
       return <LoadingScreen />;
@@ -47,6 +47,9 @@ export default function App() {
     case gameStatusValue.LOADING_GRAPHICS:
     case gameStatusValue.GRAPHICS_LOADED:
       return sceneLayout;
+
+    case gameStatusValue.LOST:
+      return <DeathScreen />; 
 
     default:
       throw new Error(`Unknown game status: ${gameStatus}`);
