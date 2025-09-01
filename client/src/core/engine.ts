@@ -13,7 +13,6 @@ import useMazeState from '@/state/useMazeStore';
 
 import type { Position} from '@custom-types/gameComponents';
 import gameStatusValue from '@custom-types/gameStatusValue';
-import { use } from 'react';
 
 
 export class RusticGameEngine {
@@ -143,6 +142,7 @@ export class RusticGameEngine {
         case gameStatusValue.READY_TO_LOAD:
         case gameStatusValue.WON:
         case gameStatusValue.LOST:
+        case gameStatusValue.RESTARTING:
           this.load()
           useGameStatusStore.getState().setLoadingCoreStatus();
           console.log('Loading core...');

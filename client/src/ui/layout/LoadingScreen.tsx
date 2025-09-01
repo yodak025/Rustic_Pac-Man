@@ -56,6 +56,8 @@ const LoadingScreen: React.FC = () => {
 
   const getLoadingText = () => {
     switch (game.status) {
+      case gameStatusValue.RESTARTING:
+        return 'REINICIANDO...';
       case gameStatusValue.LOADING_CORE:
       case gameStatusValue.CORE_LOADED:
         return 'GENERANDO LABERINTO...';

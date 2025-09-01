@@ -14,11 +14,11 @@ interface IGameStatus {
   setGraphicsLoadedStatus: () => void;
   setPlayingStatus: () => void;
   setPauseStatus: () => void;
-  setRestartingStatus: () => void;
   setGameOverStatus: (won: boolean) => void;
   // Game actions
   incrementScore: (amount: number) => void;
   reStart: () => void;
+  reboot: () => void;
   setNextLevel: () => void;
 }
 
@@ -35,7 +35,6 @@ const useGameStatusStore = create<IGameStatus>((set) => ({
   setGraphicsLoadedStatus: () => set(() => ({ status: gameStatusValue.GRAPHICS_LOADED })),
   setPlayingStatus: () => set(() => ({ status: gameStatusValue.PLAYING })),
   setPauseStatus: () => set(() => ({ status: gameStatusValue.PAUSED })),
-  setRestartingStatus: () => set(() => ({ status: gameStatusValue.RESTARTING })),
   setGameOverStatus: (won) => set(() => ({ 
     status: won ? gameStatusValue.WON : gameStatusValue.LOST 
   })),
@@ -45,6 +44,11 @@ const useGameStatusStore = create<IGameStatus>((set) => ({
     score: state.score + amount
   })),
   reStart: () => set(() => ({
+    status: gameStatusValue.RESTARTING,
+    level: 1,
+    score: 0
+  })),
+  reboot: () => set(() => ({
     status: gameStatusValue.NOT_STARTED,
     level: 1,
     score: 0
