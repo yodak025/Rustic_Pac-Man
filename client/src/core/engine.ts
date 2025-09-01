@@ -139,8 +139,9 @@ export class RusticGameEngine {
   private gameLoop(): void {
     if (!this.isRunning) {
       switch (useGameStatusStore.getState().status) {
-        case gameStatusValue.READY_TO_LOAD:
         case gameStatusValue.WON:
+          useGameStatusStore.getState().setNextLevel();
+        case gameStatusValue.READY_TO_LOAD:
         case gameStatusValue.RESTARTING:
           this.load()
           useGameStatusStore.getState().setLoadingCoreStatus();
