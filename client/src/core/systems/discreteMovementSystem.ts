@@ -8,6 +8,7 @@ import type { Entity } from "@custom-types/gameEntities";
 import usePacmanStore from "@/state/usePacmanStore";
 import useMazeState from "@/state/useMazeStore";
 import useGhostsStore from "@/state/useGhostsStore";
+import useGameStatusStore from "@/state/useGameStatusStore";
 
 export function movementSystem(deltaTime: number): void {
   if (
@@ -28,6 +29,8 @@ export function movementSystem(deltaTime: number): void {
     if (collectable) {
       if (collectable=="pacDot") {
         useMazeState.getState().removePacDot(position);
+        useGameStatusStore.getState().incrementScore(100);
+
       }
     }
   };

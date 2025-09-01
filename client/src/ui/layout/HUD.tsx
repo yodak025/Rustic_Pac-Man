@@ -46,6 +46,7 @@ const HUD = () => {
         <div className="flex gap-6 bg-black">
           <div>Nivel: {level}</div>
           <div>PacDots: {`${pdc}/${pdt}`}</div>
+          <div>Puntuación: {score}</div>
         </div>
       </div>
       {debugConfig.debug && <DebugBar />}
