@@ -1,7 +1,6 @@
 import useGameStatusStore  from '@state/useGameStatusStore';
 import useMazeState from '@state/useMazeStore';
 import usePacmanStore from '@/state/usePacmanStore';
-import { c } from 'node_modules/vite/dist/node/moduleRunnerTransport.d-DJ_mE5sf';
 
 export default function endgameConditions() {
   const gameStatusState = useGameStatusStore.getState();
@@ -9,7 +8,8 @@ export default function endgameConditions() {
   const pacmanState = usePacmanStore.getState().pacman;
   let victoryStatus: boolean | undefined = undefined
 
-  if (mazeState.maze.info.pacdots.current >= mazeState.maze.info.pacdots.total) {
+  //! Condición de victoria cutre provisional: 60% de pacdots. Recuerda cambiarlo en el HUD
+  if (mazeState.maze.info.pacdots.current >= Math.floor(mazeState.maze.info.pacdots.total*0.6)) {
     victoryStatus = true
   }
   if (pacmanState.components.health.value <= 0) {
