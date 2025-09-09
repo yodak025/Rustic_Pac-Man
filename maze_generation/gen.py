@@ -19,18 +19,18 @@ class CellConnectionsGenerator:
         # Tamaño para recalcular el centro
         self.MAX_RECENTER_SIZE: int = 2
         # Tamaño máximo de las figuras centradas en el tablero
-        self.MAX_CENTRAL_FIGURE_SIZE: int = 5
+        self.MAX_CENTRAL_FIGURE_SIZE: int = 3
     
-        self.MAX_LONG_FIGURES: int = 3
+        self.MAX_LONG_FIGURES: int = 1
         # Probabilidad de la mierda super específica
-        self.SINGLE_CELL_JOIN_PROB: float = 0.9
+        self.SINGLE_CELL_JOIN_PROB: float = 0.35
 
         self.GROW_PROB_AT_SIZE: dict = { 
             1: 1,
             2: 0.75,
             3: 0.5,
-            4: 0.3,
-            5: 0.2
+            4: 0.1,
+            5: 0
         }
         self.EXTEND_PROB_AT_SIZE: dict = {
             2: 1,

@@ -17,7 +17,7 @@ def get_tiles(cells: np.ndarray, set_manual_tiles: Def[[Def[[int, int, str], Non
     tiles_row_size = tiles_demirow_size * 2
     tiles_col_size = cells.shape[0] * 3 + 2
 
-    aux_row_size = tiles_demirow_size + 2
+    aux_row_size = tiles_demirow_size + 2 
     aux_col_size = tiles_col_size + 1
 
     #! RECUERDA - El tamaño de una fila define cuantas columnas tiene el array
@@ -80,11 +80,15 @@ def get_tiles(cells: np.ndarray, set_manual_tiles: Def[[Def[[int, int, str], Non
                         (not prev_up and not curr.is_connected_at[UP])):
                     set_tile(i, j, '.')
             # Caminos asociados al borde inferior y derecho-izquierdo 
-            elif ((prev_left and (not prev_left.is_connected_at[RIGHT])
-                   or get_tile(i , j - 1) == '.') or
-                  (prev_up and (not prev_up.is_connected_at[DOWN])
-                   or get_tile(i - 1, j) == '.')):
+            elif ((prev_left and (not prev_left.is_connected_at[RIGHT]
+                   or get_tile(i , j - 1) == '.')) or
+                  (prev_up and (not prev_up.is_connected_at[DOWN]
+                   or get_tile(i - 1, j) == '.'))):
+                if (prev_left and (not prev_left.is_connected_at[RIGHT]
+                   or get_tile(i , j - 1) == '.')):
+                    print(f"Camino derecho en tile ({i},{j})")
                 set_tile(i, j, '.')
+                print(f"Camino en tile ({i},{j})")
 
             if( get_tile(i - 1, j) == '.' and
                (get_tile(i, j - 1) == '.' and 
@@ -108,8 +112,6 @@ def get_tiles(cells: np.ndarray, set_manual_tiles: Def[[Def[[int, int, str], Non
 
     i, j = 0, 0
     
-    
-
     # Erase pellets in the tunnels
     def erase_until_intersection(x, y, get_tile_func, set_tile_func):
         """Erase pellets in a tunnel path until reaching an intersection."""
@@ -130,6 +132,13 @@ def get_tiles(cells: np.ndarray, set_manual_tiles: Def[[Def[[int, int, str], Non
             else:
                 break
 
+    # Check for tunnels on the right edge
+    x = tiles_demirow_size - 1
+    for y in range(tiles_col_size):
+        if get_tile(y, x) == '.':
+            # Uncomment to enable tunnel pellet erasure
+            erase_until_intersection(x, y, get_tile, set_tile)
+            pass
     
     #-- Rellenar los tiles de las paredes
     for i in range(aux_col_size):
@@ -146,13 +155,7 @@ def get_tiles(cells: np.ndarray, set_manual_tiles: Def[[Def[[int, int, str], Non
                     set_tile(i, j, '|')
 
 
-    # Check for tunnels on the right edge
-    x = tiles_demirow_size - 1
-    for y in range(tiles_col_size):
-        if get_tile(y, x) == '.':
-            # Uncomment to enable tunnel pellet erasure
-            erase_until_intersection(x, y, get_tile, set_tile)
-            pass
+    
     
 
     #-- Modificaciones manuales
