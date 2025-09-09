@@ -1,6 +1,6 @@
 import { create } from "zustand";
-
 import gameStatusValue from "@custom-types/gameStatusValue";
+
 
 interface IGameStatus {
   status: gameStatusValue;
@@ -15,6 +15,7 @@ interface IGameStatus {
   setPlayingStatus: () => void;
   setPauseStatus: () => void;
   setGameOverStatus: (won: boolean) => void;
+  setDebugMazeAnalyzerStatus: () => void;
   // Game actions
   incrementScore: (amount: number) => void;
   reStart: () => void;
@@ -38,6 +39,7 @@ const useGameStatusStore = create<IGameStatus>((set) => ({
   setGameOverStatus: (won) => set(() => ({ 
     status: won ? gameStatusValue.WON : gameStatusValue.LOST 
   })),
+  setDebugMazeAnalyzerStatus: () => set(() => ({ status: gameStatusValue.DEBUG_MAZE_ANALYZER })),
   
   // Game actions
   incrementScore: (amount) => set((state) => ({

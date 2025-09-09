@@ -1,6 +1,5 @@
 import React from 'react';
 import useGameStatusStore from '@/state/useGameStatusStore';
-import gameStatusValue from '@/types/gameStatusValue';
 
 const MainMenu: React.FC = () => {
   const game = useGameStatusStore((state) => state);
@@ -21,6 +20,15 @@ const MainMenu: React.FC = () => {
       >
         JUGAR
       </button>
+
+      <button
+        onClick={game.setDebugMazeAnalyzerStatus}
+        className="px-8 py-4 bg-yellow-400 text-black font-mono font-bold text-xl border-4 border-yellow-400 hover:bg-black hover:text-yellow-400 transition-all duration-200 shadow-2xl shadow-yellow-400/50 uppercase tracking-wide"
+      >
+        MAZE GENERATION
+      </button>
+
+
     </div>
   );
 };

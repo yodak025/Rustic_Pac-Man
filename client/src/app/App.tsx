@@ -3,6 +3,7 @@ import { useGameStatusStore } from "@state/store";
 import gameStatusValue from "@custom-types/gameStatusValue";
 import { Canvas } from "@react-three/fiber";
 import MainMenu from "@ui/layout/MainMenu";
+import MazeTilemapAnalyzer from "@/ui/layout/MazeTilemapAnalyzer";
 import DeathScreen from "@ui/layout/DeathScreen";
 import HUD from "@ui/layout/HUD";
 import LoadingScreen from "@/ui/layout/LoadingScreen";
@@ -33,6 +34,9 @@ export default function App() {
     // Main menu cases
     case gameStatusValue.NOT_STARTED:
       return <MainMenu />;
+
+    case gameStatusValue.DEBUG_MAZE_ANALYZER:
+      return <MazeTilemapAnalyzer />;
 
     // Loading screen cases
     case gameStatusValue.READY_TO_LOAD:
