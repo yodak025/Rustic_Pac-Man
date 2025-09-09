@@ -13,9 +13,9 @@ from typing import Callable as Def
 def get_tiles(cells: np.ndarray, set_manual_tiles: Def[[Def[[int, int, str], None]], None]) -> np.ndarray:
 
     # TODO - Explicar números mágicos
-    tiles_demirow_size = cells.shape[1] * 3
+    tiles_demirow_size = cells.shape[1] * 3 + 1
     tiles_row_size = tiles_demirow_size * 2
-    tiles_col_size = cells.shape[0] * 3
+    tiles_col_size = cells.shape[0] * 3 + 2
 
     aux_row_size = tiles_demirow_size + 2
     aux_col_size = tiles_col_size + 1
@@ -130,13 +130,6 @@ def get_tiles(cells: np.ndarray, set_manual_tiles: Def[[Def[[int, int, str], Non
             else:
                 break
 
-    # Check for tunnels on the right edge
-    x = tiles_demirow_size - 1
-    for y in range(tiles_col_size):
-        if get_tile(y, x) == '.':
-            # Uncomment to enable tunnel pellet erasure
-            # erase_until_intersection(x, y, get_tile, set_tile)
-            pass
     
     #-- Rellenar los tiles de las paredes
     for i in range(aux_col_size):
@@ -151,6 +144,16 @@ def get_tiles(cells: np.ndarray, set_manual_tiles: Def[[Def[[int, int, str], Non
                     get_tile(i + 1, j - 1) == '.' or
                     get_tile(i + 1, j + 1) == '.'):
                     set_tile(i, j, '|')
+
+
+    # Check for tunnels on the right edge
+    x = tiles_demirow_size - 1
+    for y in range(tiles_col_size):
+        if get_tile(y, x) == '.':
+            # Uncomment to enable tunnel pellet erasure
+            erase_until_intersection(x, y, get_tile, set_tile)
+            pass
+    
 
     #-- Modificaciones manuales
     set_manual_tiles(set_tile)
