@@ -84,11 +84,7 @@ def get_tiles(cells: np.ndarray, set_manual_tiles: Def[[Def[[int, int, str], Non
                    or get_tile(i , j - 1) == '.')) or
                   (prev_up and (not prev_up.is_connected_at[DOWN]
                    or get_tile(i - 1, j) == '.'))):
-                if (prev_left and (not prev_left.is_connected_at[RIGHT]
-                   or get_tile(i , j - 1) == '.')):
-                    print(f"Camino derecho en tile ({i},{j})")
                 set_tile(i, j, '.')
-                print(f"Camino en tile ({i},{j})")
 
             if( get_tile(i - 1, j) == '.' and
                (get_tile(i, j - 1) == '.' and 
