@@ -32,6 +32,9 @@ export function movementSystem(deltaTime: number): void {
   const entities: Entity[] = [];
   entities.push(usePacmanStore.getState().pacman);
   entities.push(useGhostsStore.getState().blinky);
+  entities.push(useGhostsStore.getState().pinky);
+  entities.push(useGhostsStore.getState().inky);
+  entities.push(useGhostsStore.getState().clyde);
   entities.forEach((entity) => {
     const position = entity.components.position as Position;
     const movementTimer = entity.components.movementTimer as MovementTimer;

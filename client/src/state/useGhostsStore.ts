@@ -20,57 +20,68 @@ interface Ghost extends Entity {
 
 interface IGhostsState {
   blinky: Ghost;
+  pinky: Ghost;
+  inky: Ghost;
+  clyde: Ghost;
 }
+
+// Factory function para crear fantasmas
+const createGhost = (id: string, set: any, get: any): Ghost => ({
+  id,
+  components: {
+    position: { x: 0, y: 0 } as Position,
+    movementTimer: { elapsed: 0, interval: 100 } as MovementTimer,
+    directions: [Direction.RIGHT as Direction],
+  },
+  actions: {
+    setPosition: (position: Position) => {
+      set((state: IGhostsState) => {
+        (state as any)[id].components.position = position;
+      });
+    },
+    setMovementTimerInterval: (interval: number) => {
+      set((state: IGhostsState) => {
+        (state as any)[id].components.movementTimer.interval = interval;
+      });
+    },
+    clearDirections: () => {
+      set((state: IGhostsState) => {
+        (state as any)[id].components.directions = [];
+      });
+    },
+    addDirection: (direction: Direction) => {
+      set((state: IGhostsState) => {
+        (state as any)[id].components.directions = [
+          ...(state as any)[id].components.directions,
+          direction
+        ];
+      });
+    },
+    incrementMovementTimer: (delta: number) => {
+      set((state: IGhostsState) => {
+        (state as any)[id].components.movementTimer.elapsed += delta;
+        if (
+          (state as any)[id].components.movementTimer.elapsed >=
+          (state as any)[id].components.movementTimer.interval
+        ) {
+          (state as any)[id].components.movementTimer.elapsed -=
+            (state as any)[id].components.movementTimer.interval;
+        }
+      });
+    },
+    isTimeToMove: (delta: number) => {
+      const { elapsed, interval } = (get() as any)[id].components.movementTimer;
+      return (elapsed + delta) >= interval;
+    },
+  }
+});
 
 const useGhostsStore = create<IGhostsState>()(
   immer((set, get) => ({
-    blinky: {
-      id: "blinky",
-      components: {
-        position: { x: 0, y: 0 } as Position,
-        movementTimer: { elapsed: 0, interval: 100 } as MovementTimer,
-        directions: [Direction.RIGHT as Direction],
-      },
-      actions: {
-        setPosition: (position: Position) => {
-          set((state) => {
-            state.blinky.components.position = position;
-          });
-        },
-        setMovementTimerInterval: (interval: number) => {
-          set((state) => {
-            state.blinky.components.movementTimer.interval = interval;
-          });
-        },
-        clearDirections: () => {
-          set((state) => {
-            state.blinky.components.directions = [];
-          });
-        },
-        addDirection: (direction: Direction) => {
-          set((state) => {
-            state.blinky.components.directions = [...state.blinky.components.directions, direction];
-          });
-        },
-        //! [BUG] Fuente del bug asociado a la velocidad infinita con la pantalla parada
-        incrementMovementTimer: (delta: number) => {
-          set((state) => {
-            state.blinky.components.movementTimer.elapsed += delta;
-            if (
-              state.blinky.components.movementTimer.elapsed >=
-              state.blinky.components.movementTimer.interval
-            ) {
-              state.blinky.components.movementTimer.elapsed -=
-                state.blinky.components.movementTimer.interval;
-            }
-          });
-        },
-        isTimeToMove: (delta: number) => {
-          const { elapsed, interval } = get().blinky.components.movementTimer;
-          return (elapsed + delta) >= interval;
-        },
-      }
-    },
+    blinky: createGhost("blinky", set, get),
+    pinky: createGhost("pinky", set, get),
+    inky: createGhost("inky", set, get),
+    clyde: createGhost("clyde", set, get),
   }))
 );
 

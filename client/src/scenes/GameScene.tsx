@@ -6,6 +6,10 @@ import { useGameStatusStore } from "@state/store";
 
 import PacmanMesh from "@scenes/meshes/entities/PacmanMesh";
 import BlinkyMesh from "@scenes/meshes/entities/BlinkyMesh";
+import ClydeMesh from "./meshes/entities/ClydeMesh";
+import PinkyMesh from "./meshes/entities/PinkyMesh";
+import InkyMesh from "./meshes/entities/InkyMesh";
+
 import Maze from "./meshes/maze/Maze";
 import { useEffect } from "react";
 import gameStatusValue from "@/types/gameStatusValue";
@@ -49,6 +53,10 @@ export default function GameScene() {
       <Maze />
       <PacmanMesh />
       <BlinkyMesh />
+      <ClydeMesh />
+      <PinkyMesh />
+      <InkyMesh />
+
 
       {/* Controls for camera movement */}
       {/* <OrbitControls target={[14, 0, 19]} /> */}

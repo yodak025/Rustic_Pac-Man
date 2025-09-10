@@ -68,10 +68,22 @@ export class RusticGameEngine {
     pacmanStore.actions.setMovementTimerInterval(200);
   }
 
-  private initBlinkyEntity(): void {
+  private initGhostsEntities(): void {
     const blinkyStore = useGhostsStore.getState().blinky;
     blinkyStore.actions.setPosition({ x: 14, y: 14 } as Position);
     blinkyStore.actions.setMovementTimerInterval(300);
+
+    const pinkyStore = useGhostsStore.getState().pinky;
+    pinkyStore.actions.setPosition({ x: 16, y: 14 } as Position);
+    pinkyStore.actions.setMovementTimerInterval(250);
+
+    const inkyStore = useGhostsStore.getState().inky;
+    inkyStore.actions.setPosition({ x: 15, y: 14 } as Position);
+    inkyStore.actions.setMovementTimerInterval(200);
+
+    const clydeStore = useGhostsStore.getState().clyde;
+    clydeStore.actions.setPosition({ x: 13, y: 12 } as Position);
+    clydeStore.actions.setMovementTimerInterval(500);
   }
 
   private async initMazeEntities(): Promise<void> {
@@ -109,7 +121,7 @@ export class RusticGameEngine {
       console.log('Keyboard listeners set up');
       this.initPacmanEntity();
       console.log('Pacman entity initialized');
-      this.initBlinkyEntity();
+      this.initGhostsEntities();
       console.log('Blinky entity initialized');
       useGameStatusStore.getState().setCoreLoadedStatus(); 
       console.log('Core loaded!'); 
