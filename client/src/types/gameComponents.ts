@@ -38,3 +38,12 @@ export interface Collidable {
 export interface Health {
   value: number; 
 }
+
+export enum CollectableKind{
+PAC_DOT = 'PAC_DOT',
+POWER_PELLET = 'POWER_PELLET'
+}
+
+export interface Collector {
+  collects : Array<CollectableKind>;
+}

@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
-import type { Position, Collidable, Collectable } from "@/types/gameComponents";
+import { CollectableKind,  type Position, type Collidable, type Collectable } from "@/types/gameComponents";
 import type { Entity } from "@custom-types/gameEntities";
 
 // Wall entity with Collidable component
@@ -14,7 +14,7 @@ interface Maze {
   walls: Record<string, WallEntity>;
   collectables: {
     pacDots: Record<string, CollectableEntity>;
-    pellets: Record<string, CollectableEntity>;
+    powerPellets: Record<string, CollectableEntity>;
   };
   info: {
     pacdots: {
@@ -31,7 +31,7 @@ interface MazeState {
   // Actions
   createWall: (position: Position) => void;
   createPacDot: (position: Position) => void;
-  createPellet: (position: Position) => void;
+  createPowerPellet: (position: Position) => void;
   isWallAt: (position: Position) => boolean;
   findCollectableAt: (position: Position) => string | null;
   removePacDot: (position: Position) => void;
@@ -49,7 +49,7 @@ const useMazeState = create<MazeState>()(
       walls: {},
       collectables: {
         pacDots: {},
-        pellets: {},
+        powerPellets: {},
       },
       info: {
         pacdots: {
@@ -89,10 +89,10 @@ const useMazeState = create<MazeState>()(
       }),
 
     // Create a pellet entity at the specified position
-    createPellet: (position: Position) =>
+    createPowerPellet: (position: Position) =>
       set((state) => {
         const key = positionToKey(position);
-        state.maze.collectables.pellets[key] = {
+        state.maze.collectables.powerPellets[key] = {
           id: key,
           components: {
             position: position as Position,
@@ -110,14 +110,14 @@ const useMazeState = create<MazeState>()(
     },
 
     // Find collectable at the specified position
-    findCollectableAt: (position: Position): string | null => {
+    findCollectableAt: (position: Position): CollectableKind | null => {
       const key = positionToKey(position);
       const state = get();    
       if (key in state.maze.collectables.pacDots) {
-        return "pacDot";
+        return CollectableKind.PAC_DOT;
       }
-      if (key in state.maze.collectables.pellets) {
-        return "pellet";
+      if (key in state.maze.collectables.powerPellets) {
+        return CollectableKind.POWER_PELLET;
       }
       return null;
     },
@@ -142,7 +142,7 @@ const useMazeState = create<MazeState>()(
       set((state) => {
         state.maze.walls = {};
         state.maze.collectables.pacDots = {};
-        state.maze.collectables.pellets = {};
+        state.maze.collectables.powerPellets = {};
         state.maze.isLoaded = false;
       }),
       initializeMazeInfo: (pacdots: number) =>

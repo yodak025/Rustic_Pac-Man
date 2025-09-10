@@ -1,14 +1,15 @@
 import { Direction } from "@custom-types/gameComponents";
-import type {
-  Position,
-  MovementTimer,
-  DirectionComponent,
+import {
+  type Position,
+  type MovementTimer
 } from "@custom-types/gameComponents";
 import type { Entity } from "@custom-types/gameEntities";
 import usePacmanStore from "@/state/usePacmanStore";
 import useMazeState from "@/state/useMazeStore";
 import useGhostsStore from "@/state/useGhostsStore";
-import useGameStatusStore from "@/state/useGameStatusStore";
+
+import { collectSystem } from "./collectSystem"; //![CLEAN] Use alias instead of relative path
+
 
 export function movementSystem(deltaTime: number): void {
   if (
@@ -24,15 +25,8 @@ export function movementSystem(deltaTime: number): void {
       return;
     }
     setPosition(position);
+    collectSystem(position, entity);
 
-    const collectable = useMazeState.getState().findCollectableAt(position);
-    if (collectable) {
-      if (collectable=="pacDot") {
-        useMazeState.getState().removePacDot(position);
-        useGameStatusStore.getState().incrementScore(100);
-
-      }
-    }
   };
 
   const entities: Entity[] = [];
