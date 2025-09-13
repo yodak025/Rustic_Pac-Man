@@ -5,6 +5,9 @@ import useGhostsStore from "@/state/useGhostsStore";
 
 export default function PinkyMesh() {
   const {x, y: z} = useGhostsStore((state) => state.pinky.components.position);
+  const { x: tx, y: tz } = useGhostsStore(
+    (state) => state.pinky.components.behavior.target.position
+  );
 
   const { nodes, materials } = useGLTF("assets/pinky-model.glb") as any;
 
@@ -14,10 +17,16 @@ export default function PinkyMesh() {
   deadMaterial.color.setHex(0x000000);
 
   return (
-    <group position={[x, 0, z]} scale={0.5} dispose={null}>
-      <mesh geometry={nodes.Sphere.geometry} material={materials['Material.005']} />
-      <mesh geometry={nodes.Sphere001.geometry} material={materials['Material.001']} position={[-0.373, 0, 0.811]} scale={0.205} />
-      <mesh geometry={nodes.Sphere003.geometry} material={materials['Material.003']} position={[-0.399, 0, 0.961]} scale={0.083} />
-    </group>
+    <>
+      <group position={[x, 0, z]} scale={0.5} dispose={null}>
+        <mesh geometry={nodes.Sphere.geometry} material={materials['Material.005']} />
+        <mesh geometry={nodes.Sphere001.geometry} material={materials['Material.001']} position={[-0.373, 0, 0.811]} scale={0.205} />
+        <mesh geometry={nodes.Sphere003.geometry} material={materials['Material.003']} position={[-0.399, 0, 0.961]} scale={0.083} />
+      </group>
+      <mesh position={[tx, 2, tz]}>
+        <sphereGeometry args={[0.2, 30, 30]} />
+        <meshStandardMaterial color="pink" />
+      </mesh>
+    </>
   );
 }
