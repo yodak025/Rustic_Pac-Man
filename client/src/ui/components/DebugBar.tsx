@@ -23,6 +23,8 @@ export default function DebugBar() {
   const blinkyPosition = useGhostsStore(state => state.blinky.components.position);
   const blinkyMovementTimer = useGhostsStore(state => state.blinky.components.movementTimer);
   const blinkyDirection = useGhostsStore(state => state.blinky.components.direction);
+  const blinkyBehaviorMode = useGhostsStore(state => state.blinky.components.behavior.mode);
+  const blinkyBehaviorTicks = useGhostsStore(state => state.blinky.components.behavior.ticks);
   
   // Ghost actions
   const setBlinkyPosition = useGhostsStore(state => state.blinky.actions.setPosition);
@@ -166,6 +168,8 @@ export default function DebugBar() {
           </details>
 
           <p className="text-xs">{`Direction: ${blinkyDirection}`}</p>
+          <p className="text-xs">{`Direction: ${blinkyBehaviorMode}`}</p>
+          <p className="text-xs">{`Ticks: ${blinkyBehaviorTicks}`}</p>
         </div>
         </details>
       </div>

@@ -3,21 +3,61 @@ import useGhostsStore from "@/state/useGhostsStore";
 import useMazeState from "@/state/useMazeStore";
 import { Direction } from "@custom-types/gameComponents";
 
+import { GhostBehaviorMode } from "@custom-types/gameComponents";
+import { use } from "react";
 export function ghostBehaviorSystem(deltaTime: number): void {
-  const ghosts = ['blinky', 'inky', 'pinky', 'clyde'];
-  const ghostsState = useGhostsStore.getState();
+  const ghosts = Object.values(useGhostsStore.getState());
+  
   
   // Process each ghost
-  ghosts.forEach(ghostName => {
-    const ghost = ghostsState[ghostName] ; //[LAZY ANY] 
-    
+  ghosts.forEach(ghost => {
+
     // Skip if it's not time for this ghost to move
     if (!ghost.actions.isTimeToMove(deltaTime)) {
       return;
     }
-    
+
     const { x: ghx, y: ghy } = ghost.components.position;
-    const { x: px, y: py } = usePacmanStore.getState().pacman.components.position;
+    const { x: tx, y: ty } = ghost.components.behavior.target.position || { x: 14, y: 14 };
+
+    switch (ghost.components.behavior.mode) {
+      case GhostBehaviorMode.HOUSE:
+        
+        if (ghost.components.behavior.ticks <= 0){
+          ghost.actions.setBehaviorMode(GhostBehaviorMode.EXITING_HOUSE);
+          ghost.actions.setBehaviorTarget({ kind: 'HOUSE', position: {x:14, y: 10} });
+        } else {
+          ghost.actions.setBehaviorTicks((ghost.components.behavior.ticks) - 1); //[TODO] create a decrement action
+          return; // Stay in house until ticks run out
+        }
+      break;
+      case GhostBehaviorMode.EXITING_HOUSE:
+        if (ghx === tx && ghy === ty) {
+          ghost.actions.setBehaviorMode(GhostBehaviorMode.CHASE);
+          ghost.actions.setBehaviorTarget({ kind: 'CHASE', position: usePacmanStore.getState().pacman.components.position });
+        }
+      break;
+      case GhostBehaviorMode.SCATTER:
+        // Logic for scatter behavior (not implemented here)
+      break;
+      case GhostBehaviorMode.CHASE:
+        ghost.actions.setBehaviorTarget({
+          kind: 'PLAYER',
+          position: usePacmanStore.getState().pacman.components.position
+        })
+      break;
+      case GhostBehaviorMode.FRIGHTENED:
+        // Logic for frightened (not implemented here)
+      break;
+      case GhostBehaviorMode.EATEN:
+        // Logic for eaten state (not implemented here)
+      break;
+      default:
+        throw (`The GhostBehaviorMode '${ghost.components.behavior.mode}' is not recognized in ghostBehaviorSystem`);
+
+    }
+    
+
     const isWallAt = useMazeState.getState().isWallAt;
     const directions = ghost.components.directions as Array<Direction>;
     
@@ -55,7 +95,7 @@ export function ghostBehaviorSystem(deltaTime: number): void {
         .map((move) => ({
           direction: move.dir,
           distance: Math.sqrt(
-            Math.pow(move.x - px, 2) + Math.pow(move.y - py, 2)
+            Math.pow(move.x - tx, 2) + Math.pow(move.y - ty, 2)
           ),
         }));
       

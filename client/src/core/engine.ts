@@ -70,20 +70,28 @@ export class RusticGameEngine {
 
   private initGhostsEntities(): void {
     const blinkyStore = useGhostsStore.getState().blinky;
-    blinkyStore.actions.setPosition({ x: 14, y: 14 } as Position);
+    blinkyStore.actions.setPosition({ x: 18, y: 12 } as Position);
     blinkyStore.actions.setMovementTimerInterval(300);
+    blinkyStore.actions.initBehavior(0); // Inicializa el comportamiento con 7 ticks
+    blinkyStore.actions.setBehaviorMode('HOUSE'); // Establece el modo inicial a 'CHASE'
 
     const pinkyStore = useGhostsStore.getState().pinky;
-    pinkyStore.actions.setPosition({ x: 16, y: 14 } as Position);
+    pinkyStore.actions.setPosition({ x: 18, y: 14 } as Position);
     pinkyStore.actions.setMovementTimerInterval(250);
+    pinkyStore.actions.initBehavior(100); // Inicializa el comportamiento con 7 ticks
+    pinkyStore.actions.setBehaviorMode('HOUSE'); // Establece el modo inicial a 'CHASE'
 
     const inkyStore = useGhostsStore.getState().inky;
-    inkyStore.actions.setPosition({ x: 15, y: 14 } as Position);
+    inkyStore.actions.setPosition({ x: 13, y: 14 } as Position);
     inkyStore.actions.setMovementTimerInterval(200);
+    inkyStore.actions.initBehavior(250); // Inicializa el comportamiento con 7 ticks
+    inkyStore.actions.setBehaviorMode('HOUSE'); // Establece el modo inicial a 'CHASE'
 
     const clydeStore = useGhostsStore.getState().clyde;
     clydeStore.actions.setPosition({ x: 13, y: 12 } as Position);
     clydeStore.actions.setMovementTimerInterval(500);
+    clydeStore.actions.initBehavior(0); // Inicializa el comportamiento con 7 ticks
+    clydeStore.actions.setBehaviorMode('HOUSE'); // Establece el modo inicial a 'CHASE'
   }
 
   private async initMazeEntities(): Promise<void> {
