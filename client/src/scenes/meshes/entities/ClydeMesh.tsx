@@ -1,5 +1,6 @@
 import { useGLTF } from "@react-three/drei";
 import useGhostsStore from "@/state/useGhostsStore";
+import ConfigManager from "@/services/configManager";
 
 //! ESTE COMPONENTE VIOLA DRY, ARREGLALO
 
@@ -7,6 +8,9 @@ export default function ClydeMesh() {
   const { x, y: z } = useGhostsStore(
     (state) => state.clyde.components.position
   );
+
+  const isDebug = new ConfigManager().getDebugConfig().debug;
+
   const { x: tx, y: tz } = useGhostsStore(
     (state) => state.clyde.components.behavior.target.position
   );
@@ -38,10 +42,12 @@ export default function ClydeMesh() {
           material={materials["Material.005"]}
         />
       </group>
-      <mesh position={[tx, 3, tz]}>
-        <sphereGeometry args={[0.2, 30, 30]} />
-        <meshStandardMaterial color="orange" />
-      </mesh>
+      {isDebug && (
+        <mesh position={[tx, 3, tz]}>
+          <sphereGeometry args={[0.2, 30, 30]} />
+          <meshStandardMaterial color="orange" />
+        </mesh>
+      )}
     </>
   );
 }

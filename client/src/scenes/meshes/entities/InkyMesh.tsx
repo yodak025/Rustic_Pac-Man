@@ -1,10 +1,14 @@
 import { useGLTF } from "@react-three/drei";
 import useGhostsStore from "@/state/useGhostsStore";
+import ConfigManager from "@/services/configManager";
 
 //! ESTE COMPONENTE VIOLA DRY, ARREGLALO
 
 export default function InkyMesh() {
   const {x, y: z} = useGhostsStore((state) => state.inky.components.position);
+
+  const isDebug = new ConfigManager().getDebugConfig().debug;
+
   const { x: tx, y: tz } = useGhostsStore(
     (state) => state.inky.components.behavior.target.position
   );
@@ -33,10 +37,12 @@ export default function InkyMesh() {
         />
         <mesh geometry={nodes.Sphere.geometry} material={materials["Material.005"]} />
       </group>
-      <mesh position={[tx, 2.5, tz]}>
-        <sphereGeometry args={[0.2, 30, 30]} />
-        <meshStandardMaterial color="cyan" />
-      </mesh>
+      {isDebug && (
+        <mesh position={[tx, 2.5, tz]}>
+          <sphereGeometry args={[0.2, 30, 30]} />
+          <meshStandardMaterial color="cyan" />
+        </mesh>
+      )}
     </>
   );
 }

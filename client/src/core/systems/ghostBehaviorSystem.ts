@@ -3,72 +3,162 @@ import useGhostsStore from "@/state/useGhostsStore";
 import useMazeState from "@/state/useMazeStore";
 import { Direction } from "@custom-types/gameComponents";
 
-import { GhostBehaviorMode } from "@custom-types/gameComponents";
-import { use } from "react";
+import {
+  GhostBehaviorMode,
+  GhostBehaviorKind,
+} from "@custom-types/gameComponents";
 export function ghostBehaviorSystem(deltaTime: number): void {
   const ghosts = Object.values(useGhostsStore.getState());
-  
-  
-  // Process each ghost
-  ghosts.forEach(ghost => {
 
+  // Process each ghost
+  ghosts.forEach((ghost) => {
     // Skip if it's not time for this ghost to move
     if (!ghost.actions.isTimeToMove(deltaTime)) {
       return;
     }
 
     const { x: ghx, y: ghy } = ghost.components.position;
-    const { x: tx, y: ty } = ghost.components.behavior.target.position || { x: 14, y: 14 };
+    const { x: tx, y: ty } = ghost.components.behavior.target.position || {
+      x: 14,
+      y: 14,
+    };
 
     switch (ghost.components.behavior.mode) {
       case GhostBehaviorMode.HOUSE:
-        
-        if (ghost.components.behavior.ticks <= 0){
+        if (ghost.components.behavior.ticks <= 0) {
           ghost.actions.setBehaviorMode(GhostBehaviorMode.EXITING_HOUSE);
-          ghost.actions.setBehaviorTarget({ kind: 'HOUSE', position: {x:14, y: 10} });
+          ghost.actions.setBehaviorTarget({
+            kind: "HOUSE",
+            position: { x: 14, y: 10 },
+          });
         } else {
-          ghost.actions.setBehaviorTicks((ghost.components.behavior.ticks) - 1); //[TODO] create a decrement action
+          ghost.actions.setBehaviorTicks(ghost.components.behavior.ticks - 1); //[TODO] create a decrement action
           return; // Stay in house until ticks run out
         }
-      break;
+        break;
       case GhostBehaviorMode.EXITING_HOUSE:
         if (ghx === tx && ghy === ty) {
           ghost.actions.setBehaviorMode(GhostBehaviorMode.CHASE);
-          ghost.actions.setBehaviorTarget({ kind: 'CHASE', position: usePacmanStore.getState().pacman.components.position });
+          ghost.actions.setBehaviorTarget({
+            kind: "CHASE",
+            position: usePacmanStore.getState().pacman.components.position,
+          });
         }
-      break;
+        break;
       case GhostBehaviorMode.SCATTER:
         // Logic for scatter behavior (not implemented here)
-      break;
+        break;
       case GhostBehaviorMode.CHASE:
-        ghost.actions.setBehaviorTarget({
-          kind: 'PLAYER',
-          position: usePacmanStore.getState().pacman.components.position
-        })
-      break;
+        switch (ghost.components.behavior.kind) {
+          case GhostBehaviorKind.BLINKY:
+            ghost.actions.setBehaviorTarget({
+              kind: "PLAYER",
+              position: usePacmanStore.getState().pacman.components.position,
+            });
+            break;
+          case GhostBehaviorKind.PINKY:
+              // Target 4 tiles ahead of Pacman's current direction
+              const pacman = usePacmanStore.getState().pacman;
+              const pacPos = pacman.components.position;
+              const pacDir = pacman.components.directions[0]; // [WARNING] It depends on the horrible input management currently implemented. Be careful if you change it.
+              let targetPos = { x: pacPos.x, y: pacPos.y };
+              switch (pacDir) {
+                case Direction.UP:
+                  targetPos.y -= 4;
+                  break;
+                case Direction.DOWN:
+                  targetPos.y += 4;
+                  break;
+                case Direction.LEFT:
+                  targetPos.x -= 4;
+                  break;
+                case Direction.RIGHT:
+                  targetPos.x += 4;
+                  break;
+              }
+              ghost.actions.setBehaviorTarget({
+                kind: "PLAYER_AHEAD",
+                position: targetPos,
+              });
+            break;
+            case GhostBehaviorKind.CLYDE:
+              // If Clyde is more than 8 tiles away from Pacman, target Pacman
+              // If within 8 tiles, target his scatter corner (bottom-left)
+              const pac = usePacmanStore.getState().pacman;
+              const pacPosition = pac.components.position;
+              const distance = Math.sqrt(
+                Math.pow(ghx - pacPosition.x, 2) +
+                  Math.pow(ghy - pacPosition.y, 2)
+              );
+              if (distance > 8) {
+                ghost.actions.setBehaviorTarget({
+                  kind: "PLAYER",
+                  position: pacPosition,
+                });
+              } else {
+                ghost.actions.setBehaviorTarget({
+                  kind: "SCATTER",
+                  position: { x: 0, y: 34 },
+                });
+              }
+              break;
+
+          case GhostBehaviorKind.INKY:
+            // Target is determined by a point 2 tiles ahead of Pacman and
+            // a vector from Blinky to that point, doubled.
+            const pacmanInky = usePacmanStore.getState().pacman;
+            const pacPosInky = pacmanInky.components.position;
+            const pacDirInky = pacmanInky.components.directions[0]; // [WARNING] It depends on the horrible input management currently implemented. Be careful if you change it.
+            let intermediatePos = { x: pacPosInky.x, y: pacPosInky.y };
+            switch (pacDirInky) {
+              case Direction.UP:
+                intermediatePos.y -= 2;
+                break;
+              case Direction.DOWN:
+                intermediatePos.y += 2;
+                break;
+              case Direction.LEFT:
+                intermediatePos.x -= 2;
+                break;
+              case Direction.RIGHT:
+                intermediatePos.x += 2;
+                break;
+            }
+            const blinky = useGhostsStore.getState().blinky;
+            const blinkyPos = blinky.components.position;
+            const vectorX = intermediatePos.x - blinkyPos.x;
+            const vectorY = intermediatePos.y - blinkyPos.y;
+            const targetX = intermediatePos.x + vectorX;
+            const targetY = intermediatePos.y + vectorY;
+            ghost.actions.setBehaviorTarget({
+              kind: "PLAYER_VECTOR",
+              position: { x: targetX, y: targetY },
+            });
+            break;
+        }
+
+        break;
       case GhostBehaviorMode.FRIGHTENED:
         // Logic for frightened (not implemented here)
-      break;
+        break;
       case GhostBehaviorMode.EATEN:
         // Logic for eaten state (not implemented here)
-      break;
+        break;
       default:
-        throw (`The GhostBehaviorMode '${ghost.components.behavior.mode}' is not recognized in ghostBehaviorSystem`);
-
+        throw `The GhostBehaviorMode '${ghost.components.behavior.mode}' is not recognized in ghostBehaviorSystem`;
     }
-    
 
     const isWallAt = useMazeState.getState().isWallAt;
     const directions = ghost.components.directions as Array<Direction>;
-    
+
     const clearDirections = ghost.actions.clearDirections;
     const addDirection = ghost.actions.addDirection;
-    
+
     const decide = () => {
       // Ghost decides direction based on Pacman's position
       // Chooses the direction with the shortest Euclidean distance to Pacman
       // while avoiding reversing direction
-      
+
       const currentDirection = directions[0];
       const oppositeDirections = {
         [Direction.UP]: Direction.DOWN,
@@ -76,7 +166,7 @@ export function ghostBehaviorSystem(deltaTime: number): void {
         [Direction.LEFT]: Direction.RIGHT,
         [Direction.RIGHT]: Direction.LEFT,
       };
-      
+
       // Possible moves and their coordinates
       const moves = [
         { dir: Direction.RIGHT, x: ghx + 1, y: ghy },
@@ -84,7 +174,7 @@ export function ghostBehaviorSystem(deltaTime: number): void {
         { dir: Direction.DOWN, x: ghx, y: ghy + 1 },
         { dir: Direction.UP, x: ghx, y: ghy - 1 },
       ];
-      
+
       // Filter valid moves and calculate distances
       const candidates = moves
         .filter(
@@ -98,20 +188,20 @@ export function ghostBehaviorSystem(deltaTime: number): void {
             Math.pow(move.x - tx, 2) + Math.pow(move.y - ty, 2)
           ),
         }));
-      
+
       clearDirections();
-      
+
       if (candidates.length > 0) {
         // Find direction with minimum distance
         const bestMove = candidates.reduce(
           (min, current) => (current.distance < min.distance ? current : min),
           candidates[0]
         );
-        
+
         addDirection(bestMove.direction);
       }
     };
-    
+
     decide();
   });
 }
