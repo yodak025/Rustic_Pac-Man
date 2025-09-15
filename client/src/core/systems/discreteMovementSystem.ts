@@ -1,14 +1,15 @@
 import { Direction } from "@custom-types/gameComponents";
-import type {
-  Position,
-  MovementTimer,
-  DirectionComponent,
+import {
+  type Position,
+  type MovementTimer
 } from "@custom-types/gameComponents";
 import type { Entity } from "@custom-types/gameEntities";
 import usePacmanStore from "@/state/usePacmanStore";
 import useMazeState from "@/state/useMazeStore";
 import useGhostsStore from "@/state/useGhostsStore";
-import useGameStatusStore from "@/state/useGameStatusStore";
+
+import { collectSystem } from "./collectSystem"; //![CLEAN] Use alias instead of relative path
+
 
 export function movementSystem(deltaTime: number): void {
   if (
@@ -24,20 +25,15 @@ export function movementSystem(deltaTime: number): void {
       return;
     }
     setPosition(position);
-
-    const collectable = useMazeState.getState().findCollectableAt(position);
-    if (collectable) {
-      if (collectable=="pacDot") {
-        useMazeState.getState().removePacDot(position);
-        useGameStatusStore.getState().incrementScore(100);
-
-      }
-    }
+    collectSystem(position, entity);
   };
 
   const entities: Entity[] = [];
   entities.push(usePacmanStore.getState().pacman);
   entities.push(useGhostsStore.getState().blinky);
+  entities.push(useGhostsStore.getState().pinky);
+  entities.push(useGhostsStore.getState().inky);
+  entities.push(useGhostsStore.getState().clyde);
   entities.forEach((entity) => {
     const position = entity.components.position as Position;
     const movementTimer = entity.components.movementTimer as MovementTimer;
@@ -66,16 +62,22 @@ export function movementSystem(deltaTime: number): void {
       // Subtract interval from elapsed
       // Check direction component and move if not stopped
       switch (direction) {
-        case Direction.UP:
+        case Direction.UP: 
           askForMovement({ x: position.x, y: position.y - 1 }, entity);
           break;
         case Direction.DOWN:
           askForMovement({ x: position.x, y: position.y + 1 }, entity);
           break;
         case Direction.LEFT:
+          if (position.x ==  1){ //[DELETE]: TELEPORTACION 
+            askForMovement({ x: 30 , y: position.y }, entity);
+          }
           askForMovement({ x: position.x - 1, y: position.y }, entity);
           break;
         case Direction.RIGHT:
+          if (position.x ==  30){ //[DELETE]: TELEPORTACION 
+            askForMovement({ x: 1 , y: position.y }, entity);
+          }
           askForMovement({ x: position.x + 1, y: position.y }, entity);
           break;
       }

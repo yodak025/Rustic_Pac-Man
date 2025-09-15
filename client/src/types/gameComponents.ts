@@ -38,3 +38,45 @@ export interface Collidable {
 export interface Health {
   value: number; 
 }
+
+export enum CollectableKind{
+PAC_DOT = 'PAC_DOT',
+POWER_PELLET = 'POWER_PELLET'
+}
+
+export interface Collector {
+  collects : Array<CollectableKind>;
+}
+
+export enum GhostBehaviorKind {
+  BLINKY = 'BLINKY',
+  PINKY = 'PINKY',
+  INKY = 'INKY',
+  CLYDE = 'CLYDE'
+}
+
+export enum GhostBehaviorMode {
+  HOUSE = 'HOUSE',
+  EXITING_HOUSE = 'EXITING_HOUSE',
+  SCATTER = 'SCATTER',
+  CHASE = 'CHASE',
+  FRIGHTENED = 'FRIGHTENED',
+  EATEN = 'EATEN'
+}
+
+export enum TargetKind {
+  PLAYER = 'PLAYER',
+  HOUSE = 'HOUSE',
+  TILE = 'TILE',
+  RANDOM = 'RANDOM',
+}
+
+export interface Behavior {
+  kind: GhostBehaviorKind | null;
+  mode: GhostBehaviorMode;
+  target : {
+    kind: TargetKind;
+    position: Position | null;
+  }
+  ticks : number | null;
+}

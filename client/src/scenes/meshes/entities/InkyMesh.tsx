@@ -4,23 +4,20 @@ import ConfigManager from "@/services/configManager";
 
 //! ESTE COMPONENTE VIOLA DRY, ARREGLALO
 
-export default function BlinkyMesh() {
-  const { x, y: z } = useGhostsStore(
-    (state) => state.blinky.components.position
-  );
+export default function InkyMesh() {
+  const {x, y: z} = useGhostsStore((state) => state.inky.components.position);
 
   const isDebug = new ConfigManager().getDebugConfig().debug;
 
   const { x: tx, y: tz } = useGhostsStore(
-    (state) => state.blinky.components.behavior.target.position
+    (state) => state.inky.components.behavior.target.position
   );
-  console.log(tx, tz);
 
-  const { nodes, materials } = useGLTF("assets/blinky-model.glb") as any;
+  const { nodes, materials } = useGLTF("assets/inky-model.glb") as any;
 
-  const escapeMaterial = materials.Material.clone();
+  const escapeMaterial = materials["Material.005"].clone();
   escapeMaterial.color.setHex(0x0000ff);
-  const deadMaterial = materials.Material.clone();
+  const deadMaterial = materials["Material.005"].clone();
   deadMaterial.color.setHex(0x000000);
 
   return (
@@ -38,13 +35,12 @@ export default function BlinkyMesh() {
           position={[0.4, 0, 0.811]}
           scale={0.205}
         />
-
-        <mesh geometry={nodes.Sphere.geometry} material={materials.Material} />
+        <mesh geometry={nodes.Sphere.geometry} material={materials["Material.005"]} />
       </group>
       {isDebug && (
-        <mesh position={[tx, 1.5, tz]}>
+        <mesh position={[tx, 2.5, tz]}>
           <sphereGeometry args={[0.2, 30, 30]} />
-          <meshStandardMaterial color="red" />
+          <meshStandardMaterial color="cyan" />
         </mesh>
       )}
     </>

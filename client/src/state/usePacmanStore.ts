@@ -6,7 +6,9 @@ import {
   type MovementTimer,
   Direction,
   type Playable,
-  type Health
+  type Health,
+  CollectableKind,
+  type Collector
 } from "@custom-types/gameComponents";
 
 interface Pacman extends Entity {
@@ -36,6 +38,7 @@ const usePacmanStore = create<IPacmanState>()(
         directions: Array<Direction>(), 
         playable: { value: true } as Playable,
         health: { value: 3 } as Health, // Default health value
+        collector: { collects: [CollectableKind.PAC_DOT, CollectableKind.POWER_PELLET] } as Collector,
       },
       actions: {
         setPosition: (position: Position) => {

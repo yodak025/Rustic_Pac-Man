@@ -5,72 +5,141 @@ import {
   type Position,
   type MovementTimer,
   Direction,
+  type Behavior,
+  GhostBehaviorKind,
+  GhostBehaviorMode,
+  TargetKind,
 } from "@custom-types/gameComponents";
 
 interface Ghost extends Entity {
-  actions:{
+  actions: {
     setPosition: (position: Position) => void;
     setMovementTimerInterval: (interval: number) => void;
     clearDirections: () => void;
     addDirection: (direction: Direction) => void;
     incrementMovementTimer: (delta: number) => void;
     isTimeToMove: (delta: number) => boolean;
-  }
+    initBehavior: (ticks: number) => void;
+    setBehaviorMode: (mode: GhostBehaviorMode) => void;
+    setBehaviorTarget: (target: Behavior["target"]) => void;
+    setBehaviorTicks: (ticks: number | null) => void;
+  };
 }
 
 interface IGhostsState {
   blinky: Ghost;
+  pinky: Ghost;
+  inky: Ghost;
+  clyde: Ghost;
 }
+
+// Factory function para crear fantasmas
+const createGhost = (id: string, set: any, get: any): Ghost => ({
+  id,
+  components: {
+    position: { x: 0, y: 0 } as Position,
+    movementTimer: { elapsed: 0, interval: 100 } as MovementTimer,
+    directions: [Direction.RIGHT as Direction],
+    behavior: {
+      kind: GhostBehaviorKind.BLINKY,
+      mode: GhostBehaviorMode.HOUSE,
+      target: { kind: TargetKind.RANDOM, position: {x: 0, y:0 } },
+      ticks: null,
+    } as Behavior,
+  },
+  actions: {
+    setPosition: (position: Position) => {
+      set((state: IGhostsState) => {
+        (state as any)[id].components.position = position;
+      });
+    },
+    setMovementTimerInterval: (interval: number) => {
+      set((state: IGhostsState) => {
+        (state as any)[id].components.movementTimer.interval = interval;
+        (state as any)[id].components.movementTimer.elapsed = 0;
+      });
+    },
+    clearDirections: () => {
+      set((state: IGhostsState) => {
+        (state as any)[id].components.directions = [];
+      });
+    },
+    addDirection: (direction: Direction) => {
+      set((state: IGhostsState) => {
+        (state as any)[id].components.directions = [
+          ...(state as any)[id].components.directions,
+          direction,
+        ];
+      });
+    },
+    incrementMovementTimer: (delta: number) => {
+      set((state: IGhostsState) => {
+        (state as any)[id].components.movementTimer.elapsed += delta;
+        if (
+          (state as any)[id].components.movementTimer.elapsed >=
+          (state as any)[id].components.movementTimer.interval
+        ) {
+          (state as any)[id].components.movementTimer.elapsed -= (state as any)[
+            id
+          ].components.movementTimer.interval;
+        }
+      });
+    },
+    isTimeToMove: (delta: number) => {
+      const { elapsed, interval } = (get() as any)[id].components.movementTimer;
+      return elapsed + delta >= interval;
+    },
+    initBehavior: (ticks: number) => {
+      set((state: IGhostsState) => {
+        let kind: GhostBehaviorKind;
+        switch (id) {
+          case "blinky":
+            kind = GhostBehaviorKind.BLINKY;
+            break;
+          case "pinky":
+            kind = GhostBehaviorKind.PINKY;
+            break;
+          case "inky":
+            kind = GhostBehaviorKind.INKY;
+            break;
+          case "clyde":
+            kind = GhostBehaviorKind.CLYDE;
+            break;
+          default:
+            kind = GhostBehaviorKind.BLINKY;
+        }
+        (state as any)[id].components.behavior.kind = kind;
+        (state as any)[id].components.behavior.mode = GhostBehaviorMode.HOUSE;
+        (state as any)[id].components.behavior.target = {
+          kind: TargetKind.RANDOM,
+          position: {x: 0, y: 0 },
+        };
+        (state as any)[id].components.behavior.ticks = ticks;
+      })},
+    setBehaviorMode: (mode) => {
+      set((state: IGhostsState) => {
+        (state as any)[id].components.behavior.mode = mode;
+      });
+    },
+    setBehaviorTarget: (target) => {
+      set((state: IGhostsState) => {
+        (state as any)[id].components.behavior.target = target;
+      });
+    },
+    setBehaviorTicks: (ticks) => {
+      set((state: IGhostsState) => {
+        (state as any)[id].components.behavior.ticks = ticks;
+      });
+    },
+  },
+});
 
 const useGhostsStore = create<IGhostsState>()(
   immer((set, get) => ({
-    blinky: {
-      id: "blinky",
-      components: {
-        position: { x: 0, y: 0 } as Position,
-        movementTimer: { elapsed: 0, interval: 100 } as MovementTimer,
-        directions: [Direction.RIGHT as Direction],
-      },
-      actions: {
-        setPosition: (position: Position) => {
-          set((state) => {
-            state.blinky.components.position = position;
-          });
-        },
-        setMovementTimerInterval: (interval: number) => {
-          set((state) => {
-            state.blinky.components.movementTimer.interval = interval;
-          });
-        },
-        clearDirections: () => {
-          set((state) => {
-            state.blinky.components.directions = [];
-          });
-        },
-        addDirection: (direction: Direction) => {
-          set((state) => {
-            state.blinky.components.directions = [...state.blinky.components.directions, direction];
-          });
-        },
-        //! [BUG] Fuente del bug asociado a la velocidad infinita con la pantalla parada
-        incrementMovementTimer: (delta: number) => {
-          set((state) => {
-            state.blinky.components.movementTimer.elapsed += delta;
-            if (
-              state.blinky.components.movementTimer.elapsed >=
-              state.blinky.components.movementTimer.interval
-            ) {
-              state.blinky.components.movementTimer.elapsed -=
-                state.blinky.components.movementTimer.interval;
-            }
-          });
-        },
-        isTimeToMove: (delta: number) => {
-          const { elapsed, interval } = get().blinky.components.movementTimer;
-          return (elapsed + delta) >= interval;
-        },
-      }
-    },
+    blinky: createGhost("blinky", set, get),
+    pinky: createGhost("pinky", set, get),
+    inky: createGhost("inky", set, get),
+    clyde: createGhost("clyde", set, get),
   }))
 );
 
