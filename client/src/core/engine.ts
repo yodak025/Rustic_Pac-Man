@@ -77,20 +77,20 @@ export class RusticGameEngine {
 
     const pinkyStore = useGhostsStore.getState().pinky;
     pinkyStore.actions.setPosition({ x: 18, y: 14 } as Position);
-    pinkyStore.actions.setMovementTimerInterval(250);
-    pinkyStore.actions.initBehavior(100); // Inicializa el comportamiento con 7 ticks
+    pinkyStore.actions.setMovementTimerInterval(300);
+    pinkyStore.actions.initBehavior(30); // Inicializa el comportamiento con 7 ticks
     pinkyStore.actions.setBehaviorMode('HOUSE'); // Establece el modo inicial a 'CHASE'
 
     const inkyStore = useGhostsStore.getState().inky;
     inkyStore.actions.setPosition({ x: 13, y: 14 } as Position);
-    inkyStore.actions.setMovementTimerInterval(200);
-    inkyStore.actions.initBehavior(250); // Inicializa el comportamiento con 7 ticks
+    inkyStore.actions.setMovementTimerInterval(300);
+    inkyStore.actions.initBehavior(45); // Inicializa el comportamiento con 7 ticks
     inkyStore.actions.setBehaviorMode('HOUSE'); // Establece el modo inicial a 'CHASE'
 
     const clydeStore = useGhostsStore.getState().clyde;
     clydeStore.actions.setPosition({ x: 13, y: 12 } as Position);
-    clydeStore.actions.setMovementTimerInterval(500);
-    clydeStore.actions.initBehavior(0); // Inicializa el comportamiento con 7 ticks
+    clydeStore.actions.setMovementTimerInterval(300);
+    clydeStore.actions.initBehavior(15); // Inicializa el comportamiento con 7 ticks
     clydeStore.actions.setBehaviorMode('HOUSE'); // Establece el modo inicial a 'CHASE'
   }
 

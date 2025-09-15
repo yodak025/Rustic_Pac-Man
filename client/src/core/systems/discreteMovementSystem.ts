@@ -26,7 +26,6 @@ export function movementSystem(deltaTime: number): void {
     }
     setPosition(position);
     collectSystem(position, entity);
-
   };
 
   const entities: Entity[] = [];
@@ -63,16 +62,22 @@ export function movementSystem(deltaTime: number): void {
       // Subtract interval from elapsed
       // Check direction component and move if not stopped
       switch (direction) {
-        case Direction.UP:
+        case Direction.UP: 
           askForMovement({ x: position.x, y: position.y - 1 }, entity);
           break;
         case Direction.DOWN:
           askForMovement({ x: position.x, y: position.y + 1 }, entity);
           break;
         case Direction.LEFT:
+          if (position.x ==  1){ //[DELETE]: TELEPORTACION 
+            askForMovement({ x: 30 , y: position.y }, entity);
+          }
           askForMovement({ x: position.x - 1, y: position.y }, entity);
           break;
         case Direction.RIGHT:
+          if (position.x ==  30){ //[DELETE]: TELEPORTACION 
+            askForMovement({ x: 1 , y: position.y }, entity);
+          }
           askForMovement({ x: position.x + 1, y: position.y }, entity);
           break;
       }
