@@ -164,7 +164,7 @@ def get_tiles(cells: np.ndarray, set_manual_tiles: Def[[Def[[int, int, str], Non
         while attempts < 100:  # Limit attempts to avoid infinite loop
             # Random position within the upper half
             random_y = random.randint(0, vertical_middle - 1)
-            random_x = random.randint(0, tiles_row_size - 1)
+            random_x = aux_row_size - 3  #temporaly setted to the first/last col to improve resutls #random.randint(0, tiles_row_size - 1)
             
             if get_tile(random_y, random_x) == '.':
                 set_tile(random_y, random_x, 'o')
@@ -178,7 +178,7 @@ def get_tiles(cells: np.ndarray, set_manual_tiles: Def[[Def[[int, int, str], Non
         while attempts < 100:  # Limit attempts to avoid infinite loop
             # Random position within the lower half
             random_y = random.randint(vertical_middle, aux_col_size - 1)
-            random_x = random.randint(0, tiles_row_size - 1)
+            random_x = aux_row_size - 3  #temporaly setted to the first/last col to improve resutls #random.randint(0, tiles_row_size - 1)
             
             if get_tile(random_y, random_x) == '.':
                 set_tile(random_y, random_x, 'o')
