@@ -16,6 +16,12 @@ export function collectSystem(position: Position, entity: Entity): void {
     ) {
       useMazeState.getState().removePacDot(position);
       useGameStatusStore.getState().incrementScore(100);
+    } else if (
+      collectable === CollectableKind.POWER_PELLET &&
+      entity.components.collector.collects.includes(CollectableKind.POWER_PELLET)
+    ) {
+      useMazeState.getState().removePowerPellet(position);
+      useGameStatusStore.getState().incrementScore(100);
     }
   }
 }

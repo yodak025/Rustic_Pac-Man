@@ -14,7 +14,7 @@ const HUD = () => {
     (state) => state
   );
   const lives = usePacmanStore((state) => state.pacman.components.health.value);
-  const {total: pdt, current:pdc} = useMazeState((state) => state.maze.info.pacdots)
+  const {total: pdt, current:pdc} = useMazeState((state) => state.maze.info.pacDots)
 
   const debugConfig = new ConfigManager().getDebugConfig();
 

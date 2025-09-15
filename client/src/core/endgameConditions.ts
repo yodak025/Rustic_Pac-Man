@@ -9,7 +9,7 @@ export default function endgameConditions() {
   let victoryStatus: boolean | undefined = undefined
 
   //! Condición de victoria cutre provisional: 60% de pacdots. Recuerda cambiarlo en el HUD
-  if (mazeState.maze.info.pacdots.current >= Math.floor(mazeState.maze.info.pacdots.total*0.6)) {
+  if (mazeState.maze.info.pacDots.current >= Math.floor(mazeState.maze.info.pacDots.total*0.6)) {
     victoryStatus = true
   }
   if (pacmanState.components.health.value <= 0) {

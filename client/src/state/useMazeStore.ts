@@ -17,7 +17,11 @@ interface Maze {
     powerPellets: Record<string, CollectableEntity>;
   };
   info: {
-    pacdots: {
+    pacDots: {
+      total: number;
+      current: number;
+    };
+    powerPellets: {
       total: number;
       current: number;
     };
@@ -35,8 +39,9 @@ interface MazeState {
   isWallAt: (position: Position) => boolean;
   findCollectableAt: (position: Position) => string | null;
   removePacDot: (position: Position) => void;
+  removePowerPellet: (position: Position) => void;
   initializeMazeEntities: () => void;
-  initializeMazeInfo: (pacdots: number) => void;
+  initializeMazeInfo: (pacDots: number, powerPellets: number) => void;
   setMazeLoaded: (isLoaded: boolean) => void; // Action to set maze loaded state
 }
 
@@ -52,16 +57,21 @@ const useMazeState = create<MazeState>()(
         powerPellets: {},
       },
       info: {
-        pacdots: {
+        pacDots: {
           total: 0,
           current: 0,
         },
+        powerPellets: {
+          total: 0,
+          current: 0,
+        },
+
       },
       isLoaded: false, // Initialize as not loaded
     },
 
     // Create a wall entity at the specified position
-    createWall: (position: Position) =>
+    createWall: (position) =>
       set((state) => {
         const key = positionToKey(position);
         state.maze.walls[key] = {
@@ -75,7 +85,7 @@ const useMazeState = create<MazeState>()(
       }),
 
     // Create a pac dot entity at the specified position
-    createPacDot: (position: Position) =>
+    createPacDot: (position) =>
       set((state) => {
         const key = positionToKey(position);
         state.maze.collectables.pacDots[key] = {
@@ -89,7 +99,7 @@ const useMazeState = create<MazeState>()(
       }),
 
     // Create a pellet entity at the specified position
-    createPowerPellet: (position: Position) =>
+    createPowerPellet: (position) =>
       set((state) => {
         const key = positionToKey(position);
         state.maze.collectables.powerPellets[key] = {
@@ -103,14 +113,14 @@ const useMazeState = create<MazeState>()(
       }),
 
     // Check if there is a wall at the specified position
-    isWallAt: (position: Position): boolean => {
+    isWallAt: (position) => {
       const key = positionToKey(position);
       const state = get();
       return key in state.maze.walls;
     },
 
     // Find collectable at the specified position
-    findCollectableAt: (position: Position): CollectableKind | null => {
+    findCollectableAt: (position) => {
       const key = positionToKey(position);
       const state = get();    
       if (key in state.maze.collectables.pacDots) {
@@ -123,7 +133,7 @@ const useMazeState = create<MazeState>()(
     },
 
     // Remove a pac dot at the specified position
-    removePacDot: (position: Position) =>
+    removePacDot: (position) =>
       set((state) => {
         const key = positionToKey(position);
         
@@ -134,7 +144,22 @@ const useMazeState = create<MazeState>()(
         // Remove the pacdot
         delete state.maze.collectables.pacDots[key];
         // Decrement current pacdots count
-        state.maze.info.pacdots.current++;
+        state.maze.info.pacDots.current++;
+      }),
+
+      // Remove a pac dot at the specified position
+    removePowerPellet: (position) =>
+      set((state) => {
+        const key = positionToKey(position);
+        
+        // Check if pacdot exists at position, return early if not
+        if (!(key in state.maze.collectables.powerPellets)) {
+          return;
+        }
+        // Remove the pacdot
+        delete state.maze.collectables.powerPellets[key];
+        // Decrement current pacdots count
+        state.maze.info.powerPellets.current++;
       }),
 
     // Initialize maze with pacdot count
@@ -145,13 +170,15 @@ const useMazeState = create<MazeState>()(
         state.maze.collectables.powerPellets = {};
         state.maze.isLoaded = false;
       }),
-      initializeMazeInfo: (pacdots: number) =>
+      initializeMazeInfo: (pacdots, powerPellets) =>
       set((state) => {
-        state.maze.info.pacdots.total = pacdots;
-        state.maze.info.pacdots.current = 0;
+        state.maze.info.pacDots.total = pacdots;
+        state.maze.info.pacDots.current = 0;
+        state.maze.info.powerPellets.total = powerPellets;
+        state.maze.info.powerPellets.current = 0;
       }),
 
-    setMazeLoaded: (isLoaded: boolean) =>
+    setMazeLoaded: (isLoaded) =>
       set((state) => {
         state.maze.isLoaded = isLoaded;
       }),

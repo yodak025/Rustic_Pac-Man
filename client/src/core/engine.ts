@@ -98,8 +98,10 @@ export class RusticGameEngine {
     const mazeTiles = await loadMaze();
     const WALL = 1;
     const PAC_DOT = 0;
+    const POWER_PELLET = 2;
     const mazeState = useMazeState.getState();
     let pacDotCounter = 0;
+    let powerPelletCounter = 0;
     mazeState.initializeMazeEntities()
     
     if (!mazeTiles) {
@@ -114,11 +116,14 @@ export class RusticGameEngine {
         } else if (tile === PAC_DOT) {
           mazeState.createPacDot(localPosition);
           pacDotCounter++;
+        } else if (tile === POWER_PELLET) {
+          mazeState.createPowerPellet(localPosition);
+          powerPelletCounter++;
         }
       });
     })
     mazeState.setMazeLoaded(true); // Set maze as loaded
-    mazeState.initializeMazeInfo(pacDotCounter);
+    mazeState.initializeMazeInfo(pacDotCounter, powerPelletCounter);
   }
   
   load(): void {
