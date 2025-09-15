@@ -2,6 +2,7 @@ import numpy as np
 from .cell import Cell
 from .directions import UP, RIGHT, DOWN, LEFT
 from typing import Callable as Def
+import random
 
 # ? Control de Dislexia:
 # ?     eje 0 = rows = i = y = vertical,
@@ -149,6 +150,41 @@ def get_tiles(cells: np.ndarray, set_manual_tiles: Def[[Def[[int, int, str], Non
                     get_tile(i + 1, j - 1) == '.' or
                     get_tile(i + 1, j + 1) == '.'):
                     set_tile(i, j, '|')
+
+    #[SPAGHETTI] Should be a function in order to improve the generation of powerpellets
+    # Place power pellets evenly in upper and lower halves
+    num_power_pellets = 2  # Total number of power pellets
+    
+    # Define vertical middle point
+    vertical_middle = aux_col_size // 2
+    
+    # Place half of the pellets in the upper part
+    for i in range(num_power_pellets // 2):
+        attempts = 0
+        while attempts < 100:  # Limit attempts to avoid infinite loop
+            # Random position within the upper half
+            random_y = random.randint(0, vertical_middle - 1)
+            random_x = random.randint(0, tiles_row_size - 1)
+            
+            if get_tile(random_y, random_x) == '.':
+                set_tile(random_y, random_x, 'o')
+                break
+                
+            attempts += 1
+    
+    # Place the other half in the lower part
+    for i in range(num_power_pellets // 2):
+        attempts = 0
+        while attempts < 100:  # Limit attempts to avoid infinite loop
+            # Random position within the lower half
+            random_y = random.randint(vertical_middle, aux_col_size - 1)
+            random_x = random.randint(0, tiles_row_size - 1)
+            
+            if get_tile(random_y, random_x) == '.':
+                set_tile(random_y, random_x, 'o')
+                break
+                
+            attempts += 1
 
 
     

@@ -133,11 +133,12 @@ class MazeState:
         tiles = get_tiles(self.cells, set_ghost_home_door_tiles)
         self.current_tiles = np.where(tiles == '.', 0, 
                         np.where(tiles == '|', 1, 
+                                 np.where(tiles == 'o', 2,
                         np.where(tiles == '_', -2, 
                         np.where(tiles == 'h', -3,
                         np.where(tiles == 'd', -4,
                         np.where(tiles == '-', 3, 
-                        -1)))))).astype(int)
+                        -1))))))).astype(int)
         return self.current_tiles
 
     def get_tiles_as_json(self):
