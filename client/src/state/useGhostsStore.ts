@@ -31,6 +31,10 @@ interface IGhostsState {
   pinky: Ghost;
   inky: Ghost;
   clyde: Ghost;
+  actions: {
+    frightenAll: () => void;
+    getGhosts: () => Ghost[];
+  };
 }
 
 // Factory function para crear fantasmas
@@ -43,7 +47,7 @@ const createGhost = (id: string, set: any, get: any): Ghost => ({
     behavior: {
       kind: GhostBehaviorKind.BLINKY,
       mode: GhostBehaviorMode.HOUSE,
-      target: { kind: TargetKind.RANDOM, position: {x: 0, y:0 } },
+      target: { kind: TargetKind.RANDOM, position: { x: 0, y: 0 } },
       ticks: null,
     } as Behavior,
   },
@@ -112,10 +116,11 @@ const createGhost = (id: string, set: any, get: any): Ghost => ({
         (state as any)[id].components.behavior.mode = GhostBehaviorMode.HOUSE;
         (state as any)[id].components.behavior.target = {
           kind: TargetKind.RANDOM,
-          position: {x: 0, y: 0 },
+          position: { x: 0, y: 0 },
         };
         (state as any)[id].components.behavior.ticks = ticks;
-      })},
+      });
+    },
     setBehaviorMode: (mode) => {
       set((state: IGhostsState) => {
         (state as any)[id].components.behavior.mode = mode;
@@ -140,6 +145,28 @@ const useGhostsStore = create<IGhostsState>()(
     pinky: createGhost("pinky", set, get),
     inky: createGhost("inky", set, get),
     clyde: createGhost("clyde", set, get),
+
+    actions: {
+      frightenAll: () => {
+        let ids = get().actions.getGhosts().map(g => g.id);
+        set((state: IGhostsState) => {
+          // ✅ Modifica directamente el estado dentro del contexto actual
+          ids.forEach((ghostId) => {
+            const ghost = (state as any)[ghostId];
+            ghost.components.behavior.mode = GhostBehaviorMode.FRIGHTENED;
+            ghost.components.behavior.ticks = 50;
+            ghost.components.behavior.target = {
+              kind: TargetKind.TILE,
+              position: { x: 15, y: 11 },
+            };
+            console.log(`${ghost.id} is now FRIGHTENED, ${ghost.components.behavior.mode}`);
+          });
+        });
+      },
+      getGhosts: () => {
+        return ["blinky", "pinky", "inky", "clyde"].map((id) => (get() as any)[id]);
+      }
+    },
   }))
 );
 

@@ -16,6 +16,15 @@ export function collisionSystem(deltaTime: number): void {
   const checkGhostCollision = (ghost: any, name: string) => {
     const { x: ghx, y: ghy } = ghost.components.position;
     if (ghx === px && ghy === py) {
+      if (ghost.components.behavior.mode === "FRIGHTENED") {
+        // Pacman eats the ghost
+        ghost.actions.setBehaviorMode("EATEN");
+        return true;
+      } 
+      if (ghost.components.behavior.mode === "EATEN") {
+        // Ghost is already eaten, do nothing
+        return false;
+      }
       pacman.actions.takeDamage(1);
       console.log(
         `Pacman ha chocado con ${name}. Salud restante: ${pacman.components.health.value}`

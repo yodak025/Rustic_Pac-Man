@@ -1,6 +1,7 @@
 import { useGLTF } from "@react-three/drei";
 import useGhostsStore from "@/state/useGhostsStore";
 import ConfigManager from "@/services/configManager";
+import { GhostBehaviorMode } from "@/types/gameComponents";
 
 //! ESTE COMPONENTE VIOLA DRY, ARREGLALO
 
@@ -8,6 +9,8 @@ export default function BlinkyMesh() {
   const { x, y: z } = useGhostsStore(
     (state) => state.blinky.components.position
   );
+
+  const mode = useGhostsStore((state) => state.blinky.components.behavior.mode);
 
   const isDebug = new ConfigManager().getDebugConfig().debug;
 
@@ -39,7 +42,11 @@ export default function BlinkyMesh() {
           scale={0.205}
         />
 
-        <mesh geometry={nodes.Sphere.geometry} material={materials.Material} />
+        <mesh geometry={nodes.Sphere.geometry} material={
+          mode === GhostBehaviorMode.EATEN ? deadMaterial
+          : mode === GhostBehaviorMode.FRIGHTENED ? escapeMaterial
+          : materials.Material
+        } />
       </group>
       {isDebug && (
         <mesh position={[tx, 1.5, tz]}>

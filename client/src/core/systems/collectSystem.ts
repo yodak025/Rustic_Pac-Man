@@ -1,8 +1,10 @@
 import { CollectableKind } from "@/types/gameComponents";
 import useMazeState from "@/state/useMazeStore";
 import useGameStatusStore from "@/state/useGameStatusStore";
+import useGhostsStore from "@/state/useGhostsStore";
 import { type Position } from "@custom-types/gameComponents";
 import type { Entity } from "@custom-types/gameEntities";
+
 
 export function collectSystem(position: Position, entity: Entity): void {
   if (!entity.components.collector) {
@@ -21,7 +23,8 @@ export function collectSystem(position: Position, entity: Entity): void {
       entity.components.collector.collects.includes(CollectableKind.POWER_PELLET)
     ) {
       useMazeState.getState().removePowerPellet(position);
-      useGameStatusStore.getState().incrementScore(100);
+      useGameStatusStore.getState().incrementScore(500);
+      useGhostsStore.getState().actions.frightenAll();
     }
   }
 }

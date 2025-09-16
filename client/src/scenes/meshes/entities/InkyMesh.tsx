@@ -1,11 +1,14 @@
 import { useGLTF } from "@react-three/drei";
 import useGhostsStore from "@/state/useGhostsStore";
 import ConfigManager from "@/services/configManager";
+import { GhostBehaviorMode } from "@/types/gameComponents";
 
 //! ESTE COMPONENTE VIOLA DRY, ARREGLALO
 
 export default function InkyMesh() {
   const {x, y: z} = useGhostsStore((state) => state.inky.components.position);
+
+  const mode = useGhostsStore((state) => state.inky.components.behavior.mode);
 
   const isDebug = new ConfigManager().getDebugConfig().debug;
 
@@ -35,7 +38,11 @@ export default function InkyMesh() {
           position={[0.4, 0, 0.811]}
           scale={0.205}
         />
-        <mesh geometry={nodes.Sphere.geometry} material={materials["Material.005"]} />
+        <mesh geometry={nodes.Sphere.geometry} material={
+          mode === GhostBehaviorMode.EATEN ? deadMaterial
+          : mode === GhostBehaviorMode.FRIGHTENED ? escapeMaterial
+          : materials["Material.005"]
+        } />
       </group>
       {isDebug && (
         <mesh position={[tx, 2.5, tz]}>

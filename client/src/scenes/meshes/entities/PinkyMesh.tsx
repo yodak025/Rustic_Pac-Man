@@ -1,6 +1,7 @@
 import { useGLTF } from "@react-three/drei";
 import useGhostsStore from "@/state/useGhostsStore";
 import ConfigManager from "@/services/configManager";
+import { GhostBehaviorMode } from "@/types/gameComponents";
 
 //! ESTE COMPONENTE VIOLA DRY, ARREGLALO
 
@@ -8,6 +9,8 @@ export default function PinkyMesh() {
   const { x, y: z } = useGhostsStore(
     (state) => state.pinky.components.position
   );
+
+  const mode = useGhostsStore((state) => state.pinky.components.behavior.mode);
 
   const isDebug = new ConfigManager().getDebugConfig().debug;
 
@@ -17,9 +20,9 @@ export default function PinkyMesh() {
 
   const { nodes, materials } = useGLTF("assets/pinky-model.glb") as any;
 
-  const escapeMaterial = materials["Material.003"].clone();
+  const escapeMaterial = materials["Material.005"].clone();
   escapeMaterial.color.setHex(0x0000ff);
-  const deadMaterial = materials["Material.003"].clone();
+  const deadMaterial = materials["Material.005"].clone();
   deadMaterial.color.setHex(0x000000);
 
   return (
@@ -27,7 +30,10 @@ export default function PinkyMesh() {
       <group position={[x, 0, z]} scale={0.5} dispose={null}>
         <mesh
           geometry={nodes.Sphere.geometry}
-          material={materials["Material.005"]}
+          material={
+            mode === GhostBehaviorMode.EATEN ? deadMaterial
+            : mode === GhostBehaviorMode.FRIGHTENED ? escapeMaterial
+            : materials["Material.005"]}
         />
         <mesh
           geometry={nodes.Sphere001.geometry}

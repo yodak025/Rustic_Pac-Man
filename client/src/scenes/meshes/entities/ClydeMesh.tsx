@@ -1,6 +1,7 @@
 import { useGLTF } from "@react-three/drei";
 import useGhostsStore from "@/state/useGhostsStore";
 import ConfigManager from "@/services/configManager";
+import { GhostBehaviorMode } from "@/types/gameComponents";
 
 //! ESTE COMPONENTE VIOLA DRY, ARREGLALO
 
@@ -8,6 +9,8 @@ export default function ClydeMesh() {
   const { x, y: z } = useGhostsStore(
     (state) => state.clyde.components.position
   );
+
+  const mode = useGhostsStore((state) => state.clyde.components.behavior.mode);
 
   const isDebug = new ConfigManager().getDebugConfig().debug;
 
@@ -39,7 +42,11 @@ export default function ClydeMesh() {
         />
         <mesh
           geometry={nodes.Sphere.geometry}
-          material={materials["Material.005"]}
+          material={
+            mode === GhostBehaviorMode.EATEN ? deadMaterial
+            : mode === GhostBehaviorMode.FRIGHTENED ? escapeMaterial
+            : materials["Material.005"]
+          }
         />
       </group>
       {isDebug && (
