@@ -52,7 +52,7 @@ const MazeTilemapAnalyzer: React.FC = () => {
       <div 
         key={`${rowIndex}-${colIndex}`}
         className={`${getBgColor(value)} w-8 h-8 border border-gray-900 flex items-center justify-center`}
-        title={`${TILE_TYPES[value as keyof typeof TILE_TYPES] || 'Unknown'} (${value})`}
+        title={`${TILE_TYPES[value as keyof typeof TILE_TYPES] || 'Unknown'} (${value}) - Position: (${colIndex}, ${rowIndex})`}
       >
         <span className="text-xs text-white font-mono">{value}</span>
       </div>
@@ -96,7 +96,7 @@ const MazeTilemapAnalyzer: React.FC = () => {
       <div 
         key={`${rowIndex}-${colIndex}`}
         className={`${getBgColor(cell)} w-16 h-16 border border-gray-900 flex items-center justify-center relative`}
-        title={`Cell ${cell.id}: Group ${cell.group_seq}, Seq ${cell.seq}, Filled: ${cell.is_filled}`}
+        title={`Cell ${cell.id}: Group ${cell.group_seq}, Seq ${cell.seq}, Filled: ${cell.is_filled} - Position: (${colIndex}, ${rowIndex})`}
       >
         {connectionLines}
         <div className="text-center">
