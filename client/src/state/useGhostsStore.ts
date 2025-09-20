@@ -15,7 +15,6 @@ import * as config from "@/config/ghostBehavior.json";
 
 const { EXIT_HOME: EXIT_POSITION } = config.DEFAULT_POSITIONS;
 
-
 interface Ghost extends Entity {
   actions: {
     setPosition: (position: Position) => void;
@@ -41,7 +40,6 @@ interface IGhostsState {
     getGhosts: () => Ghost[];
   };
 }
-
 
 // Factory function para crear fantasmas
 const createGhost = (id: string, set: any, get: any): Ghost => ({
@@ -145,7 +143,6 @@ const createGhost = (id: string, set: any, get: any): Ghost => ({
   },
 });
 
-
 const useGhostsStore = create<IGhostsState>()(
   immer((set, get) => ({
     blinky: createGhost("blinky", set, get),
@@ -155,24 +152,37 @@ const useGhostsStore = create<IGhostsState>()(
 
     actions: {
       frightenAll: () => {
-        let ids = get().actions.getGhosts().map(g => g.id);
+        let ids = get()
+          .actions.getGhosts()
+          .map((g) => g.id);
         set((state: IGhostsState) => {
           // ✅ Modifica directamente el estado dentro del contexto actual
           ids.forEach((ghostId) => {
             const ghost = (state as any)[ghostId];
-            ghost.components.behavior.mode = GhostBehaviorMode.FRIGHTENED;
-            ghost.components.behavior.ticks = 50;
-            ghost.components.behavior.target = {
-              kind: TargetKind.TILE,
-              position:EXIT_POSITION[ghost.components.behavior.kind as keyof typeof EXIT_POSITION],
-            };
-            console.log(`${ghost.id} is now FRIGHTENED, ${ghost.components.behavior.mode}`);
+            if (
+              ghost.components.behavior.mode !== GhostBehaviorMode.HOUSE &&
+              ghost.components.behavior.mode !== GhostBehaviorMode.EXITING_HOUSE
+            ) {
+              ghost.components.behavior.mode = GhostBehaviorMode.FRIGHTENED;
+              ghost.components.behavior.target = {
+                kind: TargetKind.TILE,
+                position:
+                  EXIT_POSITION[
+                    ghost.components.behavior.kind as keyof typeof EXIT_POSITION
+                  ],
+              };
+              console.log(
+                `${ghost.id} is now FRIGHTENED, ${ghost.components.behavior.mode}`
+              );
+            }
           });
         });
       },
       getGhosts: () => {
-        return ["blinky", "pinky", "inky", "clyde"].map((id) => (get() as any)[id]);
-      }
+        return ["blinky", "pinky", "inky", "clyde"].map(
+          (id) => (get() as any)[id]
+        );
+      },
     },
   }))
 );
