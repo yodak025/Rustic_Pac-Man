@@ -73,9 +73,10 @@ export class RusticGameEngine {
 
   private initGhostsEntities(): void {
     const blinkyStore = useGhostsStore.getState().blinky;
+    blinkyStore.actions.clearDirections();
     blinkyStore.actions.setPosition(STARTING_POSITIONS.BLINKY as Position);
     blinkyStore.actions.setMovementTimerInterval(300);
-    blinkyStore.actions.initBehavior(10); // Inicializa el comportamiento con 7 ticks
+    blinkyStore.actions.initBehavior(0); // Inicializa el comportamiento con 7 ticks
     blinkyStore.actions.setBehaviorMode('HOUSE'); // Establece el modo inicial a 'CHASE'
     blinkyStore.actions.setBehaviorTarget({
       kind: 'HOUSE',
@@ -83,9 +84,10 @@ export class RusticGameEngine {
     })
 
     const pinkyStore = useGhostsStore.getState().pinky;
+    pinkyStore.actions.clearDirections();
     pinkyStore.actions.setPosition(STARTING_POSITIONS.PINKY as Position);
     pinkyStore.actions.setMovementTimerInterval(300);
-    pinkyStore.actions.initBehavior(300); // Inicializa el comportamiento con 7 ticks
+    pinkyStore.actions.initBehavior(15); // Inicializa el comportamiento con 7 ticks
     pinkyStore.actions.setBehaviorMode('HOUSE'); // Establece el modo inicial a 'CHASE'
     pinkyStore.actions.setBehaviorTarget({
       kind: 'HOUSE',
@@ -93,9 +95,10 @@ export class RusticGameEngine {
     })
 
     const inkyStore = useGhostsStore.getState().inky;
+    inkyStore.actions.clearDirections();
     inkyStore.actions.setPosition(STARTING_POSITIONS.INKY as Position);
     inkyStore.actions.setMovementTimerInterval(300);
-    inkyStore.actions.initBehavior(450); // Inicializa el comportamiento con 7 ticks
+    inkyStore.actions.initBehavior(30); // Inicializa el comportamiento con 7 ticks
     inkyStore.actions.setBehaviorMode('HOUSE'); // Establece el modo inicial a 'CHASE'
     inkyStore.actions.setBehaviorTarget({
       kind: 'HOUSE',
@@ -103,9 +106,10 @@ export class RusticGameEngine {
     })
 
     const clydeStore = useGhostsStore.getState().clyde;
+    clydeStore.actions.clearDirections();
     clydeStore.actions.setPosition(STARTING_POSITIONS.CLYDE as Position);
     clydeStore.actions.setMovementTimerInterval(300);
-    clydeStore.actions.initBehavior(150); // Inicializa el comportamiento con 7 ticks
+    clydeStore.actions.initBehavior(45); // Inicializa el comportamiento con 7 ticks
     clydeStore.actions.setBehaviorMode('HOUSE'); // Establece el modo inicial a 'CHASE'
     clydeStore.actions.setBehaviorTarget({
       kind: 'HOUSE',
@@ -203,29 +207,26 @@ export class RusticGameEngine {
         default:
           break;
       }
-
-    }
-    if (useGameStatusStore.getState().status !== 'PLAYING') {
-      this.stop(); // Stop the game loop if the game is not in 'PLAYING' status
       this.animationFrameId = requestAnimationFrame(() => this.gameLoop());
       return;
     }
+    if (useGameStatusStore.getState().status !== 'PLAYING') {
+      this.stop(); // Stop the game loop if the game is not in 'PLAYING' status
+    }else{
+      const currentTime = performance.now();
+      const deltaTime = currentTime - this.lastTime;
+      this.lastTime = currentTime;
 
-    const currentTime = performance.now();
-    const deltaTime = currentTime - this.lastTime;
-    this.lastTime = currentTime;
-
-    endgameConditions()
+      endgameConditions()
 
     // Run systems
     // TODO - Coleguita, esto de aquí es una chapuza monumental.
     // TODO - Los sistemas no conmutan. Hay que crear un sistema de eventos. 
-    playerControlSystem(this.keyState); 
-    ghostBehaviorSystem(deltaTime);
-    collisionSystem(deltaTime); //! Cogido con papel de fumar 
-    movementSystem(deltaTime); //! LOS INTERVALOS DE MOVIMIENTO ESTÁN ACOPLADOS, NO TOQUES EL ORDEN DE EJECUCIÓN
-
-    
+      playerControlSystem(this.keyState); 
+      ghostBehaviorSystem(deltaTime);
+      collisionSystem(deltaTime); //! Cogido con papel de fumar 
+      movementSystem(deltaTime); //! LOS INTERVALOS DE MOVIMIENTO ESTÁN ACOPLADOS, NO TOQUES EL ORDEN DE EJECUCIÓN
+    }
     this.animationFrameId = requestAnimationFrame(() => this.gameLoop());
   }
 }

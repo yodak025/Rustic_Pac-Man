@@ -10,7 +10,6 @@ import {
 } from "@custom-types/gameComponents";
 
 import * as config from "@/config/ghostBehavior.json";
-import { clear } from "console";
 const {
   HOME: HOUSE_POSITION,
   EXIT_HOME: EXIT_POSITION,
@@ -18,12 +17,17 @@ const {
 } = config.DEFAULT_POSITIONS;
 
 export function ghostBehaviorSystem(deltaTime: number): void {
+  
   const ghosts = useGhostsStore.getState().actions.getGhosts();
-
   // Process each ghost
   ghosts.forEach((ghost) => {
+    
+    const isTimeToMove = ghost.actions.isTimeToMove(deltaTime);
+    console.log(`deltaTime: ${deltaTime} for ${ghost.components.behavior.kind}. El valor de isTimeToMove es ${isTimeToMove}. Elapsed: ${ghost.components.movementTimer.elapsed}, Interval: ${ghost.components.movementTimer.interval}`);
     // Skip if it's not time for this ghost to move
-    if (!ghost.actions.isTimeToMove(deltaTime)) return;
+    if (!isTimeToMove) {
+      return
+    }
     // [ERROR HANDLING] Remenber to check the props and its values
     const { x: ghx, y: ghy } = ghost.components.position;
     const { x: tx, y: ty } = ghost.components.behavior.target.position;
@@ -41,6 +45,7 @@ export function ghostBehaviorSystem(deltaTime: number): void {
               ],
           });
         } else {
+          console.log(`Initial Ghost ${ghost.components.behavior.kind} in house, ticks left: ${ghost.components.behavior.ticks}`);
           ghost.actions.setBehaviorTicks(ghost.components.behavior.ticks - 1); //[TODO] create a decrement action
           return; // Stay in house until ticks run out
         }
@@ -195,7 +200,7 @@ export function ghostBehaviorSystem(deltaTime: number): void {
       default:
         throw `The GhostBehaviorMode '${ghost.components.behavior.mode}' is not recognized in ghostBehaviorSystem`;
     }
-
+    console.log(`Deciding direction for ${ghost.components.behavior.kind} in mode ${ghost.components.behavior.mode}`);
     const isWallAt = useMazeState.getState().isWallAt;
     const isHouseTileAt = useMazeState.getState().isHouseTileAt;
     const directions = ghost.components.directions as Array<Direction>;

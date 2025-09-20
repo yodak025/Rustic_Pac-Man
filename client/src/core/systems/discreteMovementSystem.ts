@@ -55,7 +55,7 @@ export function movementSystem(deltaTime: number): void {
       incrementMovementTimer(deltaTime);
       return;
     }
-    if (directions.length === 0) {
+    if (directions.length === 0 && entity.id === 'pacman') {
       //! ALTAMENTE ACOPLADO Y MUY FRAGIL
       // TODO - Me sangran los ojos
       return; //? Esto evita que se ejecute el incrementMovementTimer, dejando a pacman ready para el siguiente movimiento
