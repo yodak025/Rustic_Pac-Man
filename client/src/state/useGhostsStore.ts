@@ -11,6 +11,11 @@ import {
   TargetKind,
 } from "@custom-types/gameComponents";
 
+import * as config from "@/config/ghostBehavior.json";
+
+const { EXIT_HOME: EXIT_POSITION } = config.DEFAULT_POSITIONS;
+
+
 interface Ghost extends Entity {
   actions: {
     setPosition: (position: Position) => void;
@@ -37,17 +42,18 @@ interface IGhostsState {
   };
 }
 
+
 // Factory function para crear fantasmas
 const createGhost = (id: string, set: any, get: any): Ghost => ({
   id,
   components: {
     position: { x: 0, y: 0 } as Position,
     movementTimer: { elapsed: 0, interval: 100 } as MovementTimer,
-    directions: [Direction.RIGHT as Direction],
+    directions: [],
     behavior: {
       kind: GhostBehaviorKind.BLINKY,
       mode: GhostBehaviorMode.HOUSE,
-      target: { kind: TargetKind.RANDOM, position: { x: 0, y: 0 } },
+      target: {},
       ticks: null,
     } as Behavior,
   },
@@ -139,6 +145,7 @@ const createGhost = (id: string, set: any, get: any): Ghost => ({
   },
 });
 
+
 const useGhostsStore = create<IGhostsState>()(
   immer((set, get) => ({
     blinky: createGhost("blinky", set, get),
@@ -157,7 +164,7 @@ const useGhostsStore = create<IGhostsState>()(
             ghost.components.behavior.ticks = 50;
             ghost.components.behavior.target = {
               kind: TargetKind.TILE,
-              position: { x: 15, y: 11 },
+              position:EXIT_POSITION[ghost.components.behavior.kind as keyof typeof EXIT_POSITION],
             };
             console.log(`${ghost.id} is now FRIGHTENED, ${ghost.components.behavior.mode}`);
           });

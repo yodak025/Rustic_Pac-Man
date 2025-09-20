@@ -6,12 +6,15 @@ import type { Entity } from "@custom-types/gameEntities";
 // Wall entity with Collidable component
 interface WallEntity extends Entity {};
 
+interface HouseEntity extends Entity {};
+
 // Collectable entity with Collectable component
 interface CollectableEntity extends Entity {};
 
 // Main maze structure
 interface Maze {
   walls: Record<string, WallEntity>;
+  houseTiles: Record<string, HouseEntity>;
   collectables: {
     pacDots: Record<string, CollectableEntity>;
     powerPellets: Record<string, CollectableEntity>;
@@ -34,9 +37,11 @@ interface MazeState {
   maze: Maze;
   // Actions
   createWall: (position: Position) => void;
+  createHouseTile: (position: Position) => void; // Future use
   createPacDot: (position: Position) => void;
   createPowerPellet: (position: Position) => void;
   isWallAt: (position: Position) => boolean;
+  isHouseTileAt: (position: Position) => boolean; // Future use
   findCollectableAt: (position: Position) => string | null;
   removePacDot: (position: Position) => void;
   removePowerPellet: (position: Position) => void;
@@ -52,6 +57,7 @@ const useMazeState = create<MazeState>()(
   immer((set, get) => ({
     maze: {
       walls: {},
+      houseTiles: {},
       collectables: {
         pacDots: {},
         powerPellets: {},
@@ -75,6 +81,20 @@ const useMazeState = create<MazeState>()(
       set((state) => {
         const key = positionToKey(position);
         state.maze.walls[key] = {
+          id: key,
+          components: {
+            position: position as Position,
+            collidable: { value: true } as Collidable,
+          },
+          actions: {}
+        }
+      }),
+
+    // Create a house tile entity at the specified position (for future use)
+    createHouseTile: (position) =>
+      set((state) => {
+        const key = positionToKey(position);
+        state.maze.houseTiles[key] = {
           id: key,
           components: {
             position: position as Position,
@@ -117,6 +137,13 @@ const useMazeState = create<MazeState>()(
       const key = positionToKey(position);
       const state = get();
       return key in state.maze.walls;
+    },
+
+    // Check if there is a house tile at the specified position (for future use)
+    isHouseTileAt: (position) => {
+      const key = positionToKey(position);
+      const state = get();
+      return key in state.maze.houseTiles;
     },
 
     // Find collectable at the specified position

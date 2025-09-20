@@ -6,30 +6,39 @@ import { Direction } from "@custom-types/gameComponents";
 import {
   GhostBehaviorMode,
   GhostBehaviorKind,
+  TargetKind,
 } from "@custom-types/gameComponents";
+
+import * as config from "@/config/ghostBehavior.json";
+import { clear } from "console";
+const {
+  HOME: HOUSE_POSITION,
+  EXIT_HOME: EXIT_POSITION,
+  SCATTER: SCATTER_POSITIONS,
+} = config.DEFAULT_POSITIONS;
+
 export function ghostBehaviorSystem(deltaTime: number): void {
   const ghosts = useGhostsStore.getState().actions.getGhosts();
 
   // Process each ghost
   ghosts.forEach((ghost) => {
     // Skip if it's not time for this ghost to move
-    if (!ghost.actions.isTimeToMove(deltaTime)) {
-      return;
-    }
-
+    if (!ghost.actions.isTimeToMove(deltaTime)) return;
+    // [ERROR HANDLING] Remenber to check the props and its values
     const { x: ghx, y: ghy } = ghost.components.position;
-    const { x: tx, y: ty } = ghost.components.behavior.target.position || {
-      x: 14,
-      y: 14,
-    };
+    const { x: tx, y: ty } = ghost.components.behavior.target.position;
+    const clearDirections = ghost.actions.clearDirections;
 
     switch (ghost.components.behavior.mode) {
       case GhostBehaviorMode.HOUSE:
         if (ghost.components.behavior.ticks <= 0) {
           ghost.actions.setBehaviorMode(GhostBehaviorMode.EXITING_HOUSE);
           ghost.actions.setBehaviorTarget({
-            kind: "HOUSE",
-            position: { x: 14, y: 10 },
+            kind: TargetKind.TILE,
+            position:
+              EXIT_POSITION[
+                ghost.components.behavior.kind as keyof typeof EXIT_POSITION
+              ],
           });
         } else {
           ghost.actions.setBehaviorTicks(ghost.components.behavior.ticks - 1); //[TODO] create a decrement action
@@ -40,7 +49,7 @@ export function ghostBehaviorSystem(deltaTime: number): void {
         if (ghx === tx && ghy === ty) {
           ghost.actions.setBehaviorMode(GhostBehaviorMode.CHASE);
           ghost.actions.setBehaviorTarget({
-            kind: "CHASE",
+            kind: TargetKind.PLAYER,
             position: usePacmanStore.getState().pacman.components.position,
           });
         }
@@ -52,7 +61,7 @@ export function ghostBehaviorSystem(deltaTime: number): void {
         switch (ghost.components.behavior.kind) {
           case GhostBehaviorKind.BLINKY:
             ghost.actions.setBehaviorTarget({
-              kind: "PLAYER",
+              kind: TargetKind.PLAYER,
               position: usePacmanStore.getState().pacman.components.position,
             });
             break;
@@ -77,7 +86,7 @@ export function ghostBehaviorSystem(deltaTime: number): void {
                 break;
             }
             ghost.actions.setBehaviorTarget({
-              kind: "PLAYER_AHEAD",
+              kind: TargetKind.PLAYER,
               position: targetPos,
             });
             break;
@@ -92,17 +101,16 @@ export function ghostBehaviorSystem(deltaTime: number): void {
             );
             if (distance > 8) {
               ghost.actions.setBehaviorTarget({
-                kind: "PLAYER",
+                kind: TargetKind.PLAYER,
                 position: pacPosition,
               });
             } else {
               ghost.actions.setBehaviorTarget({
-                kind: "SCATTER",
+                kind: TargetKind.PLAYER,
                 position: { x: 0, y: 34 },
               });
             }
             break;
-
           case GhostBehaviorKind.INKY:
             // Target is determined by a point 2 tiles ahead of Pacman and
             // a vector from Blinky to that point, doubled.
@@ -131,7 +139,7 @@ export function ghostBehaviorSystem(deltaTime: number): void {
             const targetX = intermediatePos.x + vectorX;
             const targetY = intermediatePos.y + vectorY;
             ghost.actions.setBehaviorTarget({
-              kind: "PLAYER_VECTOR",
+              kind: TargetKind.PLAYER,
               position: { x: targetX, y: targetY },
             });
             break;
@@ -139,25 +147,59 @@ export function ghostBehaviorSystem(deltaTime: number): void {
 
         break;
       case GhostBehaviorMode.FRIGHTENED:
-          if (ghost.components.position.x === 15 && ghost.components.position.y === 11) { //[IMPROVEMENT] Hardcoded position of the door
-            ghost.actions.setBehaviorMode(GhostBehaviorMode.HOUSE);
-            ghost.actions.setBehaviorTarget({
-              kind: "HOUSE",
-              position: { x: 15, y: 13 },
-            });
-            ghost.actions.setBehaviorTicks(15); //[IMPROVEMENT] Hardcoded ticks in the house. Could be JSON config, could be randomized.
-          }
+        if (
+          ghost.components.position.x ==
+            EXIT_POSITION[
+              ghost.components.behavior.kind as keyof typeof EXIT_POSITION
+            ].x &&
+          ghost.components.position.y ==
+            EXIT_POSITION[
+              ghost.components.behavior.kind as keyof typeof EXIT_POSITION
+            ].y
+        ) {
+          ghost.actions.setBehaviorMode(GhostBehaviorMode.FRIGHTENED);
+          ghost.actions.setBehaviorTarget({
+            kind: TargetKind.HOUSE,
+            position:
+              HOUSE_POSITION[
+                ghost.components.behavior.kind as keyof typeof HOUSE_POSITION
+              ],
+          });
+          ghost.actions.addDirection(Direction.DOWN);
+          return; // Keep moving down until out of the house
+        } else if (
+          ghost.components.position.x ==
+            HOUSE_POSITION[
+              ghost.components.behavior.kind as keyof typeof HOUSE_POSITION
+            ].x &&
+          ghost.components.position.y ==
+            HOUSE_POSITION[
+              ghost.components.behavior.kind as keyof typeof HOUSE_POSITION
+            ].y
+        ) {
+          ghost.actions.setBehaviorMode(GhostBehaviorMode.HOUSE);
+          ghost.actions.setBehaviorTarget({
+            kind: TargetKind.HOUSE,
+            position:
+              HOUSE_POSITION[
+                ghost.components.behavior.kind as keyof typeof HOUSE_POSITION
+              ],
+          });
+          clearDirections();
+          ghost.actions.setBehaviorTicks(15); //[IMPROVEMENT] Hardcoded ticks in the house. Could be JSON config, could be randomized.
+          return
+        }
         break;
       case GhostBehaviorMode.EATEN:
-        return; 
+        return;
       default:
         throw `The GhostBehaviorMode '${ghost.components.behavior.mode}' is not recognized in ghostBehaviorSystem`;
     }
 
     const isWallAt = useMazeState.getState().isWallAt;
+    const isHouseTileAt = useMazeState.getState().isHouseTileAt;
     const directions = ghost.components.directions as Array<Direction>;
 
-    const clearDirections = ghost.actions.clearDirections;
     const addDirection = ghost.actions.addDirection;
 
     const decide = () => {
@@ -186,7 +228,13 @@ export function ghostBehaviorSystem(deltaTime: number): void {
         .filter(
           (move) =>
             move.dir !== oppositeDirections[currentDirection] &&
-            !isWallAt({ x: move.x, y: move.y })
+            !isWallAt({ x: move.x, y: move.y }) &&
+            !(
+              ghost.components.behavior.mode !==
+                GhostBehaviorMode.EXITING_HOUSE &&
+              ghost.components.behavior.mode !== GhostBehaviorMode.FRIGHTENED &&
+              isHouseTileAt({ x: move.x, y: move.y })
+            ) // Ghosts (except when exiting) cannot enter house tiles
         )
         .map((move) => ({
           direction: move.dir,

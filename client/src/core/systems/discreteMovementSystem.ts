@@ -24,6 +24,9 @@ export function movementSystem(deltaTime: number): void {
     if (useMazeState.getState().isWallAt(position)) {
       return;
     }
+    if (useMazeState.getState().isHouseTileAt(position) && entity.id === 'pacman') {
+      return;
+    }
     setPosition(position);
     collectSystem(position, entity);
   };

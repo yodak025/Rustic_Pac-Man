@@ -14,6 +14,9 @@ import useMazeState from '@/state/useMazeStore';
 import type { Position} from '@custom-types/gameComponents';
 import gameStatusValue from '@custom-types/gameStatusValue';
 
+import * as config from '@/config/ghostBehavior.json';
+
+const STARTING_POSITIONS = config.DEFAULT_POSITIONS.HOME;
 
 export class RusticGameEngine {
   private isRunning: boolean = false;
@@ -70,33 +73,50 @@ export class RusticGameEngine {
 
   private initGhostsEntities(): void {
     const blinkyStore = useGhostsStore.getState().blinky;
-    blinkyStore.actions.setPosition({ x: 18, y: 12 } as Position);
+    blinkyStore.actions.setPosition(STARTING_POSITIONS.BLINKY as Position);
     blinkyStore.actions.setMovementTimerInterval(300);
-    blinkyStore.actions.initBehavior(0); // Inicializa el comportamiento con 7 ticks
+    blinkyStore.actions.initBehavior(10); // Inicializa el comportamiento con 7 ticks
     blinkyStore.actions.setBehaviorMode('HOUSE'); // Establece el modo inicial a 'CHASE'
+    blinkyStore.actions.setBehaviorTarget({
+      kind: 'HOUSE',
+      position: STARTING_POSITIONS.BLINKY as Position
+    })
 
     const pinkyStore = useGhostsStore.getState().pinky;
-    pinkyStore.actions.setPosition({ x: 18, y: 14 } as Position);
+    pinkyStore.actions.setPosition(STARTING_POSITIONS.PINKY as Position);
     pinkyStore.actions.setMovementTimerInterval(300);
-    pinkyStore.actions.initBehavior(30); // Inicializa el comportamiento con 7 ticks
+    pinkyStore.actions.initBehavior(300); // Inicializa el comportamiento con 7 ticks
     pinkyStore.actions.setBehaviorMode('HOUSE'); // Establece el modo inicial a 'CHASE'
+    pinkyStore.actions.setBehaviorTarget({
+      kind: 'HOUSE',
+      position: STARTING_POSITIONS.PINKY as Position
+    })
 
     const inkyStore = useGhostsStore.getState().inky;
-    inkyStore.actions.setPosition({ x: 13, y: 14 } as Position);
+    inkyStore.actions.setPosition(STARTING_POSITIONS.INKY as Position);
     inkyStore.actions.setMovementTimerInterval(300);
-    inkyStore.actions.initBehavior(45); // Inicializa el comportamiento con 7 ticks
+    inkyStore.actions.initBehavior(450); // Inicializa el comportamiento con 7 ticks
     inkyStore.actions.setBehaviorMode('HOUSE'); // Establece el modo inicial a 'CHASE'
+    inkyStore.actions.setBehaviorTarget({
+      kind: 'HOUSE',
+      position: STARTING_POSITIONS.INKY as Position
+    })
 
     const clydeStore = useGhostsStore.getState().clyde;
-    clydeStore.actions.setPosition({ x: 13, y: 12 } as Position);
+    clydeStore.actions.setPosition(STARTING_POSITIONS.CLYDE as Position);
     clydeStore.actions.setMovementTimerInterval(300);
-    clydeStore.actions.initBehavior(15); // Inicializa el comportamiento con 7 ticks
+    clydeStore.actions.initBehavior(150); // Inicializa el comportamiento con 7 ticks
     clydeStore.actions.setBehaviorMode('HOUSE'); // Establece el modo inicial a 'CHASE'
+    clydeStore.actions.setBehaviorTarget({
+      kind: 'HOUSE',
+      position: STARTING_POSITIONS.CLYDE as Position
+    })
   }
 
   private async initMazeEntities(): Promise<void> {
     const mazeTiles = await loadMaze();
     const WALL = 1;
+    const HOUSE = -3;
     const PAC_DOT = 0;
     const POWER_PELLET = 2;
     const mazeState = useMazeState.getState();
@@ -119,6 +139,8 @@ export class RusticGameEngine {
         } else if (tile === POWER_PELLET) {
           mazeState.createPowerPellet(localPosition);
           powerPelletCounter++;
+        } else if (tile === HOUSE) {
+          mazeState.createHouseTile(localPosition);
         }
       });
     })

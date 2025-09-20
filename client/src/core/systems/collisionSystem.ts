@@ -2,6 +2,7 @@ import usePacmanStore from "@/state/usePacmanStore";
 import useGhostsStore from "@/state/useGhostsStore";
 
 //! Implementación sesgada para un jugador y un fantasma de tipo Blinky
+//! Tienes un componente collidable en las paredes coleguita
 export function collisionSystem(deltaTime: number): void {
   const pacman = usePacmanStore.getState().pacman;
   if (!pacman.actions.isTimeToMove(deltaTime)) {
@@ -19,6 +20,7 @@ export function collisionSystem(deltaTime: number): void {
       if (ghost.components.behavior.mode === "FRIGHTENED") {
         // Pacman eats the ghost
         ghost.actions.setBehaviorMode("EATEN");
+        ghost.actions.clearDirections();
         return true;
       } 
       if (ghost.components.behavior.mode === "EATEN") {

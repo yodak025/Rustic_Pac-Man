@@ -1,0 +1,60 @@
+{
+  "DEVELOPEMENT_INFO": "This file contains the default positions for the ghosts in the game. It should be dynamically generated inside the maze generator in the future.",
+  "DEFAULT_POSITIONS": {
+    "HOME": {
+      "BLINKY": {
+        "x": 18,
+        "y": 12
+      },
+      "PINKY": {
+        "x": 18,
+        "y": 14
+      },
+      "INKY": {
+        "x": 13,
+        "y": 14
+      },
+      "CLYDE": {
+        "x": 13,
+        "y": 12
+      }
+    },
+    "EXIT_HOME": {
+      "BLINKY": {
+        "x": 16,
+        "y": 11
+      },
+      "PINKY": {
+        "x": 16,
+        "y": 11
+      },
+      "INKY": {
+        "x": 15,
+        "y": 11
+      },
+      "CLYDE": {
+        "x": 15,
+        "y": 11
+      }
+    },
+    "ENTER_HOME": {
+      "BLINKY": {
+        "x": 16,
+        "y": 11
+      },
+      "PINKY": {
+        "x": 16,
+        "y": 11
+      },
+      "INKY": {
+        "x": 15,
+        "y": 11
+      },
+      "CLYDE": {
+        "x": 15,
+        "y": 11
+      }
+    },
+    "SCATTER": {}
+  }
+}

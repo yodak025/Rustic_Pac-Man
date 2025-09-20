@@ -49,7 +49,7 @@ def ghost_home_cells(cells, cols):
 
 def set_ghost_home_door_tiles(set_tiles) -> None:
     #-- 
-    set_tiles(11,2,"d")
+    set_tiles(11,2,"h")
     set_tiles(12,2,"h")
     set_tiles(13,2,"h")
     set_tiles(14,2,"h")
