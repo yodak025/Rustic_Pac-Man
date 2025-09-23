@@ -27,6 +27,7 @@ interface Ghost extends Entity {
     setBehaviorMode: (mode: GhostBehaviorMode) => void;
     setBehaviorTarget: (target: Behavior["target"]) => void;
     setBehaviorTicks: (ticks: number | null) => void;
+    setPeer: (peer: Object | null) => void;
   };
 }
 
@@ -53,6 +54,7 @@ const createGhost = (id: string, set: any, get: any): Ghost => ({
       mode: GhostBehaviorMode.HOUSE,
       target: {},
       ticks: null,
+      peer: null,
     } as Behavior,
   },
   actions: {
@@ -140,6 +142,11 @@ const createGhost = (id: string, set: any, get: any): Ghost => ({
         (state as any)[id].components.behavior.ticks = ticks;
       });
     },
+    setPeer(peer) {
+      set((state: IGhostsState) => {
+        (state as any)[id].components.behavior.peer = peer;
+      });
+    }
   },
 });
 

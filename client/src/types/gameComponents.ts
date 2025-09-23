@@ -80,4 +80,5 @@ export interface Behavior {
     position: Position | null;
   }
   ticks : number | null;
+  peer: Object | null; // [TODO] Enhance this typing if possible
 }

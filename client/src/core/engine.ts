@@ -2,7 +2,7 @@ import usePacmanStore from '@/state/usePacmanStore';
 import useGhostsStore from '@/state/useGhostsStore';
 import { movementSystem } from './systems/discreteMovementSystem';
 import { playerControlSystem } from './systems/playerControlSystem';
-import { ghostBehaviorSystem } from './systems/ghostBehaviorSystem';
+import { ghostBehaviorSystem } from './systems/ghost-behavior-system/ghostBehaviorSystem';
 import { collisionSystem } from './systems/collisionSystem';
 import endgameConditions from './endgameConditions';
 
@@ -104,6 +104,8 @@ export class RusticGameEngine {
       kind: 'HOUSE',
       position: STARTING_POSITIONS.INKY as Position
     })
+    // [TODO] Manage peer connection in a less messy way
+    inkyStore.actions.setPeer(()=> {return useGhostsStore.getState().blinky});
 
     const clydeStore = useGhostsStore.getState().clyde;
     clydeStore.actions.clearDirections();
