@@ -1,5 +1,4 @@
 {
-  "DEVELOPEMENT_INFO": "This file contains the default positions for the ghosts in the game. It should be dynamically generated inside the maze generator in the future.",
   "DEFAULT_POSITIONS": {
     "HOME": {
       "BLINKY": {
@@ -55,6 +54,85 @@
         "y": 11
       }
     },
-    "SCATTER": {}
+    "SCATTER": {
+      "BLINKY": {
+        "x": 27,
+        "y": 0
+      },
+      "PINKY": {
+        "x": 0,
+        "y": 0
+      },
+      "INKY": {
+        "x": 27,
+        "y": 31
+      },
+      "CLYDE": {
+        "x": 0,
+        "y": 31
+      }
+    }
+  }, 
+  "MODE_CHANGE_SCHEMA": [
+    {
+    "CHASE": {
+      "PROBABILITY": 0.5,
+      "SECONDS": 20
+    },
+    "SCATTER": {
+      "PROBABILITY":1,
+      "SECONDS": 7
+    }
+  },
+    {
+    "CHASE": {
+      "PROBABILITY": 0.75,
+      "SECONDS": 20
+    },
+    "SCATTER": {
+      "PROBABILITY":0.9,
+      "SECONDS": 7
+    }
+  },
+    {
+    "CHASE": {
+      "PROBABILITY": 0.75,
+      "SECONDS": 20
+    },
+    "SCATTER": {
+      "PROBABILITY":0.9,
+      "SECONDS": 5
+    }
+  },
+    {
+    "CHASE": {
+      "PROBABILITY": 1,
+      "SECONDS": 20
+    },
+    "SCATTER": {
+      "PROBABILITY":0.75,
+      "SECONDS": 5
+    }
+  },
+    {
+    "CHASE": {
+      "PROBABILITY": 1,
+      "SECONDS": 20
+    },
+    "SCATTER": {
+      "PROBABILITY":0.5,
+      "SECONDS": 5
+    }
+  },
+    {
+    "CHASE": {
+      "PROBABILITY": 1,
+      "SECONDS": 20
+    },
+    "SCATTER": {
+      "PROBABILITY":0.1,
+      "SECONDS": 5
+    }
   }
+  ]
 }

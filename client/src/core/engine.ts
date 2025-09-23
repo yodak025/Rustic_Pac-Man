@@ -189,10 +189,10 @@ export class RusticGameEngine {
     }
   }
 
-  private gameLoop(): void {
+  private gameLoop(): void {  
     if (!this.isRunning) {
       switch (useGameStatusStore.getState().status) {
-        case gameStatusValue.WON:
+        case gameStatusValue.WON: 
           useGameStatusStore.getState().setNextLevel();
         case gameStatusValue.READY_TO_LOAD:
         case gameStatusValue.RESTARTING:

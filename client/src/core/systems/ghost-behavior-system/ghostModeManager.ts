@@ -6,13 +6,21 @@ import {
 } from "@custom-types/gameComponents";
 
 import * as config from "@/config/ghostBehavior.json";
+
+import useGameStatusStore from "@/state/useGameStatusStore";
+
 const {
   HOME: HOUSE_POSITION,
   EXIT_HOME: EXIT_POSITION,
   SCATTER: SCATTER_TARGET,
 } = config.DEFAULT_POSITIONS;
 
-export function manageBehaviorMode(ghost: any, chaseCallback: () => void): boolean {
+const CHANGE = config.MODE_CHANGE_SCHEMA;
+
+export function manageBehaviorMode(
+  ghost: any,
+  chaseCallback: () => void
+): boolean {
   const { x: ghx, y: ghy } = ghost.components.position;
   const { x: tx, y: ty } = ghost.components.behavior.target.position;
   const clearDirections = ghost.actions.clearDirections;
@@ -40,13 +48,72 @@ export function manageBehaviorMode(ghost: any, chaseCallback: () => void): boole
           kind: TargetKind.PLAYER,
           position: usePacmanStore.getState().pacman.components.position,
         });
+        const levelId = useGameStatusStore.getState().level - 1; // Zero-based index
+        ghost.actions.setBehaviorTicks(
+          Math.round(
+            CHANGE[levelId].CHASE.SECONDS /
+              (ghost.components.movementTimer.interval / 1000)
+          )
+        );
       }
       return true;
     case GhostBehaviorMode.SCATTER:
-      // Logic for scatter behavior (not implemented here)
+      if (ghost.components.behavior.ticks <= 0) {
+        // Time to consider switching to CHASE
+        const levelId = useGameStatusStore.getState().level - 1; // Zero-based index
+        const isChange = CHANGE[levelId].CHASE.PROBABILITY;
+        ghost.actions.setBehaviorMode(
+          isChange ? GhostBehaviorMode.CHASE : GhostBehaviorMode.SCATTER
+        );
+        ghost.actions.setBehaviorTarget({
+          kind: isChange ? TargetKind.PLAYER : TargetKind.TILE,
+          position: isChange
+            ? usePacmanStore.getState().pacman.components.position
+            : SCATTER_TARGET[
+                ghost.components.behavior.kind as keyof typeof SCATTER_TARGET
+              ],
+        });
+        ghost.actions.setBehaviorTicks(
+          Math.round(
+            (isChange
+              ? CHANGE[levelId].CHASE.SECONDS
+              : CHANGE[levelId].SCATTER.SECONDS) /
+              (ghost.components.movementTimer.interval / 1000)
+          )
+        );
+      } else {
+        ghost.actions.setBehaviorTicks(ghost.components.behavior.ticks - 1); //[TODO] create a decrement action
+      }
       return true;
     case GhostBehaviorMode.CHASE:
-      chaseCallback();
+      if (ghost.components.behavior.ticks <= 0) {
+        // Time to consider switching to CHASE
+        const levelId = useGameStatusStore.getState().level - 1; // Zero-based index
+        const isChange = CHANGE[levelId].SCATTER.PROBABILITY;
+        ghost.actions.setBehaviorMode(
+          isChange ? GhostBehaviorMode.SCATTER : GhostBehaviorMode.CHASE
+        );
+        ghost.actions.setBehaviorTarget({
+          kind: isChange ? TargetKind.PLAYER : TargetKind.TILE,
+          position: isChange
+            ? SCATTER_TARGET[
+                ghost.components.behavior.kind as keyof typeof SCATTER_TARGET
+              ]
+            : usePacmanStore.getState().pacman.components.position,
+        });
+        ghost.actions.setBehaviorTicks(
+          Math.round(
+            (isChange
+              ? CHANGE[levelId].SCATTER.SECONDS
+              : CHANGE[levelId].CHASE.SECONDS) /
+              (ghost.components.movementTimer.interval / 1000)
+          )
+        );
+      } else {
+        chaseCallback();
+        ghost.actions.setBehaviorTicks(ghost.components.behavior.ticks - 1); //[TODO] create a decrement action
+      }
+
       return true;
     case GhostBehaviorMode.FRIGHTENED:
       if (
