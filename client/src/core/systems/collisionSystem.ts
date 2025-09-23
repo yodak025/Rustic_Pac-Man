@@ -5,11 +5,13 @@ import useGhostsStore from "@/state/useGhostsStore";
 //! Tienes un componente collidable en las paredes coleguita
 export function collisionSystem(deltaTime: number): void {
   const pacman = usePacmanStore.getState().pacman;
-  if (!pacman.actions.isTimeToMove(deltaTime)) {
-    return;
-  }
-
   const ghosts = useGhostsStore.getState();
+
+  const isAnlyGhostMoving = ghosts.actions.getGhosts().some((ghost) => ghost.actions.isTimeToMove(deltaTime));
+  
+  if ((!pacman.actions.isTimeToMove(deltaTime) && !isAnlyGhostMoving )|| pacman.components.health.isDamageTakenOnCurrentFrame) {
+    return; // No hay movimiento, no se necesita comprobar colisiones
+  }
   const { blinky, pinky, inky, clyde } = ghosts;
   const { x: px, y: py } = pacman.components.position;
   
@@ -36,8 +38,8 @@ export function collisionSystem(deltaTime: number): void {
     return false;
   };
 
-  checkGhostCollision(blinky, "Blinky") || 
-  checkGhostCollision(pinky, "Pinky") || 
-  checkGhostCollision(inky, "Inky") || 
+  checkGhostCollision(blinky, "Blinky") 
+  checkGhostCollision(pinky, "Pinky")
+  checkGhostCollision(inky, "Inky")
   checkGhostCollision(clyde, "Clyde");
 }

@@ -10,6 +10,7 @@ import {
   CollectableKind,
   type Collector
 } from "@custom-types/gameComponents";
+import { Face } from "three/examples/jsm/Addons.js";
 
 interface Pacman extends Entity {
   actions:{
@@ -37,13 +38,14 @@ const usePacmanStore = create<IPacmanState>()(
         movementTimer: { elapsed: 0, interval: 100 } as MovementTimer,
         directions: Array<Direction>(), 
         playable: { value: true } as Playable,
-        health: { value: 3 } as Health, // Default health value
+        health: { value: 3, isDamageTakenOnCurrentFrame: false} as Health, // Default health value
         collector: { collects: [CollectableKind.PAC_DOT, CollectableKind.POWER_PELLET] } as Collector,
       },
       actions: {
         setPosition: (position: Position) => {
           set((state) => {
             state.pacman.components.position = position;
+            state.pacman.components.health.isDamageTakenOnCurrentFrame = false;
           });
         },
         setMovementTimerInterval: (interval: number) => {
@@ -82,6 +84,7 @@ const usePacmanStore = create<IPacmanState>()(
           set((state) => {
             const currentHealth = state.pacman.components.health.value;
             state.pacman.components.health.value = Math.max(currentHealth - amount, 0);
+            state.pacman.components.health.isDamageTakenOnCurrentFrame = true;
           });
         },
         setHealth: (health: number) => {
