@@ -10,11 +10,11 @@ import {
   CollectableKind,
   type Collector
 } from "@custom-types/gameComponents";
-import { Face } from "three/examples/jsm/Addons.js";
 
 interface Pacman extends Entity {
   actions:{
     setPosition: (position: Position) => void;
+    setLastPosition: (position: Position) => void;
     setMovementTimerInterval: (interval: number) => void;
     clearDirections: () => void;
     addDirection: (direction: Direction) => void;
@@ -35,6 +35,7 @@ const usePacmanStore = create<IPacmanState>()(
       id: "pacman",
       components: {
         position: { x: 0, y: 0 } as Position,
+        lastPosition: { x: 0, y: 0 } as Position,
         movementTimer: { elapsed: 0, interval: 100 } as MovementTimer,
         directions: Array<Direction>(), 
         playable: { value: true } as Playable,
@@ -46,6 +47,11 @@ const usePacmanStore = create<IPacmanState>()(
           set((state) => {
             state.pacman.components.position = position;
             state.pacman.components.health.isDamageTakenOnCurrentFrame = false;
+          });
+        },
+        setLastPosition: (position: Position) => {
+          set((state) => {
+            state.pacman.components.lastPosition = position;
           });
         },
         setMovementTimerInterval: (interval: number) => {

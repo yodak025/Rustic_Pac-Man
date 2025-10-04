@@ -1,13 +1,23 @@
 import { useGLTF } from "@react-three/drei";
 import useGhostsStore from "@/state/useGhostsStore";
 import ConfigManager from "@/services/configManager";
-import { GhostBehaviorMode } from "@/types/gameComponents";
+import { GhostBehaviorMode, type Position } from "@/types/gameComponents";
+
+import { useGraphicPositionInterpolation } from "@/scenes/hooks/useGraphicPositionInterpolation";
 
 //! ESTE COMPONENTE VIOLA DRY, ARREGLALO
 
 export default function PinkyMesh() {
-  const { x, y: z } = useGhostsStore(
-    (state) => state.pinky.components.position
+  const pinkyPosition = useGhostsStore((state) => state.pinky.components.position as Position);
+  const pinkyDirection = useGhostsStore((state) => state.pinky.components.directions);
+  const pinkyTimer = useGhostsStore((state) => state.pinky.components.movementTimer);
+  const lastPosition = useGhostsStore((state) => state.pinky.components.lastPosition as Position);
+  
+  const iPos = useGraphicPositionInterpolation(
+    pinkyPosition,
+    pinkyTimer,
+    pinkyDirection,
+    lastPosition
   );
 
   const mode = useGhostsStore((state) => state.pinky.components.behavior.mode);
@@ -27,7 +37,7 @@ export default function PinkyMesh() {
 
   return (
     <>
-      <group position={[x, 0, z]} scale={0.5} dispose={null}>
+      <group position={[iPos.x, 0, iPos.y]} scale={0.5} dispose={null}>
         <mesh
           geometry={nodes.Sphere.geometry}
           material={

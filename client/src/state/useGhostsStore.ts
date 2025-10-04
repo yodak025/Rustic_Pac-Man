@@ -18,6 +18,7 @@ const { EXIT_HOME: EXIT_POSITION } = config.DEFAULT_POSITIONS;
 interface Ghost extends Entity {
   actions: {
     setPosition: (position: Position) => void;
+    setLastPosition: (position: Position) => void;
     setMovementTimerInterval: (interval: number) => void;
     clearDirections: () => void;
     addDirection: (direction: Direction) => void;
@@ -47,6 +48,7 @@ const createGhost = (id: string, set: any, get: any): Ghost => ({
   id,
   components: {
     position: { x: 0, y: 0 } as Position,
+    lastPosition: { x: 0, y: 0 } as Position,
     movementTimer: { elapsed: 0, interval: 100 } as MovementTimer,
     directions: [],
     behavior: {
@@ -61,6 +63,11 @@ const createGhost = (id: string, set: any, get: any): Ghost => ({
     setPosition: (position: Position) => {
       set((state: IGhostsState) => {
         (state as any)[id].components.position = position;
+      });
+    },
+    setLastPosition: (position: Position) => {
+      set((state: IGhostsState) => {
+        (state as any)[id].components.lastPosition = position;
       });
     },
     setMovementTimerInterval: (interval: number) => {

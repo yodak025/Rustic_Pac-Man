@@ -55,6 +55,7 @@ export function movementSystem(deltaTime: number): void {
       incrementMovementTimer(deltaTime);
       return;
     }
+    entity.actions.setLastPosition(position); // Update lastPosition before moving
     if (directions.length === 0 && entity.id === 'pacman') {
       //! ALTAMENTE ACOPLADO Y MUY FRAGIL
       // TODO - Me sangran los ojos
@@ -75,7 +76,7 @@ export function movementSystem(deltaTime: number): void {
           if (position.x ==  1){ //[DELETE]: TELEPORTACION 
             askForMovement({ x: 30 , y: position.y }, entity);
           }
-          askForMovement({ x: position.x - 1, y: position.y }, entity);
+          askForMovement({ x: position.x - 1, y: position.y }, entity); 
           break;
         case Direction.RIGHT:
           if (position.x ==  30){ //[DELETE]: TELEPORTACION 

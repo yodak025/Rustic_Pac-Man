@@ -1,13 +1,23 @@
 import { useGLTF } from "@react-three/drei";
 import useGhostsStore from "@/state/useGhostsStore";
 import ConfigManager from "@/services/configManager";
-import { GhostBehaviorMode } from "@/types/gameComponents";
+import { GhostBehaviorMode, type Position } from "@/types/gameComponents";
+
+import { useGraphicPositionInterpolation } from "@/scenes/hooks/useGraphicPositionInterpolation";
 
 //! ESTE COMPONENTE VIOLA DRY, ARREGLALO
 
 export default function ClydeMesh() {
-  const { x, y: z } = useGhostsStore(
-    (state) => state.clyde.components.position
+  const clydePosition = useGhostsStore((state) => state.clyde.components.position as Position);
+  const clydeDirection = useGhostsStore((state) => state.clyde.components.directions);
+  const clydeTimer = useGhostsStore((state) => state.clyde.components.movementTimer);
+  const lastPosition = useGhostsStore((state) => state.clyde.components.lastPosition as Position);
+  
+  const iPos = useGraphicPositionInterpolation(
+    clydePosition,
+    clydeTimer,
+    clydeDirection,
+    lastPosition
   );
 
   const mode = useGhostsStore((state) => state.clyde.components.behavior.mode);
@@ -27,7 +37,7 @@ export default function ClydeMesh() {
 
   return (
     <>
-      <group position={[x, 0, z]} scale={0.5} dispose={null}>
+      <group position={[iPos.x, 0, iPos.y]} scale={0.5} dispose={null}>
         <mesh
           geometry={nodes.Sphere004.geometry}
           material={materials["Material.004"]}

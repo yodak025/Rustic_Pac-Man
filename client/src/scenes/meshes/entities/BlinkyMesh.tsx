@@ -1,13 +1,23 @@
 import { useGLTF } from "@react-three/drei";
 import useGhostsStore from "@/state/useGhostsStore";
 import ConfigManager from "@/services/configManager";
-import { GhostBehaviorMode } from "@/types/gameComponents";
+import { GhostBehaviorMode, type Position } from "@/types/gameComponents";
+
+import { useGraphicPositionInterpolation } from "@/scenes/hooks/useGraphicPositionInterpolation";
 
 //! ESTE COMPONENTE VIOLA DRY, ARREGLALO
 
 export default function BlinkyMesh() {
-  const { x, y: z } = useGhostsStore(
-    (state) => state.blinky.components.position
+  const blinkyPosition = useGhostsStore((state) => state.blinky.components.position as Position);
+  const blinkyDirection = useGhostsStore((state) => state.blinky.components.directions);
+  const blinkyTimer = useGhostsStore((state) => state.blinky.components.movementTimer);
+  const lastPosition = useGhostsStore((state) => state.blinky.components.lastPosition as Position);
+  
+  const iPos = useGraphicPositionInterpolation(
+    blinkyPosition,
+    blinkyTimer,
+    blinkyDirection,
+    lastPosition
   );
 
   const mode = useGhostsStore((state) => state.blinky.components.behavior.mode);
@@ -28,7 +38,7 @@ export default function BlinkyMesh() {
 
   return (
     <>
-      <group position={[x, 0, z]} scale={0.5} dispose={null}>
+      <group position={[iPos.x, 0, iPos.y]} scale={0.5} dispose={null}>
         <mesh
           geometry={nodes.Sphere004.geometry}
           material={materials["Material.004"]}
