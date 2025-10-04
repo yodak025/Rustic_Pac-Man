@@ -37,7 +37,7 @@ export interface Collidable {
 
 export interface Health {
   value: number;
-  isDamageTakenOnCurrentFrame: boolean; 
+  iTicks:number;
 }
 
 export enum CollectableKind{

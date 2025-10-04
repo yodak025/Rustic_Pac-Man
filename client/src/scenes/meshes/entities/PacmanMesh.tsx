@@ -10,6 +10,8 @@ export default function PacmanMesh() {
   const pacmanTimer = usePacmanStore.getState().pacman.components.movementTimer;
   const lastPosition = usePacmanStore.getState().pacman.components.lastPosition as Position;
   const status = usePacmanStore.getState().pacman.components.status;
+
+  const isInvincible = usePacmanStore((state) => state.pacman.components.health.iTicks > 0);
   
   const iPos = useGraphicPositionInterpolation(
     pacmanPosition,
@@ -21,7 +23,7 @@ export default function PacmanMesh() {
   return (
     <mesh position={[iPos.x, 0.5, iPos.y]}>
       <sphereGeometry args={[0.5, 32, 32]} />      
-        <meshStandardMaterial color={status === pacmanStatusValue.INVINCIBLE ? "orange" : "yellow"} /> 
+        <meshStandardMaterial color={isInvincible ? "white" : "yellow"} /> 
     </mesh>
   );
 }

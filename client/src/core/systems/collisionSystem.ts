@@ -12,6 +12,11 @@ export function collisionSystem(deltaTime: number): void {
   if ((!pacman.actions.isTimeToMove(deltaTime) && !isAnlyGhostMoving )|| pacman.components.health.isDamageTakenOnCurrentFrame) {
     return; // No hay movimiento, no se necesita comprobar colisiones
   }
+  if (pacman.components.health.iTicks > 0) {
+    pacman.actions.decrementITicks();
+    return; // Pacman is invulnerable, skip collision detection
+  }
+
   const { blinky, pinky, inky, clyde } = ghosts;
   const { x: px, y: py } = pacman.components.position;
   
@@ -29,7 +34,8 @@ export function collisionSystem(deltaTime: number): void {
         // Ghost is already eaten, do nothing
         return false;
       }
-      pacman.actions.takeDamage(1);
+      //! [CONFIG] Hardcoded damage and invulnerability ticks
+      pacman.actions.takeDamage(1, 10); // Pacman takes damage and is invulnerable for 10 ticks
       console.log(
         `Pacman ha chocado con ${name}. Salud restante: ${pacman.components.health.value}`
       );

@@ -146,6 +146,7 @@ export default function DebugBar() {
 
         <details className="mb-2">
           <summary className="text-xs cursor-pointer hover:text-red-300">{`Health: ${pacmanHealth.value}`}</summary>
+          <summary className="text-xs cursor-pointer hover:text-red-300">{`Invencibility ticks: ${pacmanHealth.iTicks}`}</summary>
           <div className="pl-2 mt-1">
             <input
               type="number"

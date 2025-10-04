@@ -20,7 +20,8 @@ interface Pacman extends Entity {
     addDirection: (direction: Direction) => void;
     incrementMovementTimer: (delta: number) => void;
     isTimeToMove: (delta: number) => boolean;
-    takeDamage: (amount: number) => void;
+    takeDamage: (amount: number, iTicks:number) => void;
+    decrementITicks: () => void;
     setHealth: (health: number) => void;
   }
 }
@@ -39,22 +40,22 @@ const usePacmanStore = create<IPacmanState>()(
         movementTimer: { elapsed: 0, interval: 100 } as MovementTimer,
         directions: Array<Direction>(), 
         playable: { value: true } as Playable,
-        health: { value: 3, isDamageTakenOnCurrentFrame: false} as Health, // Default health value
+        health: { value: 3, iTicks: 0} as Health, // Default health value
         collector: { collects: [CollectableKind.PAC_DOT, CollectableKind.POWER_PELLET] } as Collector,
       },
       actions: {
-        setPosition: (position: Position) => {
+        setPosition: (position) => {
           set((state) => {
             state.pacman.components.position = position;
             state.pacman.components.health.isDamageTakenOnCurrentFrame = false;
           });
         },
-        setLastPosition: (position: Position) => {
+        setLastPosition: (position) => {
           set((state) => {
             state.pacman.components.lastPosition = position;
           });
         },
-        setMovementTimerInterval: (interval: number) => {
+        setMovementTimerInterval: (interval) => {
           set((state) => {
             state.pacman.components.movementTimer.interval = interval;
           });
@@ -64,14 +65,13 @@ const usePacmanStore = create<IPacmanState>()(
             state.pacman.components.directions = [];
           });
         },
-        addDirection: (direction: Direction) => {
+        addDirection: (direction) => {
           set((state) => {
             state.pacman.components.directions = [direction, ...state.pacman.components.directions];
 
           });
         },
-        //! [BUG] Fuente del bug asociado a la velocidad infinita con la pantalla parada
-        incrementMovementTimer: (delta: number) => {
+        incrementMovementTimer: (delta) => {
           set((state) => {
             state.pacman.components.movementTimer.elapsed += delta;
             if (
@@ -83,18 +83,25 @@ const usePacmanStore = create<IPacmanState>()(
             }
           });
         },
-        isTimeToMove: (delta: number) => {
+        isTimeToMove: (delta) => {
           const { elapsed, interval } = get().pacman.components.movementTimer;
           return (elapsed + delta) >= interval;
         },
-        takeDamage: (amount: number) => {
+        takeDamage: (amount, iTicks) => {
           set((state) => {
             const currentHealth = state.pacman.components.health.value;
             state.pacman.components.health.value = Math.max(currentHealth - amount, 0);
-            state.pacman.components.health.isDamageTakenOnCurrentFrame = true;
+            state.pacman.components.health.iTicks = iTicks;
           });
         },
-        setHealth: (health: number) => {
+        decrementITicks: () => {
+          set((state) => {
+            if(state.pacman.components.health.iTicks > 0){
+              state.pacman.components.health.iTicks -= 1;
+            }
+          });
+        },
+        setHealth: (health) => {
           set((state) => {
             state.pacman.components.health.value = health;
           });
