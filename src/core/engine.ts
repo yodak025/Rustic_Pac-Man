@@ -8,7 +8,7 @@ import endgameConditions from './endgameConditions';
 
 import useGameStatusStore from '@/state/useGameStatusStore';
 
-import { loadMaze } from '@/services/api';
+import { generateMaze } from './mazeGen';
 import useMazeState from '@/state/useMazeStore';
 
 import type { Position} from '@custom-types/gameComponents';
@@ -120,7 +120,7 @@ export class RusticGameEngine {
   }
 
   private async initMazeEntities(): Promise<void> {
-    const mazeTiles = await loadMaze();
+    const mazeTiles = await generateMaze();
     const WALL = 1;
     const HOUSE = -3;
     const PAC_DOT = 0;

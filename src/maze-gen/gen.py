@@ -9,8 +9,8 @@
 
 import numpy as np
 import random as rd
-from .cell import Cell
-from .directions import UP, RIGHT, DOWN, LEFT
+from cell import Cell
+from directions import UP, RIGHT, DOWN, LEFT
 
 
 class CellConnectionsGenerator:

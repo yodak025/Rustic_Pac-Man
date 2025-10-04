@@ -1,6 +1,6 @@
 import numpy as np
-from .cell import Cell
-from .directions import UP, RIGHT, DOWN, LEFT
+from cell import Cell
+from directions import UP, RIGHT, DOWN, LEFT
 from typing import Callable as Def
 import random
 

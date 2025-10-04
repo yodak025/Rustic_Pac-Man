@@ -1,6 +1,6 @@
-from .directions import UP, DOWN, LEFT, RIGHT
 import random as rd
-from .cell import Cell
+from directions import UP, DOWN, LEFT, RIGHT
+from cell import Cell
 
 
 class TunnelsGenerator:

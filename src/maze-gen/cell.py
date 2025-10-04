@@ -4,7 +4,7 @@
 
 import numpy as np
 from typing import Dict
-from .directions import UP, RIGHT, DOWN, LEFT
+from directions import UP, RIGHT, DOWN, LEFT
 
 
 class Cell:

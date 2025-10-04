@@ -9,8 +9,7 @@
 
 from typing import Callable as Def
 import numpy as np
-from .cell import Cell
-from .directions import UP, RIGHT, DOWN, LEFT
+from directions import UP, RIGHT, DOWN, LEFT
 
 # TODO - Control de errores
 

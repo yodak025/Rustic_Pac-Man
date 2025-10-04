@@ -32,6 +32,16 @@ export default defineConfig({
       '/generation-endpoint': {
         target: 'http://localhost:5000'
       }
+    },
+    // Configurar headers para servir archivos Python
+    headers: {
+      'Cross-Origin-Embedder-Policy': 'require-corp',
+      'Cross-Origin-Opener-Policy': 'same-origin',
     }
+  },
+  // Asegurar que los archivos .py se sirvan como texto
+  assetsInclude: ['**/*.py'],
+  optimizeDeps: {
+    exclude: ['pyodide']
   }
 })
