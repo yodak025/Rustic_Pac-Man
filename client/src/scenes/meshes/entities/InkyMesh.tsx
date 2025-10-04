@@ -1,7 +1,7 @@
 import { useGLTF } from "@react-three/drei";
 import useGhostsStore from "@/state/useGhostsStore";
 import ConfigManager from "@/services/configManager";
-import { GhostBehaviorMode, type Position } from "@/types/gameComponents";
+import { GhostBehaviorMode, type Position, Direction } from "@/types/gameComponents";
 
 import { useGraphicPositionInterpolation } from "@/scenes/hooks/useGraphicPositionInterpolation";
 
@@ -35,9 +35,27 @@ export default function InkyMesh() {
   const deadMaterial = materials["Material.005"].clone();
   deadMaterial.color.setHex(0x000000);
 
+  // Get rotation based on direction
+  const currentDirection = inkyDirection[0];
+  let rotationY = 0;
+  switch (currentDirection) {
+    case Direction.DOWN:
+      rotationY = 0;
+      break;
+    case Direction.UP:
+      rotationY = Math.PI;
+      break;
+    case Direction.RIGHT:
+      rotationY = Math.PI / 2;
+      break;
+    case Direction.LEFT:
+      rotationY = -Math.PI / 2;
+      break;
+  }
+
   return (
     <>
-      <group position={[iPos.x, 0, iPos.y]} scale={0.5} dispose={null}>
+      <group position={[iPos.x, 0, iPos.y]} rotation={[0, rotationY, 0]} scale={0.5} dispose={null}>
         <mesh
           geometry={nodes.Sphere004.geometry}
           material={materials["Material.004"]}
