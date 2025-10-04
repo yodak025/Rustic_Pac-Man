@@ -27,7 +27,6 @@ export default function BlinkyMesh() {
   const { x: tx, y: tz } = useGhostsStore(
     (state) => state.blinky.components.behavior.target.position
   );
-  console.log(tx, tz);
 
   const { nodes, materials } = useGLTF("assets/blinky-model.glb") as any;
 

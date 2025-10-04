@@ -15,6 +15,7 @@ interface KeyState {
 export function playerControlSystem(keyState: KeyState): void {
   const clearDirections = usePacmanStore.getState().pacman.actions.clearDirections;
   const addDirection = usePacmanStore.getState().pacman.actions.addDirection; //! Implementación sesgada 
+  const directions = usePacmanStore.getState().pacman.components.directions;
   const entities: Entity[] = [];
   entities.push(usePacmanStore.getState().pacman);
 
@@ -26,16 +27,47 @@ export function playerControlSystem(keyState: KeyState): void {
     if (!playable || !playable.value || !directionComponent) {
       return;
     }
+    const inputDirections: Array<Direction> = [];
+    if (keyState.w) {
+      inputDirections.push(Direction.UP);
+    }
+    if (keyState.s) {
+      inputDirections.push(Direction.DOWN);
+    }
+    if (keyState.a) {
+      inputDirections.push(Direction.LEFT);
+    }
+    if (keyState.d) {
+      inputDirections.push(Direction.RIGHT);
+    }
+    // Create directionsBuffer with common directions between inputDirections and directions
+    // Preserving the order from directions
+    const followDirection = directions[0]; // Get the first direction to follow
+    const directionsBuffer: Array<Direction> = directions.filter((dir: Direction) => 
+      inputDirections.includes(dir)
+    );
+
+    // Filter out directions that are now in directionsBuffer
+    const filteredInputDirections = inputDirections.filter(
+      dir => !directionsBuffer.includes(dir)
+    );
+
     clearDirections(); // Clear previous directions
 
-    if (keyState.w) {
-      addDirection(Direction.UP);
-    } if (keyState.s) {
-      addDirection(Direction.DOWN);
-    } if (keyState.a) {
-      addDirection(Direction.LEFT);
-    } if (keyState.d) {
-      addDirection(Direction.RIGHT);
+    // Add directions from directionsBuffer in reverse order
+    for (let i = directionsBuffer.length - 1; i >= 0; i--) {
+      addDirection(directionsBuffer[i]);
     }
+
+    if (filteredInputDirections.length === 0 && !directionsBuffer.includes(followDirection)) {
+      addDirection(followDirection);
+      return;
+    }
+
+    // Add remaining directions from filteredInputDirections in normal order
+    for (let i = 0; i < filteredInputDirections.length; i++) {
+      addDirection(filteredInputDirections[i]);
+    }
+
   });
 }

@@ -66,7 +66,8 @@ const usePacmanStore = create<IPacmanState>()(
         },
         addDirection: (direction: Direction) => {
           set((state) => {
-            state.pacman.components.directions = [...state.pacman.components.directions, direction];
+            state.pacman.components.directions = [direction, ...state.pacman.components.directions];
+
           });
         },
         //! [BUG] Fuente del bug asociado a la velocidad infinita con la pantalla parada

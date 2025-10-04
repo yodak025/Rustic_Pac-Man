@@ -1,7 +1,7 @@
 import { Direction } from "@custom-types/gameComponents";
 import {
   type Position,
-  type MovementTimer
+  type MovementTimer,
 } from "@custom-types/gameComponents";
 import type { Entity } from "@custom-types/gameEntities";
 import usePacmanStore from "@/state/usePacmanStore";
@@ -9,7 +9,6 @@ import useMazeState from "@/state/useMazeStore";
 import useGhostsStore from "@/state/useGhostsStore";
 
 import { collectSystem } from "./collectSystem"; //![CLEAN] Use alias instead of relative path
-
 
 export function movementSystem(deltaTime: number): void {
   if (
@@ -19,16 +18,20 @@ export function movementSystem(deltaTime: number): void {
     return;
   }
 
-  const askForMovement = (position: Position, entity: Entity): void => {
+  const askForMovement = (position: Position, entity: Entity): boolean => {
     const setPosition = entity.actions.setPosition;
     if (useMazeState.getState().isWallAt(position)) {
-      return;
+      return false;
     }
-    if (useMazeState.getState().isHouseTileAt(position) && entity.id === 'pacman') {
-      return;
+    if (
+      useMazeState.getState().isHouseTileAt(position) &&
+      entity.id === "pacman"
+    ) {
+      return false;
     }
     setPosition(position);
     collectSystem(position, entity);
+    return true;
   };
 
   const entities: Entity[] = [];
@@ -56,36 +59,46 @@ export function movementSystem(deltaTime: number): void {
       return;
     }
     entity.actions.setLastPosition(position); // Update lastPosition before moving
-    if (directions.length === 0 && entity.id === 'pacman') {
+    if (directions.length === 0 && entity.id === "pacman") {
       //! ALTAMENTE ACOPLADO Y MUY FRAGIL
       // TODO - Me sangran los ojos
       return; //? Esto evita que se ejecute el incrementMovementTimer, dejando a pacman ready para el siguiente movimiento
       //? Esto evita el input lag a costa de renunciar a todo atisbo de cordura en el desarrollo.
     }
-    directions.forEach((direction) => {
-      // Subtract interval from elapsed
-      // Check direction component and move if not stopped
+    for (let i = 0; i < directions.length; i++) {
+      const direction = directions[i];
+      let moved = false;
+      
       switch (direction) {
-        case Direction.UP: 
-          askForMovement({ x: position.x, y: position.y - 1 }, entity);
+        case Direction.UP:
+          moved = askForMovement({ x: position.x, y: position.y - 1 }, entity);
           break;
         case Direction.DOWN:
-          askForMovement({ x: position.x, y: position.y + 1 }, entity);
+          moved = askForMovement({ x: position.x, y: position.y + 1 }, entity);
           break;
         case Direction.LEFT:
-          if (position.x ==  1){ //[DELETE]: TELEPORTACION 
-            askForMovement({ x: 30 , y: position.y }, entity);
+          if (position.x == 1) {
+            //[DELETE]: TELEPORTACION
+            moved = askForMovement({ x: 30, y: position.y }, entity);
+          } else {
+            moved = askForMovement({ x: position.x - 1, y: position.y }, entity);
           }
-          askForMovement({ x: position.x - 1, y: position.y }, entity); 
           break;
         case Direction.RIGHT:
-          if (position.x ==  30){ //[DELETE]: TELEPORTACION 
-            askForMovement({ x: 1 , y: position.y }, entity);
+          if (position.x == 30) {
+            //[DELETE]: TELEPORTACION
+            moved = askForMovement({ x: 1, y: position.y }, entity);
+          } else {
+            moved = askForMovement({ x: position.x + 1, y: position.y }, entity);
           }
-          askForMovement({ x: position.x + 1, y: position.y }, entity);
           break;
       }
-    });
+      
+      if (moved) {
+        break; // If movement succeeded, break the loop
+      }
+      // Otherwise, continue to the next direction
+    }
     incrementMovementTimer(deltaTime);
   });
 }

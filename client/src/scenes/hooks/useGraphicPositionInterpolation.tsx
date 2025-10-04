@@ -27,11 +27,7 @@ export function useGraphicPositionInterpolation(
       setInterpolatedPosition({
         x: position.x * factor + lastPosition.x * (1 - factor),
         y: position.y * factor + lastPosition.y * (1 - factor),
-      });
-      console.log("factor", factor);
-      console.log("interpolatedPosition", interpolatedPosition);
-      console.log("lastPosition", lastPosition);
-      console.log("position", position);
+      })
     }
   });
 
