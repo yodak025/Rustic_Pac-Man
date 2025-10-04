@@ -1,6 +1,4 @@
-import { useGameStatusStore } from "@state/store";
-import gameStatusValue from "@/types/gameStatusValue";
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import useMazeState from "@/state/useMazeStore";
 import type { JSX } from "react";
 
@@ -11,16 +9,6 @@ import PowerPellet from "@scenes/meshes/maze/PowerPellet";
 
 export default function Maze() {
   const mazeState = useMazeState((state) => state.maze);
-
-  const game = useGameStatusStore((state) => state);
-
-  const useLoadMaze = () => {
-    useEffect(() => {
-      if (game.status === gameStatusValue.LOADING) {
-        game.setPlayingStatus();
-      }
-    }, [game.status, game.setPlayingStatus]);
-  };
 
   // Memo para walls y floors - solo se actualiza cuando cambia el estado del laberinto
   const staticMazeElements = useMemo(() => {
@@ -63,6 +51,5 @@ export default function Maze() {
     return meshes;
   }, [mazeState.isLoaded, mazeState.collectables.pacDots, mazeState.collectables.powerPellets]);
 
-  useLoadMaze();
   return [...staticMazeElements, ...collectables];
 }

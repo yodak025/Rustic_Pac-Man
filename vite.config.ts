@@ -24,15 +24,11 @@ export default defineConfig({
     rollupOptions: {
       input: {
         main: './src/app/index.tsx',
+        index: './index.html',
       },
     }
   },
   server: {
-    proxy: {
-      '/generation-endpoint': {
-        target: 'http://localhost:5000'
-      }
-    },
     // Configurar headers para servir archivos Python
     headers: {
       'Cross-Origin-Embedder-Policy': 'require-corp',

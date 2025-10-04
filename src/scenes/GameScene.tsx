@@ -1,4 +1,3 @@
-import { OrbitControls } from "@react-three/drei";
 import { PerspectiveCamera } from "@react-three/drei";
 import { useProgress } from "@react-three/drei";
 

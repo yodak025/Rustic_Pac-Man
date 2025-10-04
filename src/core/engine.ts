@@ -16,6 +16,8 @@ import gameStatusValue from '@custom-types/gameStatusValue';
 
 import * as config from '@/config/ghostBehavior.json';
 
+import { GhostBehaviorMode, TargetKind} from '@custom-types/gameComponents';
+
 const STARTING_POSITIONS = config.DEFAULT_POSITIONS.HOME;
 
 export class RusticGameEngine {
@@ -77,9 +79,9 @@ export class RusticGameEngine {
     blinkyStore.actions.setPosition(STARTING_POSITIONS.BLINKY as Position);
     blinkyStore.actions.setMovementTimerInterval(150);
     blinkyStore.actions.initBehavior(0); // Inicializa el comportamiento con 7 ticks
-    blinkyStore.actions.setBehaviorMode('HOUSE'); // Establece el modo inicial a 'CHASE'
+    blinkyStore.actions.setBehaviorMode(GhostBehaviorMode.HOUSE); // Establece el modo inicial a 'CHASE'
     blinkyStore.actions.setBehaviorTarget({
-      kind: 'HOUSE',
+      kind: TargetKind.HOUSE,
       position: STARTING_POSITIONS.BLINKY as Position
     })
 
@@ -88,9 +90,9 @@ export class RusticGameEngine {
     pinkyStore.actions.setPosition(STARTING_POSITIONS.PINKY as Position);
     pinkyStore.actions.setMovementTimerInterval(150);
     pinkyStore.actions.initBehavior(15); // Inicializa el comportamiento con 7 ticks
-    pinkyStore.actions.setBehaviorMode('HOUSE'); // Establece el modo inicial a 'CHASE'
+    pinkyStore.actions.setBehaviorMode(GhostBehaviorMode.HOUSE); // Establece el modo inicial a 'CHASE'
     pinkyStore.actions.setBehaviorTarget({
-      kind: 'HOUSE',
+      kind: TargetKind.HOUSE,
       position: STARTING_POSITIONS.PINKY as Position
     })
 
@@ -99,9 +101,9 @@ export class RusticGameEngine {
     inkyStore.actions.setPosition(STARTING_POSITIONS.INKY as Position);
     inkyStore.actions.setMovementTimerInterval(150);
     inkyStore.actions.initBehavior(30); // Inicializa el comportamiento con 7 ticks
-    inkyStore.actions.setBehaviorMode('HOUSE'); // Establece el modo inicial a 'CHASE'
+    inkyStore.actions.setBehaviorMode(GhostBehaviorMode.HOUSE); // Establece el modo inicial a 'CHASE'
     inkyStore.actions.setBehaviorTarget({
-      kind: 'HOUSE',
+      kind: TargetKind.HOUSE,
       position: STARTING_POSITIONS.INKY as Position
     })
     // [TODO] Manage peer connection in a less messy way
@@ -112,9 +114,9 @@ export class RusticGameEngine {
     clydeStore.actions.setPosition(STARTING_POSITIONS.CLYDE as Position);
     clydeStore.actions.setMovementTimerInterval(150);
     clydeStore.actions.initBehavior(45); // Inicializa el comportamiento con 7 ticks
-    clydeStore.actions.setBehaviorMode('HOUSE'); // Establece el modo inicial a 'CHASE'
+    clydeStore.actions.setBehaviorMode(GhostBehaviorMode.HOUSE); // Establece el modo inicial a 'CHASE'
     clydeStore.actions.setBehaviorTarget({
-      kind: 'HOUSE',
+      kind: TargetKind.HOUSE,
       position: STARTING_POSITIONS.CLYDE as Position
     })
   }

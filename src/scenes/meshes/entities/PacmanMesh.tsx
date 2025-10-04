@@ -1,5 +1,4 @@
 import usePacmanStore from "@/state/usePacmanStore";
-import pacmanStatusValue from "@/types/pacmanStatusValue";
 import type { Position } from "@custom-types/gameComponents";
 
 import { useGraphicPositionInterpolation } from "@/scenes/hooks/useGraphicPositionInterpolation";
@@ -9,7 +8,6 @@ export default function PacmanMesh() {
   const pacmanDirection = usePacmanStore.getState().pacman.components.directions;
   const pacmanTimer = usePacmanStore.getState().pacman.components.movementTimer;
   const lastPosition = usePacmanStore.getState().pacman.components.lastPosition as Position;
-  const status = usePacmanStore.getState().pacman.components.status;
 
   const isInvincible = usePacmanStore((state) => state.pacman.components.health.iTicks > 0);
   

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 
 
 // TODO -  Implementar modo para visualizar el contenido del Maze store también en ASCII

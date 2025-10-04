@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as debug from "@config/debug.json";
 import {
