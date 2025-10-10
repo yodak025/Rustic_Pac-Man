@@ -55,7 +55,7 @@ export default function ClydeMesh() {
 
   return (
     <>
-      <group position={[iPos.x, 0, iPos.y]} rotation={[0, rotationY, 0]} scale={0.5} dispose={null}>
+      <group position={[iPos.x, 0.5, iPos.y]} rotation={[0, rotationY, 0]} scale={0.5} dispose={null}>
         <mesh
           geometry={nodes.Sphere004.geometry}
           material={materials["Material.004"]}

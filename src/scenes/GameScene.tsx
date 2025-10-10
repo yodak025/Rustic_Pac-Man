@@ -40,8 +40,8 @@ export default function GameScene() {
     <>
       <PerspectiveCamera
         makeDefault
-        position={[14, 25, 22]}
-        rotation={[-Math.PI / 2.5, 0, 0]}
+        position={[16,12,30]}
+        rotation={[-Math.PI /3.5, 0, 0]}
         fov={75}
         near={0.1}
         far={1000}
