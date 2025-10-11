@@ -2,11 +2,11 @@ import GameScene from "@/scenes/GameScene";
 import { useGameStatusStore } from "@state/store";
 import gameStatusValue from "@custom-types/gameStatusValue";
 import { Canvas } from "@react-three/fiber";
-import MainMenu from "@ui/layout/MainMenu";
-import MazeTilemapAnalyzer from "@/ui/layout/MazeTilemapAnalyzer";
-import DeathScreen from "@ui/layout/DeathScreen";
+import MainMenu from "@/ui/pages/MainMenu";
+import MazeTilemapAnalyzer from "@/ui/pages/MazeTilemapAnalyzer";
+import DeathScreen from "@/ui/pages/DeathScreen";
 import HUD from "@ui/layout/HUD";
-import LoadingScreen from "@/ui/layout/LoadingScreen";
+import LoadingScreen from "@/ui/common/LoadingScreen";
 import { Suspense, useMemo } from "react";
 
 export default function App() {

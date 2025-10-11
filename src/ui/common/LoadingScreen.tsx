@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import useGameStatusStore from '@/state/useGameStatusStore';
 import gameStatusValue from '@/types/gameStatusValue';
+import PageTitle from '@/ui/components/PageTitle';
+import ProgressBar from '@/ui/components/ProgressBar';
 
 const LoadingScreen: React.FC = () => {
   const game = useGameStatusStore((state) => state);
@@ -72,26 +74,14 @@ const LoadingScreen: React.FC = () => {
 
   return (
     <div className="fixed inset-0 z-5000 flex flex-col items-center justify-center bg-black text-yellow-400">
-      <h1 className="text-6xl font-bold mb-8 text-yellow-400 font-mono tracking-wider">
-        RUSTIC PAC-MAN
-      </h1>
+      <PageTitle>RUSTIC PAC-MAN</PageTitle>
       
       <div className="flex flex-col items-center space-y-6">
         <p className="text-2xl font-mono font-bold tracking-wide">
           {getLoadingText()}
         </p>
         
-        <div className="w-96 h-4 bg-gray-800 border-2 border-yellow-400 relative overflow-hidden">
-          <div 
-            className="h-full bg-yellow-400 transition-all duration-200 ease-out"
-            style={{ width: `${progress}%` }}
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-yellow-300/30 to-transparent animate-pulse" />
-        </div>
-        
-        <p className="text-lg font-mono text-yellow-400/70">
-          {Math.round(progress)}%
-        </p>
+        <ProgressBar progress={progress} showPercentage animated />
       </div>
     </div>
   );

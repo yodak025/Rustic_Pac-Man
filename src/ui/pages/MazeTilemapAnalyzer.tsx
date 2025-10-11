@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
 import { generateMaze } from '@/core/mazeGen';
+import PageTitle from '@/ui/components/PageTitle';
+import Button from '@/ui/components/Button';
+import TileGrid from '@/ui/common/TileGrid';
 
 // Define tile types for visualization
 const TILE_TYPES = {
@@ -15,30 +18,6 @@ const MazeTilemapAnalyzer: React.FC = () => {
   const [tilesData, setTilesData] = useState<number[][]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-
-  const renderTilesMaze = (value: number, rowIndex: number, colIndex: number) => {
-    // Define colors for different tile types
-    const getBgColor = (value: number) => {
-      switch (value) {
-        case 0: return 'bg-black';
-        case 1: return 'bg-blue-800';
-        case 2: return 'bg-yellow-400';
-        case 3: return 'bg-yellow-200';
-        case 4: return 'bg-red-500';
-        default: return 'bg-gray-700';
-      }
-    };
-
-    return (
-      <div 
-        key={`${rowIndex}-${colIndex}`}
-        className={`${getBgColor(value)} w-8 h-8 border border-gray-900 flex items-center justify-center`}
-        title={`${TILE_TYPES[value as keyof typeof TILE_TYPES] || 'Unknown'} (${value}) - Position: (${colIndex}, ${rowIndex})`}
-      >
-        <span className="text-xs text-white font-mono">{value}</span>
-      </div>
-    );
-  };
 
   const handleGenerateTiles = async () => {
     try {
@@ -67,13 +46,7 @@ const MazeTilemapAnalyzer: React.FC = () => {
     }
 
     return tilesData.length > 0 ? (
-      <div className="grid gap-1">
-        {tilesData.map((row, rowIndex) => (
-          <div key={rowIndex} className="flex">
-            {row.map((cell, colIndex) => renderTilesMaze(cell, rowIndex, colIndex))}
-          </div>
-        ))}
-      </div>
+      <TileGrid tilesData={tilesData} tileTypes={TILE_TYPES} />
     ) : (
       <div className="flex items-center justify-center h-40 w-60">
         <p className="text-xl font-mono">No tiles data available</p>
@@ -81,21 +54,31 @@ const MazeTilemapAnalyzer: React.FC = () => {
     );
   };
 
+  const getBgColor = (value: number) => {
+    switch (value) {
+      case 0: return 'bg-black';
+      case 1: return 'bg-blue-800';
+      case 2: return 'bg-yellow-400';
+      case 3: return 'bg-yellow-200';
+      case 4: return 'bg-red-500';
+      default: return 'bg-gray-700';
+    }
+  };
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-black text-yellow-400 p-8">
-      <h1 className="text-4xl font-bold mb-6 text-yellow-400 font-mono tracking-wider">
-        MAZE TILEMAP ANALYZER
-      </h1>
+      <PageTitle size="medium">MAZE TILEMAP ANALYZER</PageTitle>
       
       {/* Action Buttons */}
       <div className="mb-6">
-        <button
+        <Button
           onClick={handleGenerateTiles}
-          className="px-4 py-2 bg-green-600 text-white font-mono font-bold text-sm border-2 border-green-600 hover:bg-black hover:text-green-400 transition-all duration-200 shadow-xl shadow-green-400/30 uppercase tracking-wide"
+          variant="success"
           disabled={loading}
+          className="px-4 py-2 text-sm shadow-xl shadow-green-400/30"
         >
           GENERATE TILES
-        </button>
+        </Button>
       </div>
 
       {error && (
@@ -124,17 +107,6 @@ const MazeTilemapAnalyzer: React.FC = () => {
       </div>
     </div>
   );
-
-  function getBgColor(value: number) {
-    switch (value) {
-      case 0: return 'bg-black';
-      case 1: return 'bg-blue-800';
-      case 2: return 'bg-yellow-400';
-      case 3: return 'bg-yellow-200';
-      case 4: return 'bg-red-500';
-      default: return 'bg-gray-700';
-    }
-  }
 };
 
 export default MazeTilemapAnalyzer;

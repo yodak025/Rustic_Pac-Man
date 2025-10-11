@@ -1,9 +1,11 @@
 import { useGameStatusStore } from "@state/store";
 import useMazeState from "@/state/useMazeStore";
 import gameStatusValue from "@/types/gameStatusValue";
-import InGameMenu from "@ui/components/InGameMenu";
-import DebugBar from "@ui/components/DebugBar";
-import MazeViewer from "@/ui/components/MazeViewer";
+import InGameMenu from "@/ui/layout/InGameMenu";
+import DebugBar from "@/ui/layout/DebugBar";
+import MazeViewer from "@/ui/layout/MazeViewer";
+import LivesDisplay from "@/ui/common/LivesDisplay";
+import GameStats from "@/ui/common/GameStats";
 import { useEffect } from "react";
 import usePacmanStore from "@state/usePacmanStore";
 import ConfigManager from "@services/configManager";
@@ -32,22 +34,13 @@ const HUD = () => {
   return (
     <>
       <div className="fixed top-0 left-0 right-0 z-50 flex justify-between items-center p-4 bg-black text-yellow-400 font-bold text-lg border-b-2 border-blue-500">
-        <div className="flex items-center gap-2">
-          <span>Vidas:</span>
-          <div className="flex gap-1 bg-black">
-            {Array.from({ length: lives }, (_, index) => (
-              <span key={index} className="text-red-500">
-                ❤️
-              </span>
-            ))}
-          </div>
-        </div>
-
-        <div className="flex gap-6 bg-black">
-          <div>Nivel: {level}</div>
-          <div>PacDots: {`${pdc}/${pdt}`}</div> 
-          <div>Puntuación: {score}</div>
-        </div>
+        <LivesDisplay lives={lives} />
+        <GameStats 
+          level={level} 
+          score={score} 
+          currentPacDots={pdc}
+          totalPacDots={pdt}
+        />
       </div>
       {debugConfig.debug && <DebugBar />}
       {debugConfig.debug && <MazeViewer />}
