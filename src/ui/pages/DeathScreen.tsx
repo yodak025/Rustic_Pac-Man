@@ -13,8 +13,8 @@ const DeathScreen: React.FC = () => {
       <MenuButtonGroup
         onRestart={game.reStart}
         onMainMenu={game.reboot}
-        restartLabel="JUGAR DE NUEVO"
-        mainMenuLabel="MENÚ PRINCIPAL"
+        restartLabel="TRY AGAIN"
+        mainMenuLabel="BACK TO MENU"
         className="w-64"
       />
     </div>

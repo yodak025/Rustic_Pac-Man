@@ -1,16 +1,15 @@
 import React, { useState } from 'react';
 import { generateMaze } from '@/core/mazeGen';
+import { useGameStatusStore } from '@state/store';
 import PageTitle from '@/ui/components/PageTitle';
 import Button from '@/ui/components/Button';
 import TileGrid from '@/ui/common/TileGrid';
 
 // Define tile types for visualization
 const TILE_TYPES = {
-  0: 'Empty',
+  0: 'Pac-Dot',
   1: 'Wall',
-  2: 'Dot',
-  3: 'PowerPellet',
-  4: 'PacMan',
+  2: 'Power-Pellet',
   // Add more tile types as needed
 };
 
@@ -18,6 +17,7 @@ const MazeTilemapAnalyzer: React.FC = () => {
   const [tilesData, setTilesData] = useState<number[][]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const game = useGameStatusStore((state) => state);
 
   const handleGenerateTiles = async () => {
     try {
@@ -69,8 +69,17 @@ const MazeTilemapAnalyzer: React.FC = () => {
     <div className="flex flex-col items-center justify-center min-h-screen bg-black text-yellow-400 p-8">
       <PageTitle size="medium">MAZE TILEMAP ANALYZER</PageTitle>
       
+      {/* Description */}
+      <div className="max-w-2xl text-center mb-6 font-mono">
+        <p className="text-lg leading-relaxed">
+          This tool allows you to visualize procedurally generated mazes
+          in <span className="text-yellow-200 font-bold">tilemap</span> form.
+          Each cell represents a different tile type in the maze matrix.
+        </p>
+      </div>
+      
       {/* Action Buttons */}
-      <div className="mb-6">
+      <div className="mb-6 flex gap-4">
         <Button
           onClick={handleGenerateTiles}
           variant="success"
@@ -78,6 +87,14 @@ const MazeTilemapAnalyzer: React.FC = () => {
           className="px-4 py-2 text-sm shadow-xl shadow-green-400/30"
         >
           GENERATE TILES
+        </Button>
+        
+        <Button
+          onClick={game.reboot}
+          variant="primary"
+          className="px-4 py-2 text-sm shadow-xl shadow-yellow-400/30"
+        >
+          MAIN MENU
         </Button>
       </div>
 

@@ -19,7 +19,7 @@ const MainMenu: React.FC = () => {
           onClick={handlePlay}
           className="px-8 py-4 text-xl border-4 shadow-2xl shadow-yellow-400/50"
         >
-          JUGAR
+          PLAY
         </Button>
 
         <Button
