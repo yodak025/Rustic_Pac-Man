@@ -1,8 +1,10 @@
 {
-  "name": "rustic-pacman-v0.1.0",
+  "name": "rustic-pacman",
   "private": true,
-  "version": "0.0.0",
+  "version": "2.0.0",
   "type": "module",
+  "author": "@yodak025",
+  "license": "CC-BY-SA-4.0",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
