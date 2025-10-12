@@ -1,18 +1,3 @@
-import debugConfig from "@config/debug.json";
+// This file has been deprecated. Use useDebugConfigStore instead.
 
-// A singleton approach to manage configurations
-export default class ConfigManager {
-  constructor() {
-    if (ConfigManager.instance) return ConfigManager.instance;
-    ConfigManager.instance = this;
-    ConfigManager.debug = debugConfig; 
-  }
-
-  private static instance: ConfigManager;
-  private static debug: typeof debugConfig;
-
-  public getDebugConfig() {
-    return ConfigManager.debug;
-  }
-}
 

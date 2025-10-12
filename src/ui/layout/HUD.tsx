@@ -8,7 +8,7 @@ import LivesDisplay from "@/ui/common/LivesDisplay";
 import GameStats from "@/ui/common/GameStats";
 import { useEffect } from "react";
 import usePacmanStore from "@state/usePacmanStore";
-import ConfigManager from "@services/configManager";
+import useDebugConfigStore from "@/state/useDebugConfigStore";
 
 
 const HUD = () => {
@@ -18,7 +18,7 @@ const HUD = () => {
   const lives = usePacmanStore((state) => state.pacman.components.health.value);
   const {total: pdt, current:pdc} = useMazeState((state) => state.maze.info.pacDots)
 
-  const debugConfig = new ConfigManager().getDebugConfig();
+  const { debug } = useDebugConfigStore();
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -42,8 +42,8 @@ const HUD = () => {
           totalPacDots={pdt}
         />
       </div>
-      {debugConfig.debug && <DebugBar />}
-      {debugConfig.debug && <MazeViewer />}
+      {debug && <DebugBar />}
+      {debug && <MazeViewer />}
 
       {status === gameStatusValue.PAUSED && <InGameMenu />}
     </>

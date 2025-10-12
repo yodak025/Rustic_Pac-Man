@@ -43,6 +43,7 @@ const usePacmanStore = create<IPacmanState>()(
         health: { value: 3, iTicks: 0} as Health, // Default health value
         collector: { collects: [CollectableKind.PAC_DOT, CollectableKind.POWER_PELLET] } as Collector,
       },
+
       actions: {
         setPosition: (position) => {
           set((state) => {
@@ -50,27 +51,31 @@ const usePacmanStore = create<IPacmanState>()(
             state.pacman.components.health.isDamageTakenOnCurrentFrame = false;
           });
         },
+
         setLastPosition: (position) => {
           set((state) => {
             state.pacman.components.lastPosition = position;
           });
         },
+
         setMovementTimerInterval: (interval) => {
           set((state) => {
             state.pacman.components.movementTimer.interval = interval;
           });
         },
+
         clearDirections: () => {
           set((state) => {
             state.pacman.components.directions = [];
           });
         },
+
         addDirection: (direction) => {
           set((state) => {
             state.pacman.components.directions = [direction, ...state.pacman.components.directions];
-
           });
         },
+
         incrementMovementTimer: (delta) => {
           set((state) => {
             state.pacman.components.movementTimer.elapsed += delta;
@@ -83,10 +88,12 @@ const usePacmanStore = create<IPacmanState>()(
             }
           });
         },
+
         isTimeToMove: (delta) => {
           const { elapsed, interval } = get().pacman.components.movementTimer;
           return (elapsed + delta) >= interval;
         },
+
         takeDamage: (amount, iTicks) => {
           set((state) => {
             const currentHealth = state.pacman.components.health.value;
@@ -94,6 +101,7 @@ const usePacmanStore = create<IPacmanState>()(
             state.pacman.components.health.iTicks = iTicks;
           });
         },
+
         decrementITicks: () => {
           set((state) => {
             if(state.pacman.components.health.iTicks > 0){
@@ -101,6 +109,7 @@ const usePacmanStore = create<IPacmanState>()(
             }
           });
         },
+
         setHealth: (health) => {
           set((state) => {
             state.pacman.components.health.value = health;

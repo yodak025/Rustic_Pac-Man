@@ -1,6 +1,6 @@
 import { useGLTF } from "@react-three/drei";
 import useGhostsStore from "@/state/useGhostsStore";
-import ConfigManager from "@/services/configManager";
+import useDebugConfigStore from "@/state/useDebugConfigStore";
 import { GhostBehaviorMode, type Position, Direction } from "@/types/gameComponents";
 
 import { useGraphicPositionInterpolation } from "@/scenes/hooks/useGraphicPositionInterpolation";
@@ -22,7 +22,7 @@ export default function ClydeMesh() {
 
   const mode = useGhostsStore((state) => state.clyde.components.behavior.mode);
 
-  const isDebug = new ConfigManager().getDebugConfig().debug;
+  const { debug } = useDebugConfigStore();
 
   const { x: tx, y: tz } = useGhostsStore(
     (state) => state.clyde.components.behavior.target.position
@@ -77,7 +77,7 @@ export default function ClydeMesh() {
           }
         />
       </group>
-      {isDebug && (
+      {debug && (
         <mesh position={[tx, 3, tz]}>
           <sphereGeometry args={[0.2, 30, 30]} />
           <meshStandardMaterial color="orange" />

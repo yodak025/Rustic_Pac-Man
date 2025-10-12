@@ -4,6 +4,7 @@ import gameStatusValue from "@custom-types/gameStatusValue";
 import { Canvas } from "@react-three/fiber";
 import MainMenu from "@/ui/pages/MainMenu";
 import MazeTilemapAnalyzer from "@/ui/pages/MazeTilemapAnalyzer";
+import DebugSettings from "@/ui/pages/DebugSettings";
 import DeathScreen from "@/ui/pages/DeathScreen";
 import HUD from "@ui/layout/HUD";
 import LoadingScreen from "@/ui/common/LoadingScreen";
@@ -37,6 +38,9 @@ export default function App() {
 
     case gameStatusValue.DEBUG_MAZE_ANALYZER:
       return <MazeTilemapAnalyzer />;
+
+    case gameStatusValue.DEBUG_SETTINGS:
+      return <DebugSettings />;
 
     // Loading screen cases
     case gameStatusValue.READY_TO_LOAD:

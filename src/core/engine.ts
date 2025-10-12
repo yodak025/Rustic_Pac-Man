@@ -70,14 +70,14 @@ export class RusticGameEngine {
     const pacmanStore = usePacmanStore.getState().pacman;
     pacmanStore.actions.setPosition({ x: 14, y: 16 } as Position);
     pacmanStore.actions.setHealth(3); 
-    pacmanStore.actions.setMovementTimerInterval(100);
+    pacmanStore.actions.setMovementTimerInterval(200);
   }
 
   private initGhostsEntities(): void {
     const blinkyStore = useGhostsStore.getState().blinky;
     blinkyStore.actions.clearDirections();
     blinkyStore.actions.setPosition(STARTING_POSITIONS.BLINKY as Position);
-    blinkyStore.actions.setMovementTimerInterval(150);
+    blinkyStore.actions.setMovementTimerInterval(250);
     blinkyStore.actions.initBehavior(0); // Inicializa el comportamiento con 7 ticks
     blinkyStore.actions.setBehaviorMode(GhostBehaviorMode.HOUSE); // Establece el modo inicial a 'CHASE'
     blinkyStore.actions.setBehaviorTarget({
@@ -88,7 +88,7 @@ export class RusticGameEngine {
     const pinkyStore = useGhostsStore.getState().pinky;
     pinkyStore.actions.clearDirections();
     pinkyStore.actions.setPosition(STARTING_POSITIONS.PINKY as Position);
-    pinkyStore.actions.setMovementTimerInterval(150);
+    pinkyStore.actions.setMovementTimerInterval(250);
     pinkyStore.actions.initBehavior(15); // Inicializa el comportamiento con 7 ticks
     pinkyStore.actions.setBehaviorMode(GhostBehaviorMode.HOUSE); // Establece el modo inicial a 'CHASE'
     pinkyStore.actions.setBehaviorTarget({
@@ -99,7 +99,7 @@ export class RusticGameEngine {
     const inkyStore = useGhostsStore.getState().inky;
     inkyStore.actions.clearDirections();
     inkyStore.actions.setPosition(STARTING_POSITIONS.INKY as Position);
-    inkyStore.actions.setMovementTimerInterval(150);
+    inkyStore.actions.setMovementTimerInterval(250);
     inkyStore.actions.initBehavior(30); // Inicializa el comportamiento con 7 ticks
     inkyStore.actions.setBehaviorMode(GhostBehaviorMode.HOUSE); // Establece el modo inicial a 'CHASE'
     inkyStore.actions.setBehaviorTarget({
@@ -112,7 +112,7 @@ export class RusticGameEngine {
     const clydeStore = useGhostsStore.getState().clyde;
     clydeStore.actions.clearDirections();
     clydeStore.actions.setPosition(STARTING_POSITIONS.CLYDE as Position);
-    clydeStore.actions.setMovementTimerInterval(150);
+    clydeStore.actions.setMovementTimerInterval(250);
     clydeStore.actions.initBehavior(45); // Inicializa el comportamiento con 7 ticks
     clydeStore.actions.setBehaviorMode(GhostBehaviorMode.HOUSE); // Establece el modo inicial a 'CHASE'
     clydeStore.actions.setBehaviorTarget({

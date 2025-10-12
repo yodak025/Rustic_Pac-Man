@@ -10,8 +10,8 @@ import {
   GhostBehaviorMode,
   TargetKind,
 } from "@custom-types/gameComponents";
-
 import * as config from "@/config/ghostBehavior.json";
+
 
 const { EXIT_HOME: EXIT_POSITION } = config.DEFAULT_POSITIONS;
 
@@ -43,7 +43,6 @@ interface IGhostsState {
   };
 }
 
-// Factory function para crear fantasmas
 const createGhost = (id: string, set: any, get: any): Ghost => ({
   id,
   components: {
@@ -59,28 +58,33 @@ const createGhost = (id: string, set: any, get: any): Ghost => ({
       peer: null,
     } as Behavior,
   },
+
   actions: {
     setPosition: (position: Position) => {
       set((state: IGhostsState) => {
         (state as any)[id].components.position = position;
       });
     },
+    
     setLastPosition: (position: Position) => {
       set((state: IGhostsState) => {
         (state as any)[id].components.lastPosition = position;
       });
     },
+
     setMovementTimerInterval: (interval: number) => {
       set((state: IGhostsState) => {
         (state as any)[id].components.movementTimer.interval = interval;
         (state as any)[id].components.movementTimer.elapsed = 0;
       });
     },
+
     clearDirections: () => {
       set((state: IGhostsState) => {
         (state as any)[id].components.directions = [];
       });
     },
+
     addDirection: (direction: Direction) => {
       set((state: IGhostsState) => {
         (state as any)[id].components.directions = [
@@ -89,6 +93,7 @@ const createGhost = (id: string, set: any, get: any): Ghost => ({
         ];
       });
     },
+
     incrementMovementTimer: (delta: number) => {
       set((state: IGhostsState) => {
         (state as any)[id].components.movementTimer.elapsed += delta;
@@ -102,10 +107,12 @@ const createGhost = (id: string, set: any, get: any): Ghost => ({
         }
       });
     },
+
     isTimeToMove: (delta: number) => {
       const { elapsed, interval } = (get() as any)[id].components.movementTimer;
       return elapsed + delta >= interval;
     },
+
     initBehavior: (ticks: number) => {
       set((state: IGhostsState) => {
         let kind: GhostBehaviorKind;
@@ -134,21 +141,25 @@ const createGhost = (id: string, set: any, get: any): Ghost => ({
         (state as any)[id].components.behavior.ticks = ticks;
       });
     },
+
     setBehaviorMode: (mode) => {
       set((state: IGhostsState) => {
         (state as any)[id].components.behavior.mode = mode;
       });
     },
+
     setBehaviorTarget: (target) => {
       set((state: IGhostsState) => {
         (state as any)[id].components.behavior.target = target;
       });
     },
+
     setBehaviorTicks: (ticks) => {
       set((state: IGhostsState) => {
         (state as any)[id].components.behavior.ticks = ticks;
       });
     },
+
     setPeer(peer) {
       set((state: IGhostsState) => {
         (state as any)[id].components.behavior.peer = peer;
@@ -156,6 +167,7 @@ const createGhost = (id: string, set: any, get: any): Ghost => ({
     }
   },
 });
+
 
 const useGhostsStore = create<IGhostsState>()(
   immer((set, get) => ({
@@ -192,6 +204,7 @@ const useGhostsStore = create<IGhostsState>()(
           });
         });
       },
+
       getGhosts: () => {
         return ["blinky", "pinky", "inky", "clyde"].map(
           (id) => (get() as any)[id]
