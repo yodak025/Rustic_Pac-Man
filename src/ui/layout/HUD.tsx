@@ -12,7 +12,7 @@ import useDebugConfigStore from "@/state/useDebugConfigStore";
 
 
 const HUD = () => {
-  const { level, score, status, setPauseStatus } = useGameStatusStore(
+  const { level, score, status, setPauseStatus, setGameOverStatus } = useGameStatusStore(
     (state) => state
   );
   const lives = usePacmanStore((state) => state.pacman.components.health.value);
@@ -25,11 +25,15 @@ const HUD = () => {
       if (event.key === "Escape") {
         setPauseStatus();
       }
+      if (event.key.toLowerCase() === "n") {
+        const isWin = true;
+        setGameOverStatus(isWin);
+      }
     };
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [setPauseStatus]);
+  }, [setPauseStatus, setGameOverStatus]);
 
   return (
     <>
