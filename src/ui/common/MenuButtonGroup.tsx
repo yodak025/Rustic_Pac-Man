@@ -21,15 +21,15 @@ const MenuButtonGroup: React.FC<MenuButtonGroupProps> = ({
   onMainMenu,
   onContinue,
   onDebug,
-  playLabel = 'JUGAR',
-  restartLabel = 'REINICIAR PARTIDA',
-  mainMenuLabel = 'MENÚ PRINCIPAL',
-  continueLabel = 'SEGUIR JUGANDO',
+  playLabel = 'PLAY',
+  restartLabel = 'RESTART GAME',
+  mainMenuLabel = 'MAIN MENU',
+  continueLabel = 'CONTINUE PLAYING',
   debugLabel = 'DEBUG',
   className = ''
 }) => {
   return (
-    <div className={`flex flex-col gap-4 w-64 ${className}`}>
+    <div className={`flex flex-col gap-4 w-64 mx-auto ${className}`}>
       {onContinue && (
         <Button onClick={onContinue}>
           {continueLabel}

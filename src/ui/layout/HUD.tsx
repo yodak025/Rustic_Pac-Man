@@ -37,16 +37,19 @@ const HUD = () => {
 
   return (
     <>
-      <div className="fixed top-0 left-0 right-0 z-50 flex justify-between items-center p-4 bg-black text-yellow-400 font-bold text-lg border-b-2 border-blue-500">
-        <LivesDisplay lives={lives} />
-        <GameStats 
-          level={level} 
-          score={score} 
-          currentPacDots={pdc}
-          totalPacDots={pdt}
-        />
-      </div>
-      {debug && <DebugBar />}
+          <div className="fixed top-5 left-5  right-5 z-50 p-4">
+            <div className="absolute top-4 left-4">
+              <LivesDisplay lives={lives} />
+            </div>
+            <div className="absolute top-4 right-4">
+              <GameStats 
+                level={level} 
+                score={score} 
+                currentPacDots={pdc}
+                totalPacDots={pdt}
+              />
+            </div>
+          </div>      {debug && <DebugBar />}
       {debug && <MazeViewer />}
 
       {status === gameStatusValue.PAUSED && <InGameMenu />}

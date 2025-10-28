@@ -22,9 +22,9 @@ const Checkbox: React.FC<CheckboxProps> = ({
         checked={checked}
         onChange={(e) => onChange(e.target.checked)}
         disabled={disabled}
-        className="w-5 h-5 accent-yellow-400 cursor-pointer"
+        className="w-5 h-5 accent-[var(--color-primary-light)] cursor-pointer"
       />
-      <span className="font-mono text-yellow-400 text-base">
+      <span className="font-mono text-[var(--color-text-light)] text-base">
         {label}
       </span>
     </label>

@@ -2,6 +2,7 @@ import React from 'react';
 import useGameStatusStore from '@/state/useGameStatusStore';
 import PageTitle from '@/ui/components/PageTitle';
 import Button from '@/ui/components/Button';
+import { VersionInfo } from '@/ui/components';
 import gameStatusValue from '@/types/gameStatusValue';
 
 const MainMenu: React.FC = () => {
@@ -17,21 +18,27 @@ const MainMenu: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-black text-yellow-400">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-[var(--color-background)] text-[var(--color-text-light)]">
+      <VersionInfo />
       <PageTitle>RUSTIC PAC-MAN</PageTitle>
       
       <div className="flex flex-col gap-4">
         <Button
           onClick={handlePlay}
-          className="px-8 py-4 text-xl border-4 shadow-2xl shadow-yellow-400/50"
         >
           PLAY
         </Button>
 
         <Button
+          onClick={() => useGameStatusStore.setState({ status: gameStatusValue.TUTORIAL })}
+          variant="secondary"
+        >
+          TUTORIAL
+        </Button>
+
+        <Button
           onClick={game.setDebugMazeAnalyzerStatus}
           variant = "success"
-          className="px-8 py-4 text-xl border-4 shadow-2xl shadow-green-400/50"
         >
           MAZE GENERATION
         </Button>
@@ -39,7 +46,6 @@ const MainMenu: React.FC = () => {
         <Button
           onClick={handleDebugSettings}
           variant="secondary"
-          className="px-8 py-4 text-xl border-4 shadow-2xl shadow-blue-400/50"
         >
           DEBUG SETTINGS
         </Button>

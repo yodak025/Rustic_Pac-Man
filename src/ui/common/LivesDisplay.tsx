@@ -9,11 +9,13 @@ export interface LivesDisplayProps {
 const LivesDisplay: React.FC<LivesDisplayProps> = ({ lives, className = '' }) => {
   return (
     <div className={`flex items-center gap-2 ${className}`}>
-      <span>Vidas:</span>
-      <div className="flex gap-1 bg-black">
-        {Array.from({ length: lives }, (_, index) => (
-          <HeartIcon key={index} />
-        ))}
+      {/* Pac-Man Sphere */}
+      <div className="w-12 h-12 rounded-full bg-[var(--color-primary-light)]"></div>
+      
+      {/* Lives Count */}
+      <div className="flex items-center gap-1 p-1 rounded-md border-2 border-[var(--color-accent)] bg-[var(--color-background)] text-[var(--color-text-light)] font-mono text-lg">
+        <HeartIcon />
+        <span className='text-2xl'>:{lives}</span>
       </div>
     </div>
   );

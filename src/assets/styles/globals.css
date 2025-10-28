@@ -1,1 +1,40 @@
 @import "tailwindcss" ;
+
+:root {
+  --color-primary-light: #FDE047; /* yellow-300 */
+  --color-primary-medium: #FB923C; /* orange-400 */
+  --color-primary-dark: #EA580C; /* orange-600 */
+  --color-background: #1E1B4B; /* indigo-950 */
+  --color-text-light: #F3F4F6; /* gray-100 */
+  --color-accent: #22D3EE; /* cyan-400 */
+  --color-alert: #EF4444; /* red-500 */
+  --color-alert-dark: #7F1D1D; /* red-900 */
+  --color-placeholder: #9CA3AF; /* gray-400 */
+  --color-wall: #0E7490; /* cyan-700 */
+}
+
+@font-face{
+  font-family: "Sixtyfour";
+  src: url("../fonts/Sixtyfour.ttf") format("truetype");
+  font-style: normal ;
+  font-display: swap; /* hace que se muestre la fuente por defecto mientras se carga la fuente del proyecto en vez de no mostrar nada */
+}
+
+@theme{
+  --font-mono: 'Sixtyfour', sans-serif;
+  --font-sans: var(--font-mono);
+}
+
+@layer base {
+  html {
+    /* Establece el tamaño de fuente base. 
+    Por defecto, Tailwind usa 1rem (16px) en el elemento 'body'.
+    Cambiándolo aquí a 0.875rem (14px) hará que todos los tamaños 
+    relativos (como text-base, text-sm, etc.) sean más pequeños.
+    */
+    font-size: 0.85rem; /* El tamaño de text-base ahora será 0.875rem */
+    
+    /* Opcional: Si quieres que el nuevo tamaño base (0.875rem) tenga una altura de línea específica */
+    /* line-height: 1.25rem; */ 
+  }
+}

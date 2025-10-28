@@ -65,38 +65,39 @@ export function movementSystem(deltaTime: number): void {
       return; //? Esto evita que se ejecute el incrementMovementTimer, dejando a pacman ready para el siguiente movimiento
       //? Esto evita el input lag a costa de renunciar a todo atisbo de cordura en el desarrollo.
     }
+    let moved = false;
     for (let i = 0; i < directions.length; i++) {
       const direction = directions[i];
-      let moved = false;
+
+      if (moved) {
+        break; // If movement succeeded, break the loop
+      }
       
       switch (direction) {
         case Direction.UP:
           moved = askForMovement({ x: position.x, y: position.y - 1 }, entity);
-          break;
+          continue;
         case Direction.DOWN:
           moved = askForMovement({ x: position.x, y: position.y + 1 }, entity);
-          break;
+          continue;
         case Direction.LEFT:
           if (position.x == 1) {
-            //[DELETE]: TELEPORTACION
+            //! [DELETE]: TELEPORTACION
             moved = askForMovement({ x: 30, y: position.y }, entity);
           } else {
             moved = askForMovement({ x: position.x - 1, y: position.y }, entity);
           }
-          break;
+          continue;
         case Direction.RIGHT:
           if (position.x == 30) {
-            //[DELETE]: TELEPORTACION
+            //! [DELETE]: TELEPORTACION
             moved = askForMovement({ x: 1, y: position.y }, entity);
           } else {
             moved = askForMovement({ x: position.x + 1, y: position.y }, entity);
           }
-          break;
+          continue;
       }
       
-      if (moved) {
-        break; // If movement succeeded, break the loop
-      }
       // Otherwise, continue to the next direction
     }
     incrementMovementTimer(deltaTime);

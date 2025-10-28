@@ -11,7 +11,8 @@ enum gameStatusValue {
   PAUSED = "PAUSED",
   LOST = "LOST",
   WON = "WON",
-  RESTARTING = "RESTARTING"
+  RESTARTING = "RESTARTING",
+  TUTORIAL = "TUTORIAL"
 }
 
 export default gameStatusValue;

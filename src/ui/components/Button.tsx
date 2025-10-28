@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 export interface ButtonProps {
   onClick: () => void;
@@ -8,37 +8,38 @@ export interface ButtonProps {
   className?: string;
 }
 
-const Button: React.FC<ButtonProps> = ({ 
-  onClick, 
-  children, 
+const Button: React.FC<ButtonProps> = ({
+  onClick,
+  children,
   variant = 'primary',
   disabled = false,
   className = ''
 }) => {
-  const getVariantStyles = () => {
-    switch (variant) {
-      case 'primary':
-        return 'bg-yellow-400 text-black border-yellow-400 hover:bg-black hover:text-yellow-400';
-      case 'secondary':
-        return 'bg-blue-400 text-black border-blue-400 hover:bg-black hover:text-blue-400';
-      case 'danger':
-        return 'bg-red-400 text-black border-red-400 hover:bg-black hover:text-red-400';
-      case 'success':
-        return 'bg-green-600 text-white border-green-600 hover:bg-black hover:text-green-400';
-      default:
-        return 'bg-yellow-400 text-black border-yellow-400 hover:bg-black hover:text-yellow-400';
-    }
-  };
+  const [isHovered, setIsHovered] = useState(false);
+
+  const baseStyles = `
+    font-mono font-bold text-lg uppercase tracking-wide
+    text-[var(--color-primary-light)]
+    hover:text-[var(--color-primary-medium)]
+    transition-all duration-200 transform
+    ${disabled ? 'opacity-50 cursor-not-allowed' : ''}
+    ${className}
+    inline-flex items-center justify-center
+  `;
 
   return (
     <button
       onClick={onClick}
       disabled={disabled}
-      className={`px-6 py-3 font-mono font-bold text-lg border-2 transition-all duration-200 uppercase tracking-wide ${getVariantStyles()} ${
-        disabled ? 'opacity-50 cursor-not-allowed' : ''
-      } ${className}`}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      className={baseStyles}
     >
-      {children}
+      {isHovered && <span className="mr-2">→</span>}
+      <span className={`inline-block ${isHovered ? 'scale-105' : ''} transition-transform duration-200`}>
+        {children}
+      </span>
+      {isHovered && <span className="ml-2">←</span>}
     </button>
   );
 };

@@ -53,7 +53,7 @@ const DebugEntitySection: React.FC<DebugEntitySectionProps> = ({
 
   return (
     <details className="mb-2" open={open}>
-      <summary className="font-medium cursor-pointer hover:text-red-300 text-xs">
+      <summary className="font-medium cursor-pointer hover:text-[var(--color-accent)] text-xs">
         {entityName}
       </summary>
       <div className="pl-2 mt-1 space-y-2">
@@ -80,24 +80,24 @@ const DebugEntitySection: React.FC<DebugEntitySectionProps> = ({
         )}
 
         {directions && (
-          <p className="text-xs">{`Direction: ${formatDirections(directions)}`}</p>
+          <p className="text-xs text-[var(--color-text-light)]">{`Direction: ${formatDirections(directions)}`}</p>
         )}
 
         {mode && (
-          <p className="text-xs">{`Mode: ${mode}`}</p>
+          <p className="text-xs text-[var(--color-text-light)]">{`Mode: ${mode}`}</p>
         )}
 
         {ticks !== undefined && (
-          <p className="text-xs">{`Ticks: ${ticks}`}</p>
+          <p className="text-xs text-[var(--color-text-light)]">{`Ticks: ${ticks}`}</p>
         )}
 
         {targetPosition !== undefined && (
-          <p className="text-xs">{`Target: x=${targetPosition?.x || 0}, y=${targetPosition?.y || 0}`}</p>
+          <p className="text-xs text-[var(--color-text-light)]">{`Target: x=${targetPosition?.x || 0}, y=${targetPosition?.y || 0}`}</p>
         )}
 
         {health && (
           <DebugDetails summary={`Health: ${health.value}`}>
-            <summary className="text-xs cursor-pointer hover:text-red-300">
+            <summary className="text-xs cursor-pointer hover:text-[var(--color-accent)]">
               {`Invencibility ticks: ${health.iTicks}`}
             </summary>
             {onSetHealth && (

@@ -6,14 +6,14 @@ const InGameMenu = () => {
   const game = useGameStatusStore((state) => state);
 
   return (
-    <Modal isOpen={true} title="PAUSA">
+    <Modal isOpen={true} title="PAUSE" className="w-3xl h-2/7">
       <MenuButtonGroup
         onContinue={game.setPlayingStatus}
         onRestart={game.reStart}
         onMainMenu={game.reboot}
-        continueLabel="SEGUIR JUGANDO"
-        restartLabel="REINICIAR PARTIDA"
-        mainMenuLabel="MENÚ PRINCIPAL"
+        continueLabel="RESUME GAME"
+        restartLabel="RESTART LEVEL"
+        mainMenuLabel="MAIN MENU"
       />
     </Modal>
   );

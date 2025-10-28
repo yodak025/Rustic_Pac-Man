@@ -56,28 +56,29 @@ const LoadingScreen: React.FC = () => {
     }
   }, [targetProgress, progress]);
 
-  const getLoadingText = () => {
-    switch (game.status) {
-      case gameStatusValue.RESTARTING:
-        return 'REINICIANDO...';
-      case gameStatusValue.LOADING_CORE:
-      case gameStatusValue.CORE_LOADED:
-        return 'GENERANDO LABERINTO...';
-      case gameStatusValue.LOADING_GRAPHICS:
-        return 'CARGANDO MUNDO...';
-      case gameStatusValue.GRAPHICS_LOADED:
-        return 'TODO LISTO!';
-      default:
-        return 'CARGANDO...';
-    }
-  };
+    const getLoadingText = () => {
+      switch (game.status) {
+        case gameStatusValue.RESTARTING:
+          return 'RESTARTING...';
+        case gameStatusValue.LOADING_CORE:
+        case gameStatusValue.CORE_LOADED:
+          return 'GENERATING MAZE...';
+        case gameStatusValue.LOADING_GRAPHICS:
+          return 'LOADING WORLD...';
+        case gameStatusValue.GRAPHICS_LOADED:
+          return 'ALL READY!';
+        default:
+          return 'LOADING...';
+      }
+    };
+
 
   return (
-    <div className="fixed inset-0 z-5000 flex flex-col items-center justify-center bg-black text-yellow-400">
+    <div className="fixed inset-0 z-5000 flex flex-col items-center justify-center bg-[var(--color-background)] text-[var(--color-text-light)]">
       <PageTitle>RUSTIC PAC-MAN</PageTitle>
       
       <div className="flex flex-col items-center space-y-6">
-        <p className="text-2xl font-mono font-bold tracking-wide">
+        <p className="text-2xl font-mono font-bold tracking-wide text-[var(--color-primary-light)]">
           {getLoadingText()}
         </p>
         

@@ -6,6 +6,7 @@ import MainMenu from "@/ui/pages/MainMenu";
 import MazeTilemapAnalyzer from "@/ui/pages/MazeTilemapAnalyzer";
 import DebugSettings from "@/ui/pages/DebugSettings";
 import DeathScreen from "@/ui/pages/DeathScreen";
+import TutorialPage from "@/ui/pages/TutorialPage";
 import HUD from "@ui/layout/HUD";
 import LoadingScreen from "@/ui/common/LoadingScreen";
 import { Suspense, useMemo } from "react";
@@ -20,8 +21,11 @@ export default function App() {
       <Suspense fallback={<LoadingScreen />}>
         <HUD />
         <Canvas
-          className="bg-gradient-to-b from-stone-300 to-stone-800 z-0"
-          style={{ height: "100vh" }}
+          className="z-0"
+          style={{ 
+            height: "100vh",
+            background: "var(--color-background)"
+          }}
         >
           <Suspense>
             <GameScene />
@@ -42,6 +46,8 @@ export default function App() {
     case gameStatusValue.DEBUG_SETTINGS:
       return <DebugSettings />;
 
+    case gameStatusValue.TUTORIAL:
+      return <TutorialPage />;
     // Loading screen cases
     case gameStatusValue.READY_TO_LOAD:
     case gameStatusValue.LOADING_CORE:

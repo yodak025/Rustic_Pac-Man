@@ -1,8 +1,8 @@
 ---
 title: "UI Architecture - Rustic Pac-Man"
 generated_by: agent
-date: 2025-10-11
-version: 1.0
+date: 2025-10-27
+version: 1.1
 scope: src/ui/
 ---
 
@@ -10,7 +10,7 @@ scope: src/ui/
 
 ## Summary
 
-This document describes the UI component architecture for Rustic Pac-Man, organized in four hierarchical levels (components → common → layout → pages) following SOLID principles and Atomic Design methodology. It defines component boundaries, composition rules, state integration patterns, and modification strategies. Read this when creating new UI components, refactoring existing ones, or understanding the frontend architecture.
+This document describes the UI component architecture for Rustic Pac-Man, organized in four hierarchical levels (components → common → layout → pages) following SOLID principles and Atomic Design methodology. It defines component boundaries, composition rules, state integration patterns, and modification strategies. This architecture has recently undergone an integral redesign to achieve a clean, retro-cool aesthetic. Read this when creating new UI components, refactoring existing ones, or understanding the frontend architecture.
 
 ---
 
@@ -27,7 +27,7 @@ The UI layer sits atop Zustand state stores (useGameStatusStore, usePacmanStore,
 - React component structure (src/ui/)
 - Component composition patterns
 - State integration strategies
-- Styling conventions (Tailwind CSS)
+- Styling conventions (Tailwind CSS, utilizing CSS variables for a centralized color palette and the 'Sixtyfour' font)
 
 **Out of scope:**
 - Game logic (src/core/)
@@ -301,10 +301,20 @@ Components expect:
 ❌ Unused props in interfaces (violates Interface Segregation)  
 
 ### Styling Constraints
-- **Technology**: Tailwind CSS utility classes only
-- **Color palette**: yellow-400 (primary), purple-400 (secondary), red-500 (danger), green-500 (success), gray-600 (neutral)
-- **Typography**: Pixelated/retro font family
-- **Animations**: transition-all duration-300 for smooth state changes
+- **Technology**: Tailwind CSS utility classes only, leveraging CSS variables for theme management.
+- **Color palette**: Defined via CSS variables in `src/assets/styles/globals.css` for consistency and easy modification.
+  - `--color-primary-light` (e.g., `#FDE047`)
+  - `--color-primary-medium` (e.g., `#FB923C`)
+  - `--color-primary-dark` (e.g., `#EA580C`)
+  - `--color-background` (e.g., `#1E1B4B`)
+  - `--color-text-light` (e.g., `#F3F4F6`)
+  - `--color-accent` (e.g., `#22D3EE`)
+  - `--color-alert` (e.g., `#EF4444`)
+  - `--color-alert-dark` (e.g., `#7F1D1D`)
+  - `--color-placeholder` (e.g., `#9CA3AF`)
+  - `--color-wall` (e.g., `#0E7490`)
+- **Typography**: Primary font is 'Sixtyfour', imported globally and applied via `font-mono` utility class.
+- **Animations**: `transition-all duration-200` for smooth state changes, with specific interactions like button hover (slight scale increase, arrow appearance).
 
 ### Version Compatibility
 - Requires React 18+ (uses hooks)
@@ -324,7 +334,7 @@ Components expect:
 ### Known Gaps
 - **Testing strategy**: Recommended but not implemented (unit/integration/E2E tests)
 - **Accessibility**: ARIA labels and keyboard navigation not systematically applied
-- **Internationalization**: No i18n support, all text is hardcoded in Spanish
+- **Internationalization**: No i18n support, all text is hardcoded in English
 - **Performance optimization**: React.memo, lazy loading not applied
 - **Error boundaries**: No error boundary components implemented
 
@@ -438,7 +448,7 @@ To understand implementation details, props interfaces, and usage patterns, cons
 - [x] Component counts accurate (7+7+4+3)
 - [x] Import aliases match tsconfig
 - [x] State store names correct
-- [x] Tailwind color palette accurate
+- [x] Color palette defined via CSS variables and used consistently
 
 ### Omissions Flagged
 - [ ] No component-level prop interfaces listed (refer to source files)

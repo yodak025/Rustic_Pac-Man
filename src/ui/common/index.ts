@@ -6,6 +6,7 @@ export { default as LivesDisplay } from './LivesDisplay';
 export { default as GameStats } from './GameStats';
 export { default as TileGrid } from './TileGrid';
 export { default as DebugEntitySection } from './DebugEntitySection';
+export { default as GameControlsDisplay } from './GameControlsDisplay';
 
 // Types
 export type { ModalProps } from './Modal';

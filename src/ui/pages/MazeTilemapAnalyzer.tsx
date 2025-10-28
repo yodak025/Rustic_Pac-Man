@@ -40,7 +40,7 @@ const MazeTilemapAnalyzer: React.FC = () => {
     if (loading) {
       return (
         <div className="flex items-center justify-center h-40 w-60">
-          <p className="text-xl font-mono animate-pulse">Loading...</p>
+          <p className="text-xl font-mono animate-pulse text-[var(--color-primary-light)]">Loading...</p>
         </div>
       );
     }
@@ -49,63 +49,44 @@ const MazeTilemapAnalyzer: React.FC = () => {
       <TileGrid tilesData={tilesData} tileTypes={TILE_TYPES} />
     ) : (
       <div className="flex items-center justify-center h-40 w-60">
-        <p className="text-xl font-mono">No tiles data available</p>
+        <p className="text-xl font-mono text-[var(--color-text-light)]">No tiles data available</p>
       </div>
     );
   };
 
-  const getBgColor = (value: number) => {
-    switch (value) {
-      case 0: return 'bg-black';
-      case 1: return 'bg-blue-800';
-      case 2: return 'bg-yellow-400';
-      case 3: return 'bg-yellow-200';
-      case 4: return 'bg-red-500';
-      default: return 'bg-gray-700';
-    }
-  };
-
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-black text-yellow-400 p-8">
-      <PageTitle size="medium">MAZE TILEMAP ANALYZER</PageTitle>
-      
-      {/* Description */}
-      <div className="max-w-2xl text-center mb-6 font-mono">
-        <p className="text-lg leading-relaxed">
-          This tool allows you to visualize procedurally generated mazes
-          in <span className="text-yellow-200 font-bold">tilemap</span> form.
-          Each cell represents a different tile type in the maze matrix.
-        </p>
-      </div>
-      
-      {/* Action Buttons */}
-      <div className="mb-6 flex gap-4">
-        <Button
-          onClick={handleGenerateTiles}
-          variant="success"
-          disabled={loading}
-          className="px-4 py-2 text-sm shadow-xl shadow-green-400/30"
-        >
-          GENERATE TILES
-        </Button>
+    <div className="relative flex flex-col min-h-screen bg-[var(--color-background)] text-[var(--color-text-light)] p-8">
+      <div className="flex flex-col items-center w-full">
+        <PageTitle size="medium">MAZE TILEMAP ANALYZER</PageTitle>
         
-        <Button
-          onClick={game.reboot}
-          variant="primary"
-          className="px-4 py-2 text-sm shadow-xl shadow-yellow-400/30"
-        >
-          MAIN MENU
-        </Button>
-      </div>
+        {/* Description */}
+        <div className="max-w-2xl text-center mb-6 font-mono">
+          <p className="text-lg leading-relaxed">
+            This tool allows you to visualize procedurally generated mazes
+            in <span className="text-[var(--color-primary-light)] font-bold">tilemap</span> form.
+            Each cell represents a different tile type in the maze matrix.
+          </p>
+        </div>
+        
+        {/* Action Buttons */}
+        <div className="mb-6 flex gap-4">
+          <Button
+            onClick={handleGenerateTiles}
+            variant="success"
+            disabled={loading}
+          >
+            GENERATE TILES
+          </Button>
+        </div>
 
       {error && (
-        <div className="bg-red-900 text-yellow-400 p-4 mb-6 border-2 border-red-500 font-mono">
+        <div className="bg-[var(--color-alert-dark)] text-[var(--color-text-light)] p-4 mb-6 border-2 border-[var(--color-alert)] font-mono">
           {error}
         </div>
       )}
 
-      <div className="bg-gray-900 p-6 border-4 border-yellow-400 shadow-2xl shadow-yellow-400/30">
-        <h2 className="text-2xl font-mono mb-4 text-center">
+      <div className="bg-[var(--color-background)] p-6 border-4 border-[var(--color-accent)] shadow-2xl shadow-[var(--color-accent)]/30">
+        <h2 className="text-2xl font-mono mb-4 text-center text-[var(--color-primary-light)]">
           Tilemap Visualization
         </h2>
         
@@ -113,14 +94,22 @@ const MazeTilemapAnalyzer: React.FC = () => {
       </div>
       
       {/* Legend */}
-      <div className="mt-8 bg-gray-900 p-4 border-2 border-yellow-400 text-sm font-mono">
-        <h3 className="text-lg mb-2 underline">Tile Legend:</h3>
+      <div className="mt-8 bg-[var(--color-background)] p-4 border-2 border-[var(--color-accent)] text-sm font-mono text-[var(--color-text-light)]">
+        <h3 className="text-lg mb-2 underline text-[var(--color-primary-light)]">Tile Legend:</h3>
         {Object.entries(TILE_TYPES).map(([key, value]) => (
           <div key={key} className="flex items-center gap-2 mb-1">
-            <div className={`w-4 h-4 ${getBgColor(parseInt(key))}`}></div>
+            <div className="w-4 h-4 bg-[var(--color-background)] border border-[var(--color-accent)]"></div>
             <span>{key}: {value}</span>
           </div>
         ))}
+        </div> {/* Closing div for flex flex-col items-center w-full */}
+        <Button
+          onClick={game.reboot}
+          variant="primary"
+          className="absolute top-8 left-8"
+        >
+          MAIN MENU
+        </Button>
       </div>
     </div>
   );

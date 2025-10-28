@@ -19,13 +19,13 @@ const DebugSettings = () => {
   const { reboot } = useGameStatusStore();
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black">
-      <div className="w-full max-w-2xl p-8 bg-gray-900 border-4 border-blue-500 rounded-lg">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[var(--color-background)] bg-opacity-90">
+      <div className="w-full max-w-2xl p-8 bg-[var(--color-background)] border-4 border-[var(--color-accent)] rounded-lg">
         <PageTitle>Debug Settings</PageTitle>
         
         <div className="mt-8 space-y-6">
-          <div className="p-4 bg-gray-800 border-2 border-yellow-400 rounded">
-            <h2 className="mb-4 text-xl font-bold text-yellow-400 font-mono">General</h2>
+          <div className="p-4 bg-transparent border-2 border-[var(--color-primary-medium)] rounded">
+            <h2 className="mb-4 text-xl font-bold text-[var(--color-primary-medium)] font-mono">General</h2>
             <Checkbox
               checked={debug}
               onChange={setDebug}
@@ -33,8 +33,8 @@ const DebugSettings = () => {
             />
           </div>
 
-          <div className="p-4 bg-gray-800 border-2 border-yellow-400 rounded">
-            <h2 className="mb-4 text-xl font-bold text-yellow-400 font-mono">Debug Tools</h2>
+          <div className="p-4 bg-transparent border-2 border-[var(--color-primary-medium)] rounded">
+            <h2 className="mb-4 text-xl font-bold text-[var(--color-primary-medium)] font-mono">Debug Tools</h2>
             <div className="space-y-3">
               <Checkbox
                 checked={tools.infoBar.isDisplayed}
@@ -51,8 +51,8 @@ const DebugSettings = () => {
             </div>
           </div>
 
-          <div className="p-4 bg-gray-800 border-2 border-yellow-400 rounded">
-            <h2 className="mb-4 text-xl font-bold text-yellow-400 font-mono">View Settings</h2>
+          <div className="p-4 bg-transparent border-2 border-[var(--color-primary-medium)] rounded">
+            <h2 className="mb-4 text-xl font-bold text-[var(--color-primary-medium)] font-mono">View Settings</h2>
             <Checkbox
               checked={view.isDiscrete}
               onChange={setViewDiscrete}

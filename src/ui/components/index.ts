@@ -7,6 +7,8 @@ export { default as DebugDetails } from './DebugDetails';
 export { default as TileCell } from './TileCell';
 export { default as HeartIcon } from './HeartIcon';
 export { default as Checkbox } from './Checkbox';
+export { default as VersionInfo } from './VersionInfo';
+export { default as KeyDisplay } from './KeyDisplay';
 
 // Types
 export type { ButtonProps } from './Button';

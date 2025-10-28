@@ -43,15 +43,15 @@ export default function MazeViewer() {
 
   const renderMaze = () => {
     if (isLoading) {
-      return <p>Loading maze data...</p>;
+      return <p className="text-[var(--color-text-light)]">Loading maze data...</p>;
     }
 
     if (error) {
-      return <p className="text-red-500">Error: {error}</p>;
+      return <p className="text-[var(--color-alert)]">Error: {error}</p>;
     }
 
     if (!mazeData || mazeData.length === 0) {
-      return <p>No maze data available</p>;
+      return <p className="text-[var(--color-text-light)]">No maze data available</p>;
     }
 
     // Convert numbers to characters for better visualization
@@ -82,16 +82,16 @@ export default function MazeViewer() {
     }
 
     return (
-      <pre className="font-mono text-xs leading-tight tracking-tighter whitespace-pre">
+      <pre className="font-mono text-xs leading-tight tracking-tighter whitespace-pre text-[var(--color-text-light)]">
       {mazeText}
       </pre>
     );
   };
 
   return sidebarVisible && (
-    <div className="fixed left-0 top-0 bottom-0 z-50 p-4 border-r border-green-600 bg-black bg-opacity-20 text-green-600 text-sm w-60 backdrop-blur-sm overflow-y-auto">
+    <div className="fixed left-0 top-0 bottom-0 z-50 p-4 border-r border-[var(--color-accent)] bg-[var(--color-background)] bg-opacity-20 text-[var(--color-text-light)] text-sm w-60 backdrop-blur-sm overflow-y-auto">
       <div className="mb-4">
-        <h3 className="font-bold border-b border-green-600 pb-1">Maze Viewer</h3>
+        <h3 className="font-bold border-b border-[var(--color-accent)] pb-1">Maze Viewer</h3>
       </div>
       
       <div className="pl-2 mt-1">

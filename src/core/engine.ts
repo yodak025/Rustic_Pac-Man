@@ -5,17 +5,12 @@ import { playerControlSystem } from './systems/playerControlSystem';
 import { ghostBehaviorSystem } from './systems/ghost-behavior-system/ghostBehaviorSystem';
 import { collisionSystem } from './systems/collisionSystem';
 import endgameConditions from './endgameConditions';
-
 import useGameStatusStore from '@/state/useGameStatusStore';
-
 import { generateMaze } from './mazeGen';
 import useMazeState from '@/state/useMazeStore';
-
 import type { Position} from '@custom-types/gameComponents';
 import gameStatusValue from '@custom-types/gameStatusValue';
-
 import * as config from '@/config/ghostBehavior.json';
-
 import { GhostBehaviorMode, TargetKind} from '@custom-types/gameComponents';
 
 const STARTING_POSITIONS = config.DEFAULT_POSITIONS.HOME;

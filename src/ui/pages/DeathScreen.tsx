@@ -7,7 +7,7 @@ const DeathScreen: React.FC = () => {
   const game = useGameStatusStore((state) => state);
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-black text-yellow-400">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-[var(--color-background)] text-[var(--color-text-light)]">
       <PageTitle>GAME OVER</PageTitle>
       
       <MenuButtonGroup
