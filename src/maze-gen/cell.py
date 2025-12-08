@@ -1,35 +1,43 @@
-
-#! KISS
-# TODO - Control de errores
-
 import numpy as np
 from typing import Dict
 from directions import UP, RIGHT, DOWN, LEFT
 
 
-class Cell:
+class Cell :
+    """
+    Class representing a cell in the maze. Contains properties for maze generation and pathfinding.
+    """
     def __init__(self, connections: dict, nexts: dict, id, i, j) -> None:
+        """
+        Initialize a Cell instance.
+        Args:
+            connections (dict): A dictionary indicating connections in each direction.
+            nexts (dict): A dictionary of references to adjacent cells.
+            id (int): Unique identifier for the cell.
+            i (int): Row index of the cell.
+            j (int): Column index of the cell.
+        Note:
+            All dictionaries use keys: UP, RIGHT, DOWN, LEFT.
+        """
+
         self.is_filled: bool = False
-        self.id: int = id  # Identificador único
-        self.x: int = j  # Coordenada x
-        self.y: int = i  # Coordenada y
-        self.seq: int = 0  # Orden de creación en generación
-        self.group_seq: int = 0  # Orden de creación referente al grupo
-
+        # Unique identifier
+        self.id: int = id  
+        self.x: int = j 
+        self.y: int = i  
+        # Generation sequence number for the single cell
+        self.seq: int = 0  
+        # Generation sequence number for the cell group
+        self.group_seq: int = 0  
         self.is_connected_at: Dict[int, bool] = connections
-        self.next = nexts
-        
-        #!- Actualmente en desuso
-        self.is_raise_height_candidate = False
-        self.is_shrink_width_candidate = False
+        self.next: Dict[int, Cell] = nexts
 
-        #-- propiedades asociadas a la fase de generación de túneles
+        # Tunnel and Dead-End gen atributes
         self.is_edge_tunnel_candidate = False
         self.is_void_tunnel_candidate = False
         self.is_single_dead_end_candidate = False
         self.single_dead_end_direction: int | None = None
         self.is_double_dead_end_candidate = False
-
         self.is_top_tunnel = False
         self.is_bottom_tunnel = False
 
@@ -42,11 +50,14 @@ class Cell:
                     self.y == other.y and
                     self.group_seq == other.group_seq and
                     self.is_connected_at == other.is_connected_at)
-
         return False
 
 
 def create_cell_array(rows: int, cols: int) -> np.ndarray:
+    """
+    Cell array factory function. 
+    It creates a 2D numpy array of Cell instances from given dimensions.
+    """
     empty_connections: Dict[int, bool] = {
         UP: False,
         RIGHT: False,

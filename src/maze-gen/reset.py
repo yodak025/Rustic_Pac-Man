@@ -1,19 +1,12 @@
-
-# ! KISS
-# ? Recuerda:
-# ?     eje 0 = rows = i = y,
-# ?     eje 1 = cols = j = x.
-# ? ...
-# ? Que Dios nos pille confesados.
-
-
 from typing import Callable as Def
 import numpy as np
 from directions import UP, RIGHT, DOWN, LEFT
+import logging
 
-# TODO - Control de errores
+LOGGER = logging.getLogger("maze-cell-reset")
 
-def link_cells(cells: np.ndarray) -> None:
+def _link_cells(cells: np.ndarray) -> None:
+    """Creates the next references between neighboring cells in the maze."""
     rows, cols = cells.shape
     for i in range(rows):
         for j in range(cols):
@@ -27,10 +20,18 @@ def link_cells(cells: np.ndarray) -> None:
             if j < cols - 1:
                 cell.next[RIGHT] = cells[i, j + 1]
 
-
 def reset(cells: np.ndarray, manual_connections: Def[[np.ndarray],None] | None = None) -> None:
-    link_cells(cells)
+    """
+    Resets the maze cells to their initial state for regeneration. 
+    It creates the neighbour references on the cells.
+    Accepts an optional callback to create manual connections.
+    """
+    LOGGER.info("Resetting maze cells...")
+    LOGGER.debug("Linking cells...")
+    _link_cells(cells)
     if manual_connections:
+        LOGGER.debug("Callback for manual connections provided.")
+        LOGGER.debug("Applying manual connections...")
         manual_connections(cells)
 
 
