@@ -152,7 +152,7 @@ const useMazeState = create<MazeState>()(
         if (!(key in state.maze.collectables.pacDots)) {
           return;
         }
-        delete state.maze.collectables.pacDots[key];
+        state.maze.collectables.pacDots[key].components.collectable.value = false;
         state.maze.info.pacDots.current++;
       }),
 
