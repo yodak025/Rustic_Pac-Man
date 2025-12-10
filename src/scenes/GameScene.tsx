@@ -3,6 +3,9 @@ import { useProgress } from "@react-three/drei";
 
 import { useGameStatusStore } from "@state/store";
 
+import usePacmanStore from "@/state/usePacmanStore";
+import { useGraphicPositionInterpolation } from "./hooks/useGraphicPositionInterpolation";
+
 import PacmanMesh from "@scenes/meshes/entities/PacmanMesh";
 import BlinkyMesh from "@scenes/meshes/entities/BlinkyMesh";
 import ClydeMesh from "./meshes/entities/ClydeMesh";
@@ -36,11 +39,18 @@ export default function GameScene() {
     }
   }, [active, progress, game.status]);
 
+  let chomp = useGraphicPositionInterpolation(
+    usePacmanStore((state) => state.pacman.components.position),
+    usePacmanStore((state) => state.pacman.components.movementTimer),
+    usePacmanStore((state) => state.pacman.components.directions),
+    usePacmanStore((state) => state.pacman.components.lastPosition),
+  );
+
   return (
     <>
       <PerspectiveCamera
         makeDefault
-        position={[16,12,30]}
+        position={[16+chomp.x-14 ,12,30+chomp.y-16]}
         rotation={[-Math.PI /3.5, 0, 0]}
         fov={75}
         near={0.1}

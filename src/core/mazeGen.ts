@@ -86,11 +86,13 @@ export async function generateMaze(
 
     // Ejecutar el código Python para generar el laberinto
     const result = await pyodide.runPythonAsync(`
-      from maze import create_maze
       import json
-
+      import logging
+      logging.basicConfig(level=logging.INFO, force=True)
+      from maze import create_rustic_giant_maze as create_maze
+      
       # Generar el laberinto
-      maze_array = create_maze(${rows}, ${cols}, ${maxFigureSize})
+      maze_array = create_maze()
 
       # Convertir a lista de Python para serializar
       maze_list = maze_array.tolist()

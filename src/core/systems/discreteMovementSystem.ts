@@ -81,20 +81,10 @@ export function movementSystem(deltaTime: number): void {
           moved = askForMovement({ x: position.x, y: position.y + 1 }, entity);
           continue;
         case Direction.LEFT:
-          if (position.x == 1) {
-            //! [DELETE]: TELEPORTACION
-            moved = askForMovement({ x: 30, y: position.y }, entity);
-          } else {
-            moved = askForMovement({ x: position.x - 1, y: position.y }, entity);
-          }
+          moved = askForMovement({ x: position.x - 1, y: position.y }, entity);
           continue;
         case Direction.RIGHT:
-          if (position.x == 30) {
-            //! [DELETE]: TELEPORTACION
-            moved = askForMovement({ x: 1, y: position.y }, entity);
-          } else {
-            moved = askForMovement({ x: position.x + 1, y: position.y }, entity);
-          }
+          moved = askForMovement({ x: position.x + 1, y: position.y }, entity);
           continue;
       }
       
