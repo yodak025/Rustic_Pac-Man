@@ -1,3 +1,5 @@
+'use client'
+
 import React, { useEffect, useState } from 'react';
 import useGameStatusStore from '@/state/useGameStatusStore';
 import gameStatusValue from '@/types/gameStatusValue';

@@ -1,3 +1,5 @@
+'use client'
+
 import {useGameStatusStore} from "@state/store";
 import Modal from "@/ui/common/Modal";
 import MenuButtonGroup from "@/ui/common/MenuButtonGroup";

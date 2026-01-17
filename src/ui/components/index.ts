@@ -9,6 +9,7 @@ export { default as HeartIcon } from './HeartIcon';
 export { default as Checkbox } from './Checkbox';
 export { default as VersionInfo } from './VersionInfo';
 export { default as KeyDisplay } from './KeyDisplay';
+export { default as Link } from './Link';
 
 // Types
 export type { ButtonProps } from './Button';
@@ -18,3 +19,4 @@ export type { DebugInputProps } from './DebugInput';
 export type { DebugDetailsProps } from './DebugDetails';
 export type { TileCellProps } from './TileCell';
 export type { CheckboxProps } from './Checkbox';
+export type { LinkProps } from './Link';

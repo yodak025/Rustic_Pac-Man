@@ -1,3 +1,5 @@
+'use client'
+
 import PageTitle from "@/ui/components/PageTitle";
 import Button from "@/ui/components/Button";
 import Checkbox from "@/ui/components/Checkbox";

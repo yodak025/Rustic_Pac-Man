@@ -1,3 +1,5 @@
+'use client'
+
 import { useState, useEffect } from "react"
 import usePacmanStore from "@/state/usePacmanStore";
 import useGhostsStore from "@/state/useGhostsStore";

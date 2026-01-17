@@ -1,3 +1,5 @@
+'use client'
+
 import { useGameStatusStore } from "@state/store";
 import useMazeState from "@/state/useMazeStore";
 import gameStatusValue from "@/types/gameStatusValue";

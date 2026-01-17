@@ -1,3 +1,5 @@
+'use client'
+
 import React from 'react';
 import useGameStatusStore from '@/state/useGameStatusStore';
 import PageTitle from '@/ui/components/PageTitle';

@@ -1,3 +1,5 @@
+'use client'
+
 import React, { useState } from 'react';
 import { generateMaze } from '@/core/mazeGen';
 import { useGameStatusStore } from '@state/store';
