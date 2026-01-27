@@ -48,6 +48,7 @@ const nextConfig: NextConfig = {
     // Solo aplicar configuración del cliente
     if (!isServer) {
       config.resolve = config.resolve || {}
+      config.plugins = config.plugins || []
       config.plugins.push(
         new PyodidePlugin({})
       )

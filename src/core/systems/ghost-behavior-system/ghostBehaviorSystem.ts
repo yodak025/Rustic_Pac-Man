@@ -2,8 +2,9 @@ import useGhostsStore from "@/state/useGhostsStore";
 import { manageBehaviorMode } from "./ghostModeManager";
 import { manageChaseBehavior } from "./ghostChaseKindManager";
 import { decideGhostDirection } from "./ghostDirectionDecider";
+import type { GameWorld } from "@core/GameWorld";
 
-export function ghostBehaviorSystem(deltaTime: number): void {
+export function ghostBehaviorSystem(deltaTime: number, gameWorld?: GameWorld): void {
   const ghosts = useGhostsStore.getState().actions.getGhosts();
   // Process each ghost
   ghosts.forEach((ghost) => {
@@ -20,6 +21,6 @@ export function ghostBehaviorSystem(deltaTime: number): void {
     });
     
     // Decide movement direction
-    if (isDirectionDecision) decideGhostDirection(ghost);
+    if (isDirectionDecision) decideGhostDirection(ghost, gameWorld);
   });
 }

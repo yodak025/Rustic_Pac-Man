@@ -7,10 +7,12 @@ import type { Entity } from "@custom-types/gameEntities";
 import usePacmanStore from "@/state/usePacmanStore";
 import useMazeState from "@/state/useMazeStore";
 import useGhostsStore from "@/state/useGhostsStore";
+import { USE_ECS_MAZE } from "@config/featureFlags";
+import type { GameWorld } from "@core/GameWorld";
 
-import { collectSystem } from "./collectSystem"; //![CLEAN] Use alias instead of relative path
+import { collectSystem } from "./collectSystem";
 
-export function movementSystem(deltaTime: number): void {
+export function movementSystem(deltaTime: number, gameWorld?: GameWorld): void {
   if (
     useGhostsStore.getState().blinky.components.elapsed + deltaTime <
     useGhostsStore.getState().blinky.components.interval
@@ -20,17 +22,26 @@ export function movementSystem(deltaTime: number): void {
 
   const askForMovement = (position: Position, entity: Entity): boolean => {
     const setPosition = entity.actions.setPosition;
-    if (useMazeState.getState().isWallAt(position)) {
+    
+    // Use GameWorld if ECS flag is enabled, otherwise use legacy store
+    const isWall = USE_ECS_MAZE && gameWorld
+      ? gameWorld.isWallAt(position.x, position.y)
+      : useMazeState.getState().isWallAt(position);
+    
+    if (isWall) {
       return false;
     }
-    if (
-      useMazeState.getState().isHouseTileAt(position) &&
-      entity.id === "pacman"
-    ) {
+    
+    const isHouse = USE_ECS_MAZE && gameWorld
+      ? gameWorld.isHouseAt(position.x, position.y)
+      : useMazeState.getState().isHouseTileAt(position);
+    
+    if (isHouse && entity.id === "pacman") {
       return false;
     }
+    
     setPosition(position);
-    collectSystem(position, entity);
+    collectSystem(position, entity, gameWorld);
     return true;
   };
 

@@ -3,12 +3,26 @@ import {
   Direction,
   GhostBehaviorMode,
 } from "@custom-types/gameComponents";
+import { USE_ECS_MAZE } from "@config/featureFlags";
+import type { GameWorld } from "@core/GameWorld";
 
-export function decideGhostDirection(ghost: any): void {
+export function decideGhostDirection(ghost: any, gameWorld?: GameWorld): void {
   const { x: ghx, y: ghy } = ghost.components.position;
   const { x: tx, y: ty } = ghost.components.behavior.target.position;
-  const isWallAt = useMazeState.getState().isWallAt;
-  const isHouseTileAt = useMazeState.getState().isHouseTileAt;
+  
+  // Use GameWorld if ECS flag is enabled, otherwise use legacy store
+  const isWallAt = (x: number, y: number): boolean => {
+    return USE_ECS_MAZE && gameWorld
+      ? gameWorld.isWallAt(x, y)
+      : useMazeState.getState().isWallAt({ x, y });
+  };
+  
+  const isHouseTileAt = (x: number, y: number): boolean => {
+    return USE_ECS_MAZE && gameWorld
+      ? gameWorld.isHouseAt(x, y)
+      : useMazeState.getState().isHouseTileAt({ x, y });
+  };
+  
   const directions = ghost.components.directions as Array<Direction>;
   const clearDirections = ghost.actions.clearDirections;
   const addDirection = ghost.actions.addDirection;
@@ -38,12 +52,12 @@ export function decideGhostDirection(ghost: any): void {
     .filter(
       (move) =>
         move.dir !== oppositeDirections[currentDirection] &&
-        !isWallAt({ x: move.x, y: move.y }) &&
+        !isWallAt(move.x, move.y) &&
         !(
           ghost.components.behavior.mode !==
             GhostBehaviorMode.EXITING_HOUSE &&
           ghost.components.behavior.mode !== GhostBehaviorMode.FRIGHTENED &&
-          isHouseTileAt({ x: move.x, y: move.y })
+          isHouseTileAt(move.x, move.y)
         ) // Ghosts (except when exiting) cannot enter house tiles
     )
     .map((move) => ({

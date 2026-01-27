@@ -11,7 +11,7 @@ import useMazeState from '@/state/useMazeStore';
 import type { Position} from '@custom-types/gameComponents';
 import gameStatusValue from '@custom-types/gameStatusValue';
 import * as config from '@/config/ghostBehavior.json';
-import { GhostBehaviorMode, TargetKind} from '@custom-types/gameComponents';
+import { GhostBehaviorMode, TargetKind, CollectableKind} from '@custom-types/gameComponents';
 import type { PyodideInterface } from 'pyodide';
 
 // New ECS Architecture imports
@@ -145,30 +145,66 @@ export class RusticGameEngine {
     const mazeState = useMazeState.getState();
     let pacDotCounter = 0;
     let powerPelletCounter = 0;
-    mazeState.initializeMazeEntities()
+    
+    // Legacy store initialization
+    mazeState.initializeMazeEntities();
+    
+    // New ECS Architecture: Clear and prepare GameWorld for maze data
+    this.gameWorld.clearSpatialGrids();
     
     if (!mazeTiles) {
       console.error('Failed to load maze tiles');
       throw new Error('Maze tiles not found');
     }
+    
     mazeTiles.forEach((row, y) => {
       row.forEach((tile, x) => {
         const localPosition = { x: x, y: y } as Position;
         if (tile === WALL) {
+          // Legacy store
           mazeState.createWall(localPosition);
+          // New ECS: Populate GameWorld
+          this.gameWorld.addWall(x, y);
         } else if (tile === PAC_DOT) {
+          // Legacy store
           mazeState.createPacDot(localPosition);
+          // New ECS: Populate GameWorld
+          this.gameWorld.addCollectable(x, y, CollectableKind.PAC_DOT);
           pacDotCounter++;
         } else if (tile === POWER_PELLET) {
+          // Legacy store
           mazeState.createPowerPellet(localPosition);
+          // New ECS: Populate GameWorld
+          this.gameWorld.addCollectable(x, y, CollectableKind.POWER_PELLET);
           powerPelletCounter++;
         } else if (tile === HOUSE) {
+          // Legacy store
           mazeState.createHouseTile(localPosition);
+          // New ECS: Populate GameWorld
+          this.gameWorld.addHouseTile(x, y);
         }
       });
-    })
+    });
+    
+    // Legacy store finalization
     mazeState.setMazeLoaded(true);
     mazeState.initializeMazeInfo(pacDotCounter, powerPelletCounter);
+    
+    // New ECS: Finalize GameWorld maze data
+    this.gameWorld.initializeMazeInfo(pacDotCounter, powerPelletCounter);
+    this.gameWorld.setMazeLoaded(true);
+    
+    // Debug: Log GameWorld maze stats
+    if (DEBUG_LOG_GAME_WORLD) {
+      const stats = this.gameWorld.debugGetFullState().spatialData;
+      console.log('[GameWorld] Maze initialized:', {
+        walls: stats.wallCount,
+        collectables: stats.collectableCount,
+        house: stats.houseCount,
+        pacDots: pacDotCounter,
+        powerPellets: powerPelletCounter
+      });
+    }
   }
   
   load(): void {
@@ -241,9 +277,9 @@ export class RusticGameEngine {
     // TODO - Coleguita, esto de aquí es una chapuza monumental.
     // TODO - Los sistemas no conmutan. Hay que crear un sistema de eventos. 
       playerControlSystem(this.keyState); 
-      ghostBehaviorSystem(deltaTime);
+      ghostBehaviorSystem(deltaTime, this.gameWorld);
       collisionSystem(deltaTime); //! Cogido con papel de fumar 
-      movementSystem(deltaTime); //! LOS INTERVALOS DE MOVIMIENTO ESTÁN ACOPLADOS, NO TOQUES EL ORDEN DE EJECUCIÓN
+      movementSystem(deltaTime, this.gameWorld); //! LOS INTERVALOS DE MOVIMIENTO ESTÁN ACOPLADOS, NO TOQUES EL ORDEN DE EJECUCIÓN
 
       // Debug: Log GameWorld state each frame if enabled
       if (DEBUG_LOG_GAME_WORLD) {

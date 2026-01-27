@@ -39,7 +39,7 @@ export const USE_NEW_ECS = false;
  * Enable GameWorld for maze data
  * Phase 1 of migration
  */
-export const USE_ECS_MAZE = false;
+export const USE_ECS_MAZE = true;
 
 /**
  * Enable GameWorld for game status and score
