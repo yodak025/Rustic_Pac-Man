@@ -1,3 +1,4 @@
 [submodule "memoria"]
 	path = memoria
 	url = git@github.com:yodak025/memoria-chomp-crawler.git
+	branch = master
