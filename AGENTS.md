@@ -1,22 +1,50 @@
 # Agent Development Guide - Chomp Crawler
 
-## Project Overview
-Browser-based Pac-Man clone with procedurally generated mazes (3D rogue-like perspective). Built with Next.js 15, React 19, Three.js (React Three Fiber), TypeScript, and Python (Pyodide) for maze generation. State managed via Zustand. Thesis project for Engineering in Audiovisual Systems.
+## 🚨 CRITICAL DIRECTIVE: Always Check Current Documentation
 
-**Tech Stack:** Next.js 15, React 19, Three.js 0.176, React Three Fiber, Zustand 5, TypeScript 5.8, Tailwind CSS 4, Pyodide 0.27
+**MANDATORY RULE:** When working with any technology configuration, dependency, or specific technical feature, you MUST first consult the latest official documentation online before providing solutions or making changes.
+
+**Why:** Technology evolves rapidly. Configurations, APIs, and best practices change between versions. Outdated information leads to broken builds, deprecated patterns, and wasted time.
+
+**Required workflow:**
+1. **Identify the technology and version** (check `package.json` for exact versions)
+2. **Search official documentation** for the specific feature/configuration being addressed
+3. **Verify compatibility** with the current version in use
+4. **Apply up-to-date solutions** based on official sources
+5. **Test empirically** to confirm the solution works
+
+**Examples of when this is critical:**
+- Configuring build tools (Turbopack, Webpack, Vite, etc.)
+- Setting up framework features (Next.js App Router, React Server Components, etc.)
+- Working with bundlers, transpilers, or optimization tools
+- Implementing library-specific APIs or patterns
+- Debugging version-specific issues
+
+**Never assume configurations from memory or training data are current. Always verify first.**
+
+---
+
+## Project Overview
+Browser-based Pac-Man clone with procedurally generated mazes (3D rogue-like perspective). Built with Next.js 16, React 19, Three.js (React Three Fiber), TypeScript, and Python (Pyodide) for maze generation. State managed via Zustand. Thesis project for Engineering in Audiovisual Systems.
+
+**Tech Stack:** Next.js 16.1.3, React 19.1.0, Three.js 0.176.0, React Three Fiber 9.1.2, Zustand 5.0.5, TypeScript 5.8.3, Tailwind CSS 4.1.18, Pyodide 0.27.6
 
 ---
 
 ## Build, Lint & Test Commands
 
 ### Development & Build
-```bash
-npm run dev              # Start Next.js dev server (http://localhost:3000)
-npm run build            # Next.js production build
-npm run start            # Start production server
-npm run lint             # Run ESLint on all TypeScript files
-npm run type-check       # TypeScript type checking
-```
+Check `package.json` scripts section for all available commands. Common tasks:
+- **Development server:** Uses Turbopack by default (Next.js 16+)
+- **Production build:** Standard Next.js build process
+- **Linting:** ESLint with flat config
+- **Type checking:** TypeScript compiler in noEmit mode
+
+### Turbopack Configuration
+**Bundler:** Turbopack enabled by default in dev mode. See `next.config.ts` for:
+- Custom loader rules (e.g., Python files for Pyodide)
+- Transpiled packages configuration
+- Build-specific settings
 
 ### Testing
 **⚠️ No test framework configured.** No Jest, Vitest, or Testing Library present.
@@ -50,14 +78,9 @@ src/
 ```
 
 **Path Aliases:**
-- `@/` → `src/`
-- `@core/` → `src/core/`
-- `@scenes/` → `src/scenes/`
-- `@state/` → `src/state/`
-- `@custom-types/` → `src/types/`
-- `@ui/` → `src/ui/`
-- `@assets/` → `src/assets/`
-- `@config/` → `src/config/`
+See `tsconfig.json` for complete path mappings. Primary aliases:
+- `@/` → `src/` (general)
+- Module-specific: `@core/`, `@scenes/`, `@state/`, `@custom-types/`, `@ui/`, `@assets/`, `@config/`
 
 ---
 
@@ -119,28 +142,15 @@ set(() => ({ status: newStatus }))
 
 ### Styling (Tailwind CSS)
 
-**⚠️ CRITICAL: Color Palette (CSS Variables in `src/assets/styles/globals.css`):**
-```css
---color-primary-light: #FDE047      /* yellow-300 */
---color-primary-medium: #FB923C     /* orange-400 */
---color-primary-dark: #EA580C       /* orange-600 */
---color-background: #1E1B4B         /* indigo-950 */
---color-text-light: #F3F4F6         /* gray-100 */
---color-accent: #22D3EE             /* cyan-400 */
---color-alert: #EF4444              /* red-500 */
---color-alert-dark: #7F1D1D         /* red-900 */
---color-placeholder: #9CA3AF        /* gray-400 */
---color-wall: #0E7490               /* cyan-700 */
-```
+**⚠️ CRITICAL: Color Palette**
+- **Source:** CSS variables defined in `src/assets/styles/globals.css`
+- **ALWAYS use CSS variables** via `var(--color-name)` syntax (e.g., `text-[var(--color-primary-light)]`)
+- **NEVER hardcode hex colors** in components
+- Check `globals.css` for the complete color palette (primary, background, alert, accent, etc.)
 
-**Usage (ALWAYS use CSS variables):**
-```typescript
-<div className="text-[var(--color-primary-light)] bg-[var(--color-background)]">
-```
-
-**Typography:**
-- Font: `font-mono` (Sixtyfour custom font)
-- Animations: `transition-all duration-200`
+**Typography & Animations:**
+- Custom font configuration in `globals.css` and `app/layout.tsx`
+- Standard animation durations in `globals.css`
 
 ---
 
@@ -170,28 +180,29 @@ const GameWrapper = dynamic(() => import('@/ui/pages/GameWrapper'), {
 ## Architecture Patterns
 
 **Game Engine (ECS-like):**
-- Systems run sequentially: `playerControl` → `movement` → `collision` → `collect` → `ghostBehavior`
-- Game loop in `src/core/engine.ts` (requestAnimationFrame)
-- Initialized once in `GameWrapper.tsx` via useEffect
+- **System execution order:** See `src/core/engine.ts` for sequential system pipeline
+- **Game loop:** requestAnimationFrame-based, defined in `src/core/engine.ts`
+- **Initialization:** `GameWrapper.tsx` initializes engine via useEffect
 
 **Routing:**
-- `/` - Landing page (static, SSG)
-- `/game` - Full game SPA (client-side, dynamic import)
-- Game internally routes via Zustand `gameStatus` (MainMenu, Playing, DeathScreen, etc.)
+- **Next.js routes:** Check `app/` directory structure for file-based routing
+- **Game internal state routing:** Managed via Zustand `gameStatus` store (check `src/state/` stores)
 
 **State Architecture:**
-- 7 Zustand stores bridge core logic and UI
+- **State management:** Zustand stores in `src/state/` (multiple stores, check directory)
+- **Bridge layer:** Stores connect core game logic with UI components
 - No Redux or Context API
 
 ---
 
 ## Key Configuration Files
 
-- **`next.config.ts`:** Pyodide headers (COOP/COEP), webpack config
-- **`tsconfig.json`:** Path aliases, strict mode
+- **`next.config.ts`:** Turbopack rules, Pyodide headers (COOP/COEP), transpiled packages
+- **`tsconfig.json`:** Path aliases, compiler options, strict mode settings
 - **`eslint.config.js`:** ESLint 9 flat config
-- **`package.json`:** Dependencies, scripts, version 3.0.0
-- **`UI_ARCHITECTURE.md`:** Comprehensive UI component guide
+- **`package.json`:** Dependencies, scripts, project metadata
+- **`src/config/*.json`:** Runtime configuration (debug, ghost behavior, etc.)
+- **`UI_ARCHITECTURE.md`:** Comprehensive UI component hierarchy guide
 
 ---
 
@@ -219,9 +230,9 @@ import Link from '@/ui/components/Link'
 
 ## Known Gaps
 - No testing framework
-- No React.memo/lazy loading (except game route)
+- Limited React optimization (check dynamic imports in `app/` routes)
 - No error boundaries
-- Bundle size not optimized (~10MB for game)
+- Bundle size optimization needed
 
 ---
 
