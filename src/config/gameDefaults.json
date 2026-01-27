@@ -1,0 +1,31 @@
+{
+  "pacman": {
+    "initialPosition": { "x": 14, "y": 16 },
+    "initialHealth": 3,
+    "movementInterval": 200,
+    "invulnerabilityTicks": 10
+  },
+  "ghosts": {
+    "movementInterval": 250,
+    "houseTicks": {
+      "blinky": 0,
+      "pinky": 15,
+      "inky": 30,
+      "clyde": 45
+    }
+  },
+  "game": {
+    "initialLevel": 1,
+    "initialScore": 0,
+    "pointValues": {
+      "pacDot": 100,
+      "powerPellet": 500,
+      "ghost": 200,
+      "levelBonus": 1000
+    }
+  },
+  "movement": {
+    "baseSpeed": 5.0,
+    "frightenedSpeedMultiplier": 0.5
+  }
+}

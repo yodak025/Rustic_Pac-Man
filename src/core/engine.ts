@@ -12,6 +12,11 @@ import type { Position} from '@custom-types/gameComponents';
 import gameStatusValue from '@custom-types/gameStatusValue';
 import * as config from '@/config/ghostBehavior.json';
 import { GhostBehaviorMode, TargetKind} from '@custom-types/gameComponents';
+import type { PyodideInterface } from 'pyodide';
+
+// New ECS Architecture imports
+import { GameWorld } from './GameWorld';
+import { DEBUG_LOG_GAME_WORLD } from '@config/featureFlags';
 
 const STARTING_POSITIONS = config.DEFAULT_POSITIONS.HOME;
 
@@ -20,8 +25,23 @@ export class RusticGameEngine {
   private animationFrameId: number | null = null;
   private lastTime: number = 0;
   private keyState = { w: false, a: false, s: false, d: false };
-  constructor() {
-    
+  private pyodide: PyodideInterface;
+
+  // New ECS Architecture: GameWorld instance (Cold State)
+  // Currently not used in the game loop - will be integrated in Phase 1+
+  private gameWorld: GameWorld;
+
+  constructor(pyodide: PyodideInterface) {
+    this.pyodide = pyodide;
+    this.gameWorld = new GameWorld();
+  }
+
+  /**
+   * Get the GameWorld instance for external access (e.g., React Context)
+   * This allows debug tools to inspect and modify the game state
+   */
+  getGameWorld(): GameWorld {
+    return this.gameWorld;
   }
 
   private setupKeyboardListeners(): void {
@@ -117,7 +137,7 @@ export class RusticGameEngine {
   }
 
   private async initMazeEntities(): Promise<void> {
-    const mazeTiles = await generateMaze();
+    const mazeTiles = await generateMaze(this.pyodide);
     const WALL = 1;
     const HOUSE = -3;
     const PAC_DOT = 0;
@@ -147,12 +167,11 @@ export class RusticGameEngine {
         }
       });
     })
-    mazeState.setMazeLoaded(true); // Set maze as loaded
+    mazeState.setMazeLoaded(true);
     mazeState.initializeMazeInfo(pacDotCounter, powerPelletCounter);
   }
   
   load(): void {
-    //! Maneja la promesa como un hombre joder, esto es lo mas cobarde que he visto en mi vida
     this.initMazeEntities().then(() => {
       console.log('Maze entities initialized');
       this.setupKeyboardListeners();
@@ -160,7 +179,7 @@ export class RusticGameEngine {
       this.initPacmanEntity();
       console.log('Pacman entity initialized');
       this.initGhostsEntities();
-      console.log('Blinky entity initialized');
+      console.log('Ghosts entities initialized');
       useGameStatusStore.getState().setCoreLoadedStatus(); 
       console.log('Core loaded!'); 
     }).catch((error) => {
@@ -225,6 +244,11 @@ export class RusticGameEngine {
       ghostBehaviorSystem(deltaTime);
       collisionSystem(deltaTime); //! Cogido con papel de fumar 
       movementSystem(deltaTime); //! LOS INTERVALOS DE MOVIMIENTO ESTÁN ACOPLADOS, NO TOQUES EL ORDEN DE EJECUCIÓN
+
+      // Debug: Log GameWorld state each frame if enabled
+      if (DEBUG_LOG_GAME_WORLD) {
+        console.log('[GameWorld]', this.gameWorld.debugGetFullState());
+      }
     }
     this.animationFrameId = requestAnimationFrame(() => this.gameLoop());
   }
