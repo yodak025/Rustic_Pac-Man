@@ -1,9 +1,12 @@
 'use client'
 
+import { useEffect, useMemo } from "react"
+import { Canvas } from "@react-three/fiber"
+import { Suspense } from "react"
 import GameScene from "@/scenes/GameScene"
 import { useGameStatusStore } from "@state/store"
 import gameStatusValue from "@custom-types/gameStatusValue"
-import { Canvas } from "@react-three/fiber"
+import { usePyodide, useGameEngine } from "@core/hooks"
 import MainMenu from "@/ui/pages/MainMenu"
 import MazeTilemapAnalyzer from "@/ui/pages/MazeTilemapAnalyzer"
 import DebugSettings from "@/ui/pages/DebugSettings"
@@ -11,10 +14,19 @@ import DeathScreen from "@/ui/pages/DeathScreen"
 import TutorialPage from "@/ui/pages/TutorialPage"
 import HUD from "@ui/layout/HUD"
 import LoadingScreen from "@/ui/common/LoadingScreen"
-import { Suspense, useMemo } from "react"
 
 export default function GameApp() {
-  const { status: gameStatus } = useGameStatusStore((state) => state)
+  const { status: gameStatus, setNotStartedStatus } = useGameStatusStore((state) => state)
+  
+  const { pyodide, error: pyodideError } = usePyodide()
+  
+  useGameEngine(pyodide)
+
+  useEffect(() => {
+    if (pyodide && gameStatus === gameStatusValue.INITIAL_LOADING) {
+      setNotStartedStatus()
+    }
+  }, [pyodide, gameStatus, setNotStartedStatus])
 
   const sceneLayout = useMemo(() => {
     return (
@@ -35,7 +47,25 @@ export default function GameApp() {
     )
   }, [])
 
+  if (pyodideError) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div className="text-center">
+          <h1 className="text-2xl text-[var(--color-alert-error)] mb-4">
+            Failed to load game engine
+          </h1>
+          <p className="text-[var(--color-text-secondary)]">
+            {pyodideError.message}
+          </p>
+        </div>
+      </div>
+    )
+  }
+
   switch (gameStatus) {
+    case gameStatusValue.INITIAL_LOADING:
+      return <LoadingScreen />
+
     case gameStatusValue.NOT_STARTED:
       return <MainMenu />
 

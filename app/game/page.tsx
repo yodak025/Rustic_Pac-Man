@@ -3,11 +3,11 @@
 import dynamic from 'next/dynamic'
 import LoadingScreen from '@/ui/common/LoadingScreen'
 
-const GameWrapper = dynamic(() => import('@/ui/pages/GameWrapper'), {
+const GameApp = dynamic(() => import('@/ui/pages/GameApp'), {
   ssr: false,
   loading: () => <LoadingScreen />
 })
 
 export default function GamePage() {
-  return <GameWrapper />
+  return <GameApp />
 }
