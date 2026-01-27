@@ -45,7 +45,7 @@ export const USE_ECS_MAZE = true;
  * Enable GameWorld for game status and score
  * Phase 2 of migration
  */
-export const USE_ECS_GAME_STATUS = false;
+export const USE_ECS_GAME_STATUS = true;
 
 /**
  * Enable GameWorld for Pacman entity

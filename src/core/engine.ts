@@ -16,7 +16,7 @@ import type { PyodideInterface } from 'pyodide';
 
 // New ECS Architecture imports
 import { GameWorld } from './GameWorld';
-import { DEBUG_LOG_GAME_WORLD } from '@config/featureFlags';
+import { DEBUG_LOG_GAME_WORLD, USE_ECS_GAME_STATUS } from '@config/featureFlags';
 
 const STARTING_POSITIONS = config.DEFAULT_POSITIONS.HOME;
 
@@ -86,6 +86,17 @@ export class RusticGameEngine {
     pacmanStore.actions.setPosition({ x: 14, y: 16 } as Position);
     pacmanStore.actions.setHealth(3); 
     pacmanStore.actions.setMovementTimerInterval(200);
+  }
+
+  private initGameStatus(): void {
+    // New ECS: Initialize GameWorld game state
+    this.gameWorld.setScore(0);
+    this.gameWorld.setLevel(1);
+    // Note: GameWorld status is synced from gameStatusStore during game loop
+    
+    if (DEBUG_LOG_GAME_WORLD) {
+      console.log('[GameWorld] Game state initialized:', this.gameWorld.getGameState());
+    }
   }
 
   private initGhostsEntities(): void {
@@ -212,6 +223,8 @@ export class RusticGameEngine {
       console.log('Maze entities initialized');
       this.setupKeyboardListeners();
       console.log('Keyboard listeners set up');
+      this.initGameStatus();
+      console.log('Game status initialized');
       this.initPacmanEntity();
       console.log('Pacman entity initialized');
       this.initGhostsEntities();
@@ -271,7 +284,7 @@ export class RusticGameEngine {
       const deltaTime = currentTime - this.lastTime;
       this.lastTime = currentTime;
 
-      endgameConditions()
+      endgameConditions(this.gameWorld);
 
     // Run systems
     // TODO - Coleguita, esto de aquí es una chapuza monumental.

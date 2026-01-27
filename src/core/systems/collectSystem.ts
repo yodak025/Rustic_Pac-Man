@@ -4,9 +4,11 @@ import useGameStatusStore from "@/state/useGameStatusStore";
 import useGhostsStore from "@/state/useGhostsStore";
 import { type Position } from "@custom-types/gameComponents";
 import type { Entity } from "@custom-types/gameEntities";
-import { USE_ECS_MAZE } from "@config/featureFlags";
+import { USE_ECS_MAZE, USE_ECS_GAME_STATUS } from "@config/featureFlags";
 import type { GameWorld } from "@core/GameWorld";
+import * as gameDefaults from "@config/gameDefaults.json";
 
+const POINTS = gameDefaults.game.pointValues;
 
 export function collectSystem(position: Position, entity: Entity, gameWorld?: GameWorld): void {
   if (!entity.components.collector) {
@@ -29,7 +31,13 @@ export function collectSystem(position: Position, entity: Entity, gameWorld?: Ga
       } else {
         useMazeState.getState().removePacDot(position);
       }
-      useGameStatusStore.getState().incrementScore(100);
+      
+      // Update score in appropriate store
+      if (USE_ECS_GAME_STATUS && gameWorld) {
+        gameWorld.addScore(POINTS.pacDot);
+      } else {
+        useGameStatusStore.getState().incrementScore(POINTS.pacDot);
+      }
     } else if (
       collectable === CollectableKind.POWER_PELLET &&
       entity.components.collector.collects.includes(CollectableKind.POWER_PELLET)
@@ -40,7 +48,14 @@ export function collectSystem(position: Position, entity: Entity, gameWorld?: Ga
       } else {
         useMazeState.getState().removePowerPellet(position);
       }
-      useGameStatusStore.getState().incrementScore(500);
+      
+      // Update score in appropriate store
+      if (USE_ECS_GAME_STATUS && gameWorld) {
+        gameWorld.addScore(POINTS.powerPellet);
+      } else {
+        useGameStatusStore.getState().incrementScore(POINTS.powerPellet);
+      }
+      
       useGhostsStore.getState().actions.frightenAll();
     }
   }
