@@ -4,7 +4,9 @@ import gameStatusValue from "@custom-types/gameStatusValue";
 interface IGameStatus {
   status: gameStatusValue;
   score: number;
-  level: number; 
+  level: number;
+  setInitialLoadingStatus: () => void;
+  setNotStartedStatus: () => void;
   setReadyToLoadStatus: () => void;
   setLoadingCoreStatus: () => void;
   setCoreLoadedStatus: () => void;
@@ -21,9 +23,11 @@ interface IGameStatus {
 }
 
 const useGameStatusStore = create<IGameStatus>((set) => ({
-  status: gameStatusValue.NOT_STARTED,
+  status: gameStatusValue.INITIAL_LOADING,
   score: 0,
   level: 1,
+  setInitialLoadingStatus: () => set(() => ({ status: gameStatusValue.INITIAL_LOADING })),
+  setNotStartedStatus: () => set(() => ({ status: gameStatusValue.NOT_STARTED })),
   setReadyToLoadStatus: () => set(() => ({ status: gameStatusValue.READY_TO_LOAD })),
   setLoadingCoreStatus: () => set(() => ({ status: gameStatusValue.LOADING_CORE })),
   setCoreLoadedStatus: () => set(() => ({ status: gameStatusValue.CORE_LOADED })),
