@@ -49,9 +49,9 @@ export const USE_ECS_GAME_STATUS = true;
 
 /**
  * Enable GameWorld for Pacman entity
- * Phase 3 of migration
+ * Phase 3 of migration - CONTINUOUS MOVEMENT MODEL
  */
-export const USE_ECS_PACMAN = false;
+export const USE_ECS_PACMAN = true;
 
 /**
  * Enable GameWorld for Ghost entities

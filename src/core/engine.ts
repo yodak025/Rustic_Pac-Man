@@ -16,7 +16,17 @@ import type { PyodideInterface } from 'pyodide';
 
 // New ECS Architecture imports
 import { GameWorld } from './GameWorld';
-import { DEBUG_LOG_GAME_WORLD, USE_ECS_GAME_STATUS } from '@config/featureFlags';
+import { DEBUG_LOG_GAME_WORLD, USE_ECS_GAME_STATUS, USE_ECS_PACMAN } from '@config/featureFlags';
+import { ComponentType, PACMAN_ENTITY_ID } from '@custom-types/componentTypes';
+import * as gameDefaults from '@config/gameDefaults.json';
+
+// New ECS Systems (Phase 3)
+import { inputCaptureSystem } from './systems/inputCaptureSystem';
+import { playerIntentSystem } from './systems/playerIntentSystem';
+import { continuousMovementSystem } from './systems/continuousMovementSystem';
+import { alignmentSystem } from './systems/alignmentSystem';
+import { discretePositionSyncSystem } from './systems/discretePositionSyncSystem';
+import { syncToHotStateSystem } from './systems/syncToHotStateSystem';
 
 const STARTING_POSITIONS = config.DEFAULT_POSITIONS.HOME;
 
@@ -83,9 +93,68 @@ export class RusticGameEngine {
 
   private initPacmanEntity(): void {
     const pacmanStore = usePacmanStore.getState().pacman;
-    pacmanStore.actions.setPosition({ x: 14, y: 16 } as Position);
-    pacmanStore.actions.setHealth(3); 
-    pacmanStore.actions.setMovementTimerInterval(200);
+    const defaults = gameDefaults.pacman;
+    
+    // Legacy store initialization
+    pacmanStore.actions.setPosition(defaults.initialPosition as Position);
+    pacmanStore.actions.setHealth(defaults.initialHealth); 
+    pacmanStore.actions.setMovementTimerInterval(defaults.movementInterval);
+    
+    // New ECS: Create Pacman entity in GameWorld with continuous movement
+    const baseSpeed = gameDefaults.movement.baseSpeed;
+    
+    this.gameWorld.createEntity(PACMAN_ENTITY_ID);
+    this.gameWorld.addComponent(PACMAN_ENTITY_ID, ComponentType.PLAYER_TAG, {
+      _tag: 'player' as const
+    });
+    
+    // Position components (both continuous and discrete)
+    this.gameWorld.addComponent(PACMAN_ENTITY_ID, ComponentType.CONTINUOUS_POSITION, {
+      x: defaults.initialPosition.x,
+      y: defaults.initialPosition.y
+    });
+    this.gameWorld.addComponent(PACMAN_ENTITY_ID, ComponentType.DISCRETE_POSITION, {
+      x: defaults.initialPosition.x,
+      y: defaults.initialPosition.y
+    });
+    
+    // Movement components (continuous movement model)
+    this.gameWorld.addComponent(PACMAN_ENTITY_ID, ComponentType.MOVEMENT_SPEED, {
+      current: baseSpeed,
+      base: baseSpeed
+    });
+    this.gameWorld.addComponent(PACMAN_ENTITY_ID, ComponentType.MOVEMENT_INTENT, {
+      direction: null
+    });
+    this.gameWorld.addComponent(PACMAN_ENTITY_ID, ComponentType.PLAYER_INTENT, {
+      desiredDirection: null,
+      lastValidDirection: null
+    });
+    this.gameWorld.addComponent(PACMAN_ENTITY_ID, ComponentType.ALIGNMENT_STATE, {
+      isAligned: true,
+      aligningDirection: null
+    });
+    
+    // Combat/Collection components
+    this.gameWorld.addComponent(PACMAN_ENTITY_ID, ComponentType.HEALTH, {
+      current: defaults.initialHealth,
+      max: defaults.initialHealth
+    });
+    this.gameWorld.addComponent(PACMAN_ENTITY_ID, ComponentType.INVULNERABILITY, {
+      ticksRemaining: 0
+    });
+    this.gameWorld.addComponent(PACMAN_ENTITY_ID, ComponentType.COLLECTOR, {
+      canCollect: [CollectableKind.PAC_DOT, CollectableKind.POWER_PELLET]
+    });
+    
+    // Control component
+    this.gameWorld.addComponent(PACMAN_ENTITY_ID, ComponentType.PLAYABLE, {
+      _tag: 'playable' as const
+    });
+    
+    if (DEBUG_LOG_GAME_WORLD) {
+      console.log('[GameWorld] Pacman entity created:', PACMAN_ENTITY_ID);
+    }
   }
 
   private initGameStatus(): void {
@@ -287,12 +356,42 @@ export class RusticGameEngine {
       endgameConditions(this.gameWorld);
 
     // Run systems
-    // TODO - Coleguita, esto de aquí es una chapuza monumental.
-    // TODO - Los sistemas no conmutan. Hay que crear un sistema de eventos. 
-      playerControlSystem(this.keyState); 
+    // Phase 3: Dual system execution based on USE_ECS_PACMAN flag
+    if (USE_ECS_PACMAN) {
+      // ══════════════════════════════════════════════════════════
+      // NEW ECS PATH: Continuous movement for Pacman
+      // ══════════════════════════════════════════════════════════
+      
+      // PHASE 1: INPUT CAPTURE
+      inputCaptureSystem(this.gameWorld, this.keyState);
+      
+      // PHASE 2: PLAYER INTENT (decision system)
+      playerIntentSystem(this.gameWorld);
+      
+      // PHASE 3: MOVEMENT (physics)
+      continuousMovementSystem(this.gameWorld, deltaTime);
+      alignmentSystem(this.gameWorld, deltaTime);
+      discretePositionSyncSystem(this.gameWorld);
+      
+      // PHASE 4: GHOSTS (still using legacy systems in Phase 3)
       ghostBehaviorSystem(deltaTime, this.gameWorld);
-      collisionSystem(deltaTime); //! Cogido con papel de fumar 
-      movementSystem(deltaTime, this.gameWorld); //! LOS INTERVALOS DE MOVIMIENTO ESTÁN ACOPLADOS, NO TOQUES EL ORDEN DE EJECUCIÓN
+      movementSystem(deltaTime, this.gameWorld); // Only moves ghosts now
+      
+      // PHASE 5: COLLISIONS & EFFECTS
+      collisionSystem(deltaTime);
+      
+      // PHASE 6: SYNC TO HOT STATE (React rendering)
+      syncToHotStateSystem(this.gameWorld);
+      
+    } else {
+      // ══════════════════════════════════════════════════════════
+      // LEGACY PATH: Discrete movement for Pacman
+      // ══════════════════════════════════════════════════════════
+      playerControlSystem(this.keyState);
+      ghostBehaviorSystem(deltaTime, this.gameWorld);
+      collisionSystem(deltaTime);
+      movementSystem(deltaTime, this.gameWorld);
+    }
 
       // Debug: Log GameWorld state each frame if enabled
       if (DEBUG_LOG_GAME_WORLD) {

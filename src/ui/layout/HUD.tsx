@@ -1,5 +1,6 @@
 'use client'
 
+import { USE_ECS_PACMAN } from "@config/featureFlags";
 import { useGameStatusStore } from "@state/store";
 import useMazeState from "@/state/useMazeStore";
 import gameStatusValue from "@/types/gameStatusValue";
@@ -10,6 +11,7 @@ import LivesDisplay from "@/ui/common/LivesDisplay";
 import GameStats from "@/ui/common/GameStats";
 import { useEffect } from "react";
 import usePacmanStore from "@state/usePacmanStore";
+import { usePacmanHotState } from "@state/useHotState";
 import useDebugConfigStore from "@/state/useDebugConfigStore";
 
 
@@ -17,7 +19,12 @@ const HUD = () => {
   const { level, score, status, setPauseStatus, setGameOverStatus } = useGameStatusStore(
     (state) => state
   );
-  const lives = usePacmanStore((state) => state.pacman.components.health.value);
+  
+  // Get lives from appropriate source based on flag
+  const lives = USE_ECS_PACMAN 
+    ? usePacmanHotState().health
+    : usePacmanStore((state) => state.pacman.components.health.value);
+    
   const {total: pdt, current:pdc} = useMazeState((state) => state.maze.info.pacDots)
 
   const { debug } = useDebugConfigStore();

@@ -64,6 +64,16 @@ export enum ComponentType {
 export type EntityId = string;
 
 // ============================================================================
+// COMMON ENTITY IDS
+// ============================================================================
+
+export const PACMAN_ENTITY_ID: EntityId = 'pacman';
+export const BLINKY_ENTITY_ID: EntityId = 'blinky';
+export const PINKY_ENTITY_ID: EntityId = 'pinky';
+export const INKY_ENTITY_ID: EntityId = 'inky';
+export const CLYDE_ENTITY_ID: EntityId = 'clyde';
+
+// ============================================================================
 // POSITION KEY TYPE (for spatial queries)
 // ============================================================================
 

@@ -7,7 +7,7 @@ import type { Entity } from "@custom-types/gameEntities";
 import usePacmanStore from "@/state/usePacmanStore";
 import useMazeState from "@/state/useMazeStore";
 import useGhostsStore from "@/state/useGhostsStore";
-import { USE_ECS_MAZE } from "@config/featureFlags";
+import { USE_ECS_MAZE, USE_ECS_PACMAN } from "@config/featureFlags";
 import type { GameWorld } from "@core/GameWorld";
 
 import { collectSystem } from "./collectSystem";
@@ -46,7 +46,13 @@ export function movementSystem(deltaTime: number, gameWorld?: GameWorld): void {
   };
 
   const entities: Entity[] = [];
-  entities.push(usePacmanStore.getState().pacman);
+  
+  // Phase 3: Only add Pacman if ECS is not enabled
+  if (!USE_ECS_PACMAN) {
+    entities.push(usePacmanStore.getState().pacman);
+  }
+  
+  // Always add ghosts (Phase 4 will migrate them)
   entities.push(useGhostsStore.getState().blinky);
   entities.push(useGhostsStore.getState().pinky);
   entities.push(useGhostsStore.getState().inky);

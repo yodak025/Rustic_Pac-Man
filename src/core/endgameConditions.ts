@@ -3,6 +3,7 @@ import useMazeState from '@state/useMazeStore';
 import usePacmanStore from '@/state/usePacmanStore';
 import { USE_ECS_MAZE, USE_ECS_PACMAN } from '@config/featureFlags';
 import type { GameWorld } from './GameWorld';
+import { ComponentType, PACMAN_ENTITY_ID } from '@custom-types/componentTypes';
 
 export default function endgameConditions(gameWorld?: GameWorld) {
   const gameStatusState = useGameStatusStore.getState();
@@ -23,11 +24,12 @@ export default function endgameConditions(gameWorld?: GameWorld) {
     }
   }
   
-  // Check Pacman health (Fase 3 will migrate this to GameWorld)
+  // Check Pacman health - use GameWorld if ECS flag is enabled, otherwise use legacy store
   if (USE_ECS_PACMAN && gameWorld) {
-    // TODO: Phase 3 - read from GameWorld
-    // const pacmanHealth = gameWorld.getComponent(PACMAN_ID, ComponentType.Health);
-    // if (pacmanHealth && pacmanHealth.value <= 0) victoryStatus = false;
+    const health = gameWorld.getComponent(PACMAN_ENTITY_ID, ComponentType.HEALTH);
+    if (health && health.current <= 0) {
+      victoryStatus = false;
+    }
   } else {
     if (pacmanState.components.health.value <= 0) {
       victoryStatus = false;
