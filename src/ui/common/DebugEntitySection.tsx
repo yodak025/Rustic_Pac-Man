@@ -37,6 +37,7 @@ const DebugEntitySection: React.FC<DebugEntitySectionProps> = ({
     return directions.join(', ');
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleInputChange = (setter: (value: any) => void, value: string, type: 'number' | 'position') => {
     if (type === 'number') {
       const numValue = parseFloat(value);
