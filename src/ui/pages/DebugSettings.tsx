@@ -4,7 +4,7 @@ import PageTitle from "@/ui/components/PageTitle";
 import Button from "@/ui/components/Button";
 import Checkbox from "@/ui/components/Checkbox";
 import useDebugConfigStore from "@/state/useDebugConfigStore";
-import { useGameStatusStore } from "@/state/store";
+import useAppStateStore from "@/state/useAppStateStore";
 
 const DebugSettings = () => {
   const {
@@ -18,7 +18,7 @@ const DebugSettings = () => {
     resetToDefaults,
   } = useDebugConfigStore();
 
-  const { reboot } = useGameStatusStore();
+  const { goToMainMenu } = useAppStateStore();
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-[var(--color-background)] bg-opacity-90">
@@ -67,7 +67,7 @@ const DebugSettings = () => {
             <Button onClick={resetToDefaults} variant="secondary">
               Reset to Defaults
             </Button>
-            <Button onClick={reboot} variant="primary">
+            <Button onClick={goToMainMenu} variant="primary">
               Back to Main Menu
             </Button>
           </div>

@@ -1,25 +1,29 @@
 'use client'
 
 import React from 'react';
-import {useGameStatusStore} from "@state/store";
-import PageTitle from '@/ui/components/PageTitle';
-import MenuButtonGroup from '@/ui/common/MenuButtonGroup';
+import Modal from "@/ui/common/Modal";
+import MenuButtonGroup from "@/ui/common/MenuButtonGroup";
+import { useGameWorldContext } from "@core/contexts/GameWorldContext";
+import useAppStateStore from "@/state/useAppStateStore";
 
 const DeathScreen: React.FC = () => {
-  const game = useGameStatusStore((state) => state);
+  const { restartGame, exitToMenu } = useGameWorldContext();
+  const { goToMainMenu } = useAppStateStore();
+
+  const handleMainMenu = () => {
+    exitToMenu();
+    goToMainMenu();
+  };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-[var(--color-background)] text-[var(--color-text-light)]">
-      <PageTitle>GAME OVER</PageTitle>
-      
+    <Modal isOpen={true} title="GAME OVER" className="w-3xl h-2/7">
       <MenuButtonGroup
-        onRestart={game.reStart}
-        onMainMenu={game.reboot}
-        restartLabel="TRY AGAIN"
-        mainMenuLabel="BACK TO MENU"
-        className="w-64"
+        onRestart={restartGame}
+        onMainMenu={handleMainMenu}
+        restartLabel="RESTART"
+        mainMenuLabel="MAIN MENU"
       />
-    </div>
+    </Modal>
   );
 };
 

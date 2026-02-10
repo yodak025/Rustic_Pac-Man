@@ -1,32 +1,78 @@
 'use client'
 
-import { useEffect, useMemo } from "react"
+import { useEffect, useMemo, useRef, useCallback } from "react"
 import { Canvas } from "@react-three/fiber"
 import { Suspense } from "react"
 import GameScene from "@/scenes/GameScene"
-import { useGameStatusStore } from "@state/store"
-import gameStatusValue from "@custom-types/gameStatusValue"
+import GameScenePreloader from "@/scenes/GameScenePreloader"
+import AppView from "@custom-types/appView"
+import useAppStateStore from "@/state/useAppStateStore"
 import { usePyodide, useGameEngine } from "@core/hooks"
+import { GameWorldProvider } from "@core/contexts/GameWorldContext"
 import MainMenu from "@/ui/pages/MainMenu"
 import MazeTilemapAnalyzer from "@/ui/pages/MazeTilemapAnalyzer"
 import DebugSettings from "@/ui/pages/DebugSettings"
-import DeathScreen from "@/ui/pages/DeathScreen"
 import TutorialPage from "@/ui/pages/TutorialPage"
 import HUD from "@ui/layout/HUD"
 import LoadingScreen from "@/ui/common/LoadingScreen"
 
 export default function GameApp() {
-  const { status: gameStatus, setNotStartedStatus } = useGameStatusStore((state) => state)
+  const { view, setPyodideReady, setEngineReady, goToMainMenu, showGameCanvas } = useAppStateStore()
   
   const { pyodide, error: pyodideError } = usePyodide()
   
-  useGameEngine(pyodide)
+  const { contextValue, isReady: engineReady } = useGameEngine(pyodide)
 
+  const gameInitializedRef = useRef(false)
+  const assetsLoadedRef = useRef(false)
+
+  // Update app state when Pyodide loads
   useEffect(() => {
-    if (pyodide && gameStatus === gameStatusValue.INITIAL_LOADING) {
-      setNotStartedStatus()
+    if (pyodide) {
+      setPyodideReady(true)
+      goToMainMenu()
     }
-  }, [pyodide, gameStatus, setNotStartedStatus])
+  }, [pyodide, setPyodideReady, goToMainMenu])
+
+  // Update app state when engine is ready
+  useEffect(() => {
+    if (engineReady) {
+      setEngineReady(true)
+    }
+  }, [engineReady, setEngineReady])
+
+  // When view changes to LOADING_GAME, start loading the game core
+  useEffect(() => {
+    if (view === AppView.LOADING_GAME && !gameInitializedRef.current) {
+      gameInitializedRef.current = true
+      assetsLoadedRef.current = false
+
+      console.log('[GameApp] Starting new game...')
+      contextValue.startNewGame().then(() => {
+        console.log('[GameApp] Core loaded, waiting for assets...')
+      }).catch((error) => {
+        console.error('[GameApp] Failed to start new game:', error)
+      })
+    }
+  }, [view, contextValue])
+
+  // Callback for when R3F finishes loading assets
+  const handleAssetsLoaded = useCallback(() => {
+    if (!assetsLoadedRef.current) {
+      assetsLoadedRef.current = true
+      console.log('[GameApp] Assets loaded, starting game...')
+      contextValue.beginGame()
+      showGameCanvas()
+    }
+  }, [contextValue, showGameCanvas])
+
+  // Reset refs when leaving game canvas
+  useEffect(() => {
+    if (view !== AppView.LOADING_GAME && view !== AppView.GAME_CANVAS) {
+      gameInitializedRef.current = false
+      assetsLoadedRef.current = false
+    }
+  }, [view])
 
   const sceneLayout = useMemo(() => {
     return (
@@ -62,39 +108,48 @@ export default function GameApp() {
     )
   }
 
-  switch (gameStatus) {
-    case gameStatusValue.INITIAL_LOADING:
-      return <LoadingScreen />
+  // Wrap entire app with GameWorldContext provider
+  return (
+    <GameWorldProvider value={contextValue}>
+      {(() => {
+        switch (view) {
+          case AppView.LOADING_PYODIDE:
+            return <LoadingScreen />
 
-    case gameStatusValue.NOT_STARTED:
-      return <MainMenu />
+          case AppView.MAIN_MENU:
+            return <MainMenu />
 
-    case gameStatusValue.DEBUG_MAZE_ANALYZER:
-      return <MazeTilemapAnalyzer />
+          case AppView.DEBUG_MAZE_ANALYZER:
+            return <MazeTilemapAnalyzer />
 
-    case gameStatusValue.DEBUG_SETTINGS:
-      return <DebugSettings />
+          case AppView.DEBUG_SETTINGS:
+            return <DebugSettings />
 
-    case gameStatusValue.TUTORIAL:
-      return <TutorialPage />
+          case AppView.TUTORIAL:
+            return <TutorialPage />
 
-    case gameStatusValue.READY_TO_LOAD:
-    case gameStatusValue.LOADING_CORE:
-    case gameStatusValue.WON:
-    case gameStatusValue.RESTARTING:
-      return <LoadingScreen />
+          case AppView.LOADING_GAME:
+            return (
+              <>
+                <LoadingScreen />
+                {/* Hidden Canvas that preloads assets */}
+                <div style={{ position: 'absolute', top: -9999, left: -9999 }}>
+                  <Canvas>
+                    <Suspense fallback={null}>
+                      <GameScenePreloader onLoaded={handleAssetsLoaded} />
+                    </Suspense>
+                  </Canvas>
+                </div>
+              </>
+            )
 
-    case gameStatusValue.PLAYING:
-    case gameStatusValue.PAUSED:
-    case gameStatusValue.CORE_LOADED:
-    case gameStatusValue.LOADING_GRAPHICS:
-    case gameStatusValue.GRAPHICS_LOADED:
-      return sceneLayout
+          case AppView.GAME_CANVAS:
+            return sceneLayout
 
-    case gameStatusValue.LOST:
-      return <DeathScreen />
-
-    default:
-      throw new Error(`Unknown game status: ${gameStatus}`)
-  }
+          default:
+            throw new Error(`Unknown app view: ${view}`)
+        }
+      })()}
+    </GameWorldProvider>
+  )
 }

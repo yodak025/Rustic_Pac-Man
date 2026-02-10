@@ -1,16 +1,16 @@
 'use client'
 
 import React from 'react';
-import { useGameStatusStore } from '@state/store';
+import useAppStateStore from '@/state/useAppStateStore';
 import PageTitle from '@/ui/components/PageTitle';
 import Button from '@/ui/components/Button';
 import GameControlsDisplay from '@/ui/common/GameControlsDisplay';
 
 const TutorialPage: React.FC = () => {
-  const game = useGameStatusStore((state) => state);
+  const { goToMainMenu } = useAppStateStore();
 
   const handleBackToMainMenu = () => {
-    game.reboot();
+    goToMainMenu();
   };
 
   return (
