@@ -1,32 +1,41 @@
-import usePacmanStore from '@/state/usePacmanStore';
-import useGhostsStore from '@/state/useGhostsStore';
 import { movementSystem } from './systems/discreteMovementSystem';
-import { playerControlSystem } from './systems/playerControlSystem';
-import { ghostBehaviorSystem } from './systems/ghost-behavior-system/ghostBehaviorSystem';
-import { collisionSystem } from './systems/collisionSystem';
-import endgameConditions from './endgameConditions';
-import useGameStatusStore from '@/state/useGameStatusStore';
 import { generateMaze } from './mazeGen';
-import useMazeState from '@/state/useMazeStore';
-import type { Position} from '@custom-types/gameComponents';
-import gameStatusValue from '@custom-types/gameStatusValue';
+import { useHotState } from '@/state/useHotState';
+import type { Position } from '@custom-types/gameComponents';
+import GameStatus from '@custom-types/gameStatus';
 import * as config from '@/config/ghostBehavior.json';
-import { GhostBehaviorMode, TargetKind, CollectableKind} from '@custom-types/gameComponents';
+import { CollectableKind } from '@custom-types/gameComponents';
 import type { PyodideInterface } from 'pyodide';
 
 // New ECS Architecture imports
 import { GameWorld } from './GameWorld';
-import { DEBUG_LOG_GAME_WORLD, USE_ECS_GAME_STATUS, USE_ECS_PACMAN } from '@config/featureFlags';
-import { ComponentType, PACMAN_ENTITY_ID } from '@custom-types/componentTypes';
+import { DEBUG_LOG_GAME_WORLD } from '@config/featureFlags';
+import { ComponentType, PACMAN_ENTITY_ID, BLINKY_ENTITY_ID, PINKY_ENTITY_ID, INKY_ENTITY_ID, CLYDE_ENTITY_ID } from '@custom-types/componentTypes';
 import * as gameDefaults from '@config/gameDefaults.json';
+import { createGhostEntity } from './entityFactory';
+import { GhostBehaviorKind } from '@custom-types/gameComponents';
 
-// New ECS Systems (Phase 3)
+// ECS Systems
 import { inputCaptureSystem } from './systems/inputCaptureSystem';
 import { playerIntentSystem } from './systems/playerIntentSystem';
 import { continuousMovementSystem } from './systems/continuousMovementSystem';
 import { alignmentSystem } from './systems/alignmentSystem';
 import { discretePositionSyncSystem } from './systems/discretePositionSyncSystem';
 import { syncToHotStateSystem } from './systems/syncToHotStateSystem';
+import { ghostBehaviorModeSystem } from './systems/ghostBehaviorModeSystem';
+import { ghostTargetingSystem } from './systems/ghostTargetingSystem';
+import { ghostDirectionSystem } from './systems/ghostDirectionSystem';
+import { behaviorTimerTickSystem } from './systems/behaviorTimerTickSystem';
+import { timerUpdateSystem } from './systems/timerUpdateSystem';
+import { entityCollisionSystem } from './systems/entityCollisionSystem';
+import { collectionDetectionSystem } from './systems/collectionDetectionSystem';
+import { damageSystem } from './systems/damageSystem';
+import { collectionEffectSystem } from './systems/collectionEffectSystem';
+import { powerPelletEffectSystem } from './systems/powerPelletEffectSystem';
+import { invulnerabilityTickSystem } from './systems/invulnerabilityTickSystem';
+import { victoryConditionSystem } from './systems/victoryConditionSystem';
+import { defeatConditionSystem } from './systems/defeatConditionSystem';
+import { cleanupEventsSystem } from './systems/cleanupEventsSystem';
 
 const STARTING_POSITIONS = config.DEFAULT_POSITIONS.HOME;
 
@@ -37,8 +46,6 @@ export class RusticGameEngine {
   private keyState = { w: false, a: false, s: false, d: false };
   private pyodide: PyodideInterface;
 
-  // New ECS Architecture: GameWorld instance (Cold State)
-  // Currently not used in the game loop - will be integrated in Phase 1+
   private gameWorld: GameWorld;
 
   constructor(pyodide: PyodideInterface) {
@@ -47,15 +54,102 @@ export class RusticGameEngine {
   }
 
   /**
-   * Get the GameWorld instance for external access (e.g., React Context)
-   * This allows debug tools to inspect and modify the game state
+   * Get the GameWorld instance for external access
    */
   getGameWorld(): GameWorld {
     return this.gameWorld;
   }
 
+  // ══════════════════════════════════════════════════════════════════════════
+  // COMMAND METHODS (called from React via GameWorldContext)
+  // ══════════════════════════════════════════════════════════════════════════
+
+  /**
+   * Start a new game (load maze and initialize entities)
+   */
+  async startNewGame(): Promise<void> {
+    console.log('[Engine] Starting new game...');
+    this.stop();
+    this.gameWorld.reset();
+    this.gameWorld.setGameStatus(GameStatus.LOADING);
+    
+    await this.load();
+    
+    console.log('[Engine] New game loaded, ready to begin');
+  }
+
+  /**
+   * Begin playing the game (start game loop)
+   */
+  beginGame(): void {
+    const currentStatus = this.gameWorld.getGameState().status;
+    if (currentStatus !== GameStatus.READY) {
+      console.warn('[Engine] Cannot begin game - not in READY state, current:', currentStatus);
+      return;
+    }
+    this.gameWorld.setGameStatus(GameStatus.PLAYING);
+    this.start();
+    console.log('[Engine] Game started!');
+  }
+
+  /**
+   * Pause the game
+   */
+  pauseGame(): void {
+    if (this.gameWorld.getGameState().status !== GameStatus.PLAYING) {
+      return;
+    }
+    this.isRunning = false;
+    this.gameWorld.setGameStatus(GameStatus.PAUSED);
+    
+    // Sync to HotState immediately so React UI updates
+    syncToHotStateSystem(this.gameWorld);
+    
+    console.log('[Engine] Game paused');
+  }
+
+  /**
+   * Resume the game
+   */
+  resumeGame(): void {
+    if (this.gameWorld.getGameState().status !== GameStatus.PAUSED) {
+      return;
+    }
+    this.gameWorld.setGameStatus(GameStatus.PLAYING);
+    
+    // Sync to HotState before starting
+    syncToHotStateSystem(this.gameWorld);
+    
+    this.start();
+    console.log('[Engine] Game resumed');
+  }
+
+  /**
+   * Restart the game
+   */
+  async restartGame(): Promise<void> {
+    console.log('[Engine] Restarting game...');
+    await this.startNewGame();
+    
+    // Sync LOADING state to HotState
+    syncToHotStateSystem(this.gameWorld);
+    
+    this.beginGame();
+  }
+
+  /**
+   * Exit to menu
+   */
+  exitToMenu(): void {
+    console.log('[Engine] Exiting to menu...');
+    this.stop();
+    this.gameWorld.reset();
+    
+    // Sync reset state to HotState
+    syncToHotStateSystem(this.gameWorld);
+  }
+
   private setupKeyboardListeners(): void {
-    //! Yo creo que esto se podría encapsular 
     window.addEventListener('keydown', (event) => {
       switch (event.key.toLowerCase()) {
         case 'w':
@@ -92,23 +186,18 @@ export class RusticGameEngine {
   }
 
   private initPacmanEntity(): void {
-    const pacmanStore = usePacmanStore.getState().pacman;
     const defaults = gameDefaults.pacman;
-    
-    // Legacy store initialization
-    pacmanStore.actions.setPosition(defaults.initialPosition as Position);
-    pacmanStore.actions.setHealth(defaults.initialHealth); 
-    pacmanStore.actions.setMovementTimerInterval(defaults.movementInterval);
-    
-    // New ECS: Create Pacman entity in GameWorld with continuous movement
     const baseSpeed = gameDefaults.movement.baseSpeed;
-    
+
     this.gameWorld.createEntity(PACMAN_ENTITY_ID);
     this.gameWorld.addComponent(PACMAN_ENTITY_ID, ComponentType.PLAYER_TAG, {
       _tag: 'player' as const
     });
-    
-    // Position components (both continuous and discrete)
+    this.gameWorld.addComponent(PACMAN_ENTITY_ID, ComponentType.TIMER, {
+      elapsed: 0,
+      interval: defaults.movementInterval,
+      isTimeToMove: false
+    });
     this.gameWorld.addComponent(PACMAN_ENTITY_ID, ComponentType.CONTINUOUS_POSITION, {
       x: defaults.initialPosition.x,
       y: defaults.initialPosition.y
@@ -117,8 +206,6 @@ export class RusticGameEngine {
       x: defaults.initialPosition.x,
       y: defaults.initialPosition.y
     });
-    
-    // Movement components (continuous movement model)
     this.gameWorld.addComponent(PACMAN_ENTITY_ID, ComponentType.MOVEMENT_SPEED, {
       current: baseSpeed,
       base: baseSpeed
@@ -134,8 +221,6 @@ export class RusticGameEngine {
       isAligned: true,
       aligningDirection: null
     });
-    
-    // Combat/Collection components
     this.gameWorld.addComponent(PACMAN_ENTITY_ID, ComponentType.HEALTH, {
       current: defaults.initialHealth,
       max: defaults.initialHealth
@@ -146,74 +231,66 @@ export class RusticGameEngine {
     this.gameWorld.addComponent(PACMAN_ENTITY_ID, ComponentType.COLLECTOR, {
       canCollect: [CollectableKind.PAC_DOT, CollectableKind.POWER_PELLET]
     });
-    
-    // Control component
     this.gameWorld.addComponent(PACMAN_ENTITY_ID, ComponentType.PLAYABLE, {
       _tag: 'playable' as const
     });
-    
+
     if (DEBUG_LOG_GAME_WORLD) {
       console.log('[GameWorld] Pacman entity created:', PACMAN_ENTITY_ID);
     }
   }
 
   private initGameStatus(): void {
-    // New ECS: Initialize GameWorld game state
     this.gameWorld.setScore(0);
     this.gameWorld.setLevel(1);
-    // Note: GameWorld status is synced from gameStatusStore during game loop
-    
+
     if (DEBUG_LOG_GAME_WORLD) {
       console.log('[GameWorld] Game state initialized:', this.gameWorld.getGameState());
     }
   }
 
   private initGhostsEntities(): void {
-    const blinkyStore = useGhostsStore.getState().blinky;
-    blinkyStore.actions.clearDirections();
-    blinkyStore.actions.setPosition(STARTING_POSITIONS.BLINKY as Position);
-    blinkyStore.actions.setMovementTimerInterval(250);
-    blinkyStore.actions.initBehavior(0); // Inicializa el comportamiento con 7 ticks
-    blinkyStore.actions.setBehaviorMode(GhostBehaviorMode.HOUSE); // Establece el modo inicial a 'CHASE'
-    blinkyStore.actions.setBehaviorTarget({
-      kind: TargetKind.HOUSE,
-      position: STARTING_POSITIONS.BLINKY as Position
-    })
+    const GHOST_MOVEMENT_INTERVAL = 250;
 
-    const pinkyStore = useGhostsStore.getState().pinky;
-    pinkyStore.actions.clearDirections();
-    pinkyStore.actions.setPosition(STARTING_POSITIONS.PINKY as Position);
-    pinkyStore.actions.setMovementTimerInterval(250);
-    pinkyStore.actions.initBehavior(15); // Inicializa el comportamiento con 7 ticks
-    pinkyStore.actions.setBehaviorMode(GhostBehaviorMode.HOUSE); // Establece el modo inicial a 'CHASE'
-    pinkyStore.actions.setBehaviorTarget({
-      kind: TargetKind.HOUSE,
-      position: STARTING_POSITIONS.PINKY as Position
-    })
+    createGhostEntity(
+      this.gameWorld,
+      BLINKY_ENTITY_ID,
+      GhostBehaviorKind.BLINKY,
+      STARTING_POSITIONS.BLINKY as Position,
+      GHOST_MOVEMENT_INTERVAL,
+      0
+    );
 
-    const inkyStore = useGhostsStore.getState().inky;
-    inkyStore.actions.clearDirections();
-    inkyStore.actions.setPosition(STARTING_POSITIONS.INKY as Position);
-    inkyStore.actions.setMovementTimerInterval(250);
-    inkyStore.actions.initBehavior(30); // Inicializa el comportamiento con 7 ticks
-    inkyStore.actions.setBehaviorMode(GhostBehaviorMode.HOUSE); // Establece el modo inicial a 'CHASE'
-    inkyStore.actions.setBehaviorTarget({
-      kind: TargetKind.HOUSE,
-      position: STARTING_POSITIONS.INKY as Position
-    })
-    // [TODO] Manage peer connection in a less messy way
-    inkyStore.actions.setPeer(()=> {return useGhostsStore.getState().blinky});
+    createGhostEntity(
+      this.gameWorld,
+      PINKY_ENTITY_ID,
+      GhostBehaviorKind.PINKY,
+      STARTING_POSITIONS.PINKY as Position,
+      GHOST_MOVEMENT_INTERVAL,
+      15
+    );
 
-    const clydeStore = useGhostsStore.getState().clyde;
-    clydeStore.actions.clearDirections();
-    clydeStore.actions.setPosition(STARTING_POSITIONS.CLYDE as Position);
-    clydeStore.actions.setMovementTimerInterval(250);
-    clydeStore.actions.initBehavior(45); // Inicializa el comportamiento con 7 ticks
-    clydeStore.actions.setBehaviorMode(GhostBehaviorMode.HOUSE); // Establece el modo inicial a 'CHASE'
-    clydeStore.actions.setBehaviorTarget({
-      kind: TargetKind.HOUSE,
-      position: STARTING_POSITIONS.CLYDE as Position
-    })
+    createGhostEntity(
+      this.gameWorld,
+      INKY_ENTITY_ID,
+      GhostBehaviorKind.INKY,
+      STARTING_POSITIONS.INKY as Position,
+      GHOST_MOVEMENT_INTERVAL,
+      30
+    );
+
+    createGhostEntity(
+      this.gameWorld,
+      CLYDE_ENTITY_ID,
+      GhostBehaviorKind.CLYDE,
+      STARTING_POSITIONS.CLYDE as Position,
+      GHOST_MOVEMENT_INTERVAL,
+      45
+    );
+
+    if (DEBUG_LOG_GAME_WORLD) {
+      console.log('[GameWorld] 4 ghost entities created');
+    }
   }
 
   private async initMazeEntities(): Promise<void> {
@@ -222,59 +299,42 @@ export class RusticGameEngine {
     const HOUSE = -3;
     const PAC_DOT = 0;
     const POWER_PELLET = 2;
-    const mazeState = useMazeState.getState();
     let pacDotCounter = 0;
     let powerPelletCounter = 0;
-    
-    // Legacy store initialization
-    mazeState.initializeMazeEntities();
-    
-    // New ECS Architecture: Clear and prepare GameWorld for maze data
+
     this.gameWorld.clearSpatialGrids();
-    
+
     if (!mazeTiles) {
       console.error('Failed to load maze tiles');
       throw new Error('Maze tiles not found');
     }
-    
+
     mazeTiles.forEach((row, y) => {
       row.forEach((tile, x) => {
-        const localPosition = { x: x, y: y } as Position;
         if (tile === WALL) {
-          // Legacy store
-          mazeState.createWall(localPosition);
-          // New ECS: Populate GameWorld
           this.gameWorld.addWall(x, y);
         } else if (tile === PAC_DOT) {
-          // Legacy store
-          mazeState.createPacDot(localPosition);
-          // New ECS: Populate GameWorld
           this.gameWorld.addCollectable(x, y, CollectableKind.PAC_DOT);
           pacDotCounter++;
         } else if (tile === POWER_PELLET) {
-          // Legacy store
-          mazeState.createPowerPellet(localPosition);
-          // New ECS: Populate GameWorld
           this.gameWorld.addCollectable(x, y, CollectableKind.POWER_PELLET);
           powerPelletCounter++;
         } else if (tile === HOUSE) {
-          // Legacy store
-          mazeState.createHouseTile(localPosition);
-          // New ECS: Populate GameWorld
           this.gameWorld.addHouseTile(x, y);
         }
       });
     });
-    
-    // Legacy store finalization
-    mazeState.setMazeLoaded(true);
-    mazeState.initializeMazeInfo(pacDotCounter, powerPelletCounter);
-    
-    // New ECS: Finalize GameWorld maze data
+
     this.gameWorld.initializeMazeInfo(pacDotCounter, powerPelletCounter);
     this.gameWorld.setMazeLoaded(true);
-    
-    // Debug: Log GameWorld maze stats
+
+    // Initialize floor tiles in HotState for rendering (once, never updated)
+    const floorTiles = new Set<`${number},${number}`>();
+    this.gameWorld.getPacDots().forEach(key => floorTiles.add(key));
+    this.gameWorld.getPowerPellets().forEach(key => floorTiles.add(key));
+    useHotState.getState().initializeFloorTiles(floorTiles);
+    console.log(`[Engine] Initialized ${floorTiles.size} floor tiles in HotState`);
+
     if (DEBUG_LOG_GAME_WORLD) {
       const stats = this.gameWorld.debugGetFullState().spatialData;
       console.log('[GameWorld] Maze initialized:', {
@@ -286,23 +346,20 @@ export class RusticGameEngine {
       });
     }
   }
-  
-  load(): void {
-    this.initMazeEntities().then(() => {
-      console.log('Maze entities initialized');
-      this.setupKeyboardListeners();
-      console.log('Keyboard listeners set up');
-      this.initGameStatus();
-      console.log('Game status initialized');
-      this.initPacmanEntity();
-      console.log('Pacman entity initialized');
-      this.initGhostsEntities();
-      console.log('Ghosts entities initialized');
-      useGameStatusStore.getState().setCoreLoadedStatus(); 
-      console.log('Core loaded!'); 
-    }).catch((error) => {
-      console.error('Error initializing maze entities:', error);
-    });
+
+  async load(): Promise<void> {
+    await this.initMazeEntities();
+    console.log('[Engine] Maze entities initialized');
+    this.setupKeyboardListeners();
+    console.log('[Engine] Keyboard listeners set up');
+    this.initGameStatus();
+    console.log('[Engine] Game status initialized');
+    this.initPacmanEntity();
+    console.log('[Engine] Pacman entity initialized');
+    this.initGhostsEntities();
+    console.log('[Engine] Ghosts entities initialized');
+    this.gameWorld.setGameStatus(GameStatus.READY);
+    console.log('[Engine] Core loaded!');
   }
 
   start(): void {
@@ -316,88 +373,102 @@ export class RusticGameEngine {
 
   stop(): void {
     this.isRunning = false;
-    
+
     if (this.animationFrameId !== null) {
       cancelAnimationFrame(this.animationFrameId);
       this.animationFrameId = null;
     }
   }
 
-  private gameLoop(): void {  
+  private gameLoop(): void {
     if (!this.isRunning) {
-      switch (useGameStatusStore.getState().status) {
-        case gameStatusValue.WON: 
-          useGameStatusStore.getState().setNextLevel();
-        case gameStatusValue.READY_TO_LOAD:
-        case gameStatusValue.RESTARTING:
-          this.load()
-          useGameStatusStore.getState().setLoadingCoreStatus();
-          console.log('Loading core...');
+      // Engine stopped - check if we need to perform any transitions
+      const gameState = this.gameWorld.getGameState();
+      
+      switch (gameState.status) {
+        case GameStatus.WON:
+          // Level completed - advance to next level
+          this.gameWorld.nextLevel();
+          this.gameWorld.addScore(1000); // Level bonus
+          this.load();
           break;
-        case gameStatusValue.GRAPHICS_LOADED:
-          useGameStatusStore.getState().setPlayingStatus();
-          break;
-        case gameStatusValue.PLAYING:
+        
+        case GameStatus.PLAYING:
+          // Resume requested
           this.start();
           break;
+          
         default:
+          // Stay stopped
           break;
       }
+      
       this.animationFrameId = requestAnimationFrame(() => this.gameLoop());
       return;
     }
-    if (useGameStatusStore.getState().status !== 'PLAYING') {
-      this.stop(); // Stop the game loop if the game is not in 'PLAYING' status
-    }else{
-      const currentTime = performance.now();
-      const deltaTime = currentTime - this.lastTime;
-      this.lastTime = currentTime;
-
-      endgameConditions(this.gameWorld);
-
-    // Run systems
-    // Phase 3: Dual system execution based on USE_ECS_PACMAN flag
-    if (USE_ECS_PACMAN) {
-      // ══════════════════════════════════════════════════════════
-      // NEW ECS PATH: Continuous movement for Pacman
-      // ══════════════════════════════════════════════════════════
-      
-      // PHASE 1: INPUT CAPTURE
-      inputCaptureSystem(this.gameWorld, this.keyState);
-      
-      // PHASE 2: PLAYER INTENT (decision system)
-      playerIntentSystem(this.gameWorld);
-      
-      // PHASE 3: MOVEMENT (physics)
-      continuousMovementSystem(this.gameWorld, deltaTime);
-      alignmentSystem(this.gameWorld, deltaTime);
-      discretePositionSyncSystem(this.gameWorld);
-      
-      // PHASE 4: GHOSTS (still using legacy systems in Phase 3)
-      ghostBehaviorSystem(deltaTime, this.gameWorld);
-      movementSystem(deltaTime, this.gameWorld); // Only moves ghosts now
-      
-      // PHASE 5: COLLISIONS & EFFECTS
-      collisionSystem(deltaTime);
-      
-      // PHASE 6: SYNC TO HOT STATE (React rendering)
-      syncToHotStateSystem(this.gameWorld);
-      
-    } else {
-      // ══════════════════════════════════════════════════════════
-      // LEGACY PATH: Discrete movement for Pacman
-      // ══════════════════════════════════════════════════════════
-      playerControlSystem(this.keyState);
-      ghostBehaviorSystem(deltaTime, this.gameWorld);
-      collisionSystem(deltaTime);
-      movementSystem(deltaTime, this.gameWorld);
+    
+    // Check if game should pause
+    const currentStatus = this.gameWorld.getGameState().status;
+    if (currentStatus !== GameStatus.PLAYING) {
+      this.stop();
+      this.animationFrameId = requestAnimationFrame(() => this.gameLoop());
+      return;
     }
 
-      // Debug: Log GameWorld state each frame if enabled
-      if (DEBUG_LOG_GAME_WORLD) {
-        console.log('[GameWorld]', this.gameWorld.debugGetFullState());
-      }
+    // Game is running and playing - execute game loop
+    const currentTime = performance.now();
+    const deltaTime = currentTime - this.lastTime;
+    this.lastTime = currentTime;
+
+    // Game is running and playing - execute systems pipeline
+
+    // PHASE 1: INPUT CAPTURE
+    inputCaptureSystem(this.gameWorld, this.keyState);
+
+    // PHASE 2: PLAYER INTENT (decision system)
+    playerIntentSystem(this.gameWorld);
+
+    // PHASE 3: MOVEMENT (physics)
+    continuousMovementSystem(this.gameWorld, deltaTime);
+    alignmentSystem(this.gameWorld, deltaTime);
+    discretePositionSyncSystem(this.gameWorld);
+
+    // PHASE 4: GHOSTS
+    // New ECS ghost systems
+    const currentLevel = this.gameWorld.getGameState().level;
+    ghostBehaviorModeSystem(this.gameWorld, currentLevel);
+    ghostTargetingSystem(this.gameWorld);
+    ghostDirectionSystem(this.gameWorld);
+    movementSystem(deltaTime, this.gameWorld); // Discrete movement for ghosts
+
+    // PHASE 5: COLLISIONS & EFFECTS
+    // New ECS collision and effects systems
+    entityCollisionSystem(this.gameWorld);
+    collectionDetectionSystem(this.gameWorld);
+    damageSystem(this.gameWorld);
+    collectionEffectSystem(this.gameWorld);
+    powerPelletEffectSystem(this.gameWorld);
+    invulnerabilityTickSystem(this.gameWorld);
+
+    timerUpdateSystem(this.gameWorld, deltaTime);
+
+    // PHASE 5b: TIMER TICKS (decrement behavior timers)
+    behaviorTimerTickSystem(this.gameWorld);
+
+    // PHASE 6: GAME STATE CONDITIONS
+    victoryConditionSystem(this.gameWorld);
+    defeatConditionSystem(this.gameWorld);
+
+    // PHASE 7: SYNC TO HOT STATE
+    syncToHotStateSystem(this.gameWorld);
+
+    // PHASE 8: CLEANUP
+    cleanupEventsSystem(this.gameWorld);
+
+    if (DEBUG_LOG_GAME_WORLD) {
+      console.log('[GameWorld] Frame complete:', this.gameWorld.debugGetFullState());
     }
+
     this.animationFrameId = requestAnimationFrame(() => this.gameLoop());
   }
 }

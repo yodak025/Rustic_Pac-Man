@@ -28,14 +28,14 @@ import type {
   ComponentTypeMap 
 } from '@custom-types/components';
 import { CollectableKind } from '@custom-types/gameComponents';
-import gameStatusValue from '@custom-types/gameStatusValue';
+import GameStatus from '@custom-types/gameStatus';
 
 // ============================================================================
 // GAME STATE INTERFACE
 // ============================================================================
 
 export interface GameState {
-  status: gameStatusValue;
+  status: GameStatus;
   score: number;
   level: number;
 }
@@ -113,7 +113,7 @@ export class GameWorld {
   // ══════════════════════════════════════════════════════════════════════════
   
   private gameState: GameState = {
-    status: gameStatusValue.INITIAL_LOADING,
+    status: GameStatus.LOADING,
     score: 0,
     level: 1,
   };
@@ -413,7 +413,7 @@ export class GameWorld {
   /**
    * Set game status
    */
-  setGameStatus(status: gameStatusValue): void {
+  setGameStatus(status: GameStatus): void {
     this.gameState.status = status;
   }
 
@@ -539,7 +539,7 @@ export class GameWorld {
     }
 
     this.gameState = {
-      status: gameStatusValue.INITIAL_LOADING,
+      status: GameStatus.LOADING,
       score: 0,
       level: 1,
     };

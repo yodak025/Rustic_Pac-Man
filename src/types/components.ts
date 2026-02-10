@@ -8,18 +8,19 @@
  */
 
 import type { EntityId } from './componentTypes';
-import { 
-  Direction, 
-  CollectableKind, 
-  GhostBehaviorKind, 
-  GhostBehaviorMode, 
-  TargetKind 
+import {
+  Direction,
+  CollectableKind,
+  GhostBehaviorKind,
+  GhostBehaviorMode,
+  TargetKind
 } from './gameComponents';
 
 // ============================================================================
 // BASE COMPONENT INTERFACE
 // ============================================================================
 
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface Component {
   // Marker interface - all components extend this
 }
@@ -82,6 +83,7 @@ export interface ContinuousPosition extends Component {
 export interface MovementTimer extends Component {
   elapsed: number;  // ms accumulated
   interval: number; // ms between movements
+  isTimeToMove: boolean;
 }
 
 /**
@@ -162,7 +164,7 @@ export interface BehaviorMode extends Component {
 /**
  * Behavior Timer - ticks until mode change
  */
-export interface BehaviorTimer extends Component {
+export interface BehaviorCounter extends Component {
   ticksRemaining: number;
 }
 
@@ -254,7 +256,7 @@ export interface ComponentTypeMap {
   [ComponentType.HOUSE_TILE_TAG]: HouseTileTag;
   [ComponentType.DISCRETE_POSITION]: DiscretePosition;
   [ComponentType.CONTINUOUS_POSITION]: ContinuousPosition;
-  [ComponentType.MOVEMENT_TIMER]: MovementTimer;
+  [ComponentType.TIMER]: MovementTimer;
   [ComponentType.MOVEMENT_SPEED]: MovementSpeed;
   [ComponentType.MOVEMENT_INTENT]: MovementIntent;
   [ComponentType.CURRENT_DIRECTION]: CurrentDirection;
@@ -263,7 +265,7 @@ export interface ComponentTypeMap {
   [ComponentType.PLAYER_INTENT]: PlayerIntent;
   [ComponentType.PLAYABLE]: Playable;
   [ComponentType.BEHAVIOR_MODE]: BehaviorMode;
-  [ComponentType.BEHAVIOR_TIMER]: BehaviorTimer;
+  [ComponentType.BEHAVIOR_COUNTER]: BehaviorCounter;
   [ComponentType.TARGET_POSITION]: TargetPosition;
   [ComponentType.PEER_REFERENCE]: PeerReference;
   [ComponentType.HEALTH]: Health;
