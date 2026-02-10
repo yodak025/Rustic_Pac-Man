@@ -15,7 +15,7 @@
 
 import { create } from 'zustand';
 import { Direction, GhostBehaviorMode } from '@custom-types/gameComponents';
-import gameStatusValue from '@custom-types/gameStatusValue';
+import GameStatus from '@custom-types/gameStatus';
 import type { PositionKey } from '@custom-types/componentTypes';
 import * as gameDefaults from '@config/gameDefaults.json';
 
@@ -27,6 +27,10 @@ export interface GhostRenderState {
   position: { x: number; y: number };
   mode: GhostBehaviorMode;
   direction: Direction | null;
+  timer: {
+    elapsed: number;
+    interval: number;
+  };
 }
 
 // ============================================================================
@@ -47,6 +51,7 @@ export interface PacmanRenderState {
 export interface MazeRenderState {
   isLoaded: boolean;
   walls: Set<PositionKey>;
+  floorTiles: Set<PositionKey>;  // Static floor positions (never updated after init)
   pacDots: Set<PositionKey>;
   powerPellets: Set<PositionKey>;
   pacDotsCollected: number;
@@ -58,7 +63,7 @@ export interface MazeRenderState {
 // ============================================================================
 
 export interface GameRenderState {
-  status: gameStatusValue;
+  status: GameStatus;
   score: number;
   level: number;
 }
@@ -85,6 +90,9 @@ export interface HotState {
   
   // Sync action (called by SyncToHotStateSystem at end of each frame)
   sync: (partial: Partial<HotStateSyncPayload>) => void;
+  
+  // Initialize floor tiles (called once after maze loads, never updated)
+  initializeFloorTiles: (floorPositions: Set<PositionKey>) => void;
   
   // Reset action (called when game restarts)
   reset: () => void;
@@ -124,6 +132,10 @@ function createInitialGhostState(): GhostRenderState {
     position: { x: 0, y: 0 },
     mode: GhostBehaviorMode.HOUSE,
     direction: null,
+    timer: {
+      elapsed: 0,
+      interval: 100,
+    },
   };
 }
 
@@ -131,6 +143,7 @@ function createInitialMazeState(): MazeRenderState {
   return {
     isLoaded: false,
     walls: new Set(),
+    floorTiles: new Set(),
     pacDots: new Set(),
     powerPellets: new Set(),
     pacDotsCollected: 0,
@@ -140,7 +153,7 @@ function createInitialMazeState(): MazeRenderState {
 
 function createInitialGameState(): GameRenderState {
   return {
-    status: gameStatusValue.INITIAL_LOADING,
+    status: GameStatus.LOADING,
     score: gameDefaults.game.initialScore,
     level: gameDefaults.game.initialLevel,
   };
@@ -209,6 +222,14 @@ export const useHotState = create<HotState>((set) => ({
     
     return newState;
   }),
+  
+  // Initialize floor tiles - called once after maze loads
+  initializeFloorTiles: (floorPositions) => set((state) => ({
+    maze: {
+      ...state.maze,
+      floorTiles: floorPositions
+    }
+  })),
   
   // Reset action - returns to initial state using factory functions
   reset: () => set({
