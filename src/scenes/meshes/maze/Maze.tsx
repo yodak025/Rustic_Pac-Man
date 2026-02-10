@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import useMazeState from "@/state/useMazeStore";
+import { useMazeHotState } from "@state/useHotState";
 import type { JSX } from "react";
 
 import Wall from "@scenes/meshes/maze/Wall";
@@ -8,48 +8,47 @@ import Floor from "@scenes/meshes/maze/Floor";
 import PowerPellet from "@scenes/meshes/maze/PowerPellet";
 
 export default function Maze() {
-  const mazeState = useMazeState((state) => state.maze);
+  const mazeState = useMazeHotState();
 
-  // Memo para walls y floors - solo se actualiza cuando cambia el estado del laberinto
+  // Memo for walls and floors - only updates when maze loads
   const staticMazeElements = useMemo(() => {
     if (!mazeState.isLoaded) return [];
     const meshes: JSX.Element[] = [];
 
-    // Agregar walls
-    for (const wallId in mazeState.walls) {
-      meshes.push(<Wall key={`wall-${wallId}`} id={wallId} />);
+    // Add walls
+    for (const wallKey of mazeState.walls) {
+      const [x, y] = wallKey.split(',').map(Number);
+      meshes.push(<Wall key={`wall-${wallKey}`} x={x} z={y} />);
     }
 
-    // Agregar floors para todas las posiciones de pacDots
-    for (const pacDotsId in mazeState.collectables.pacDots) {
-      const position = mazeState.collectables.pacDots[pacDotsId].components.position;
-      meshes.push(<Floor key={`floor-${pacDotsId}`} x={position.x} z={position.y} />);
-    }
-
-    // Agregar floors para todas las posiciones de powerPellets
-    for (const powerPelletId in mazeState.collectables.powerPellets) {
-      const position = mazeState.collectables.powerPellets[powerPelletId].components.position;
-      meshes.push(<Floor key={`floor-${powerPelletId}`} x={position.x} z={position.y} />);
+    // Add floors using static floorTiles (never changes after init)
+    for (const floorKey of mazeState.floorTiles) {
+      const [x, y] = floorKey.split(',').map(Number);
+      meshes.push(<Floor key={`floor-${floorKey}`} x={x} z={y} />);
     }
 
     return meshes;
-  }, [mazeState.isLoaded, mazeState.walls]);
+  }, [mazeState.isLoaded, mazeState.walls, mazeState.floorTiles]);
 
-  // Memo para pacDots - se actualiza cuando cambian los pacDots
+  // Memo for collectables - updates when collectables change
   const collectables = useMemo(() => {
     if (!mazeState.isLoaded) return [];
     const meshes: JSX.Element[] = [];
 
-    for (const pacDotsId in mazeState.collectables.pacDots) {
-      meshes.push(<PacDot key={`pacDot-${pacDotsId}`} id={pacDotsId} />);
+    // Render pac dots
+    for (const pacDotKey of mazeState.pacDots) {
+      const [x, y] = pacDotKey.split(',').map(Number);
+      meshes.push(<PacDot key={`pacdot-${pacDotKey}`} x={x} z={y} />);
     }
 
-    for (const powerPelletId in mazeState.collectables.powerPellets) {
-      meshes.push(<PowerPellet key={`powerPellet-${powerPelletId}`} id={powerPelletId} />);
+    // Render power pellets
+    for (const powerPelletKey of mazeState.powerPellets) {
+      const [x, y] = powerPelletKey.split(',').map(Number);
+      meshes.push(<PowerPellet key={`pellet-${powerPelletKey}`} x={x} z={y} />);
     }
 
     return meshes;
-  }, [mazeState.isLoaded, mazeState.collectables.pacDots, mazeState.collectables.powerPellets]);
+  }, [mazeState.isLoaded, mazeState.pacDots, mazeState.powerPellets]);
 
   return [...staticMazeElements, ...collectables];
 }

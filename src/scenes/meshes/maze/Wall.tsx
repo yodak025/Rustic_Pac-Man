@@ -1,16 +1,12 @@
-import useMazeState from "@/state/useMazeStore";
 import { useTexture } from "@react-three/drei";
-import { useGameStatusStore } from "@state/store";
+import { useGameHotState } from "@state/useHotState";
 
-export default function Wall({ id }: { id: string }) {
-  const level = useGameStatusStore((state) => state.level);
-  const position = useMazeState(
-    (state) => state.maze.walls[id].components.position
-  );
+export default function Wall({ x, z }: { x: number; z: number }) {
+  const level = useGameHotState().level;
   const walls = useTexture(`assets/walls${(level - 1) % 4}.jpg`);
 
   return (
-    <mesh position={[position.x, 0, position.y]}>
+    <mesh position={[x, 0, z]}>
       <boxGeometry args={[1, 0.5, 1]} />
       <meshStandardMaterial map={walls} />
     </mesh>

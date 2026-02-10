@@ -1,11 +1,4 @@
-
-import useMazeState from "@/state/useMazeStore";
-
-export default function PacDot({ id }: { id: string }) {
-  const {x, y: z} = useMazeState(
-    (state) => state.maze.collectables.pacDots[id].components.position
-  );
-
+export default function PacDot({ x, z }: { x: number; z: number }) {
   return (
     <mesh position={[x, 0, z]}>
       <sphereGeometry args={[0.1, 30, 30]} />
@@ -13,4 +6,3 @@ export default function PacDot({ id }: { id: string }) {
     </mesh>
   );
 }
-

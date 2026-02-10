@@ -1,11 +1,4 @@
-
-import useMazeState from "@/state/useMazeStore";
-
-export default function PowerPellet({ id }: { id: string }) {
-  const {x, y: z} = useMazeState(
-    (state) => state.maze.collectables.powerPellets[id].components.position
-  );
-
+export default function PowerPellet({ x, z }: { x: number; z: number }) {
   return (
     <mesh position={[x, 0, z]}>
       <sphereGeometry args={[0.3, 30, 30]} />
@@ -13,4 +6,3 @@ export default function PowerPellet({ id }: { id: string }) {
     </mesh>
   );
 }
-
