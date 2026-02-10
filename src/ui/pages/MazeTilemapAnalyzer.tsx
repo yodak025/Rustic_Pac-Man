@@ -2,7 +2,8 @@
 
 import React, { useState } from 'react';
 import { generateMaze } from '@/core/mazeGen';
-import { useGameStatusStore } from '@state/store';
+import { usePyodide } from '@/core/hooks/usePyodide';
+import useAppStateStore from '@/state/useAppStateStore';
 import PageTitle from '@/ui/components/PageTitle';
 import Button from '@/ui/components/Button';
 import TileGrid from '@/ui/common/TileGrid';
@@ -19,13 +20,19 @@ const MazeTilemapAnalyzer: React.FC = () => {
   const [tilesData, setTilesData] = useState<number[][]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-  const game = useGameStatusStore((state) => state);
+  const { goToMainMenu } = useAppStateStore();
+  const { pyodide, isLoading: isPyodideLoading, error: pyodideError } = usePyodide();
 
   const handleGenerateTiles = async () => {
+    if (!pyodide) {
+      setError('Pyodide not loaded yet');
+      return;
+    }
+    
     try {
       setLoading(true);
       setError(null);
-      const data = await generateMaze(9, 5, 5);
+      const data = await generateMaze(pyodide, 9, 5, 5);
       if (data && Array.isArray(data)) {
         setTilesData(data);
       } else {
@@ -39,10 +46,26 @@ const MazeTilemapAnalyzer: React.FC = () => {
   };
 
   const renderCurrentView = () => {
+    if (isPyodideLoading) {
+      return (
+        <div className="flex items-center justify-center h-40 w-60">
+          <p className="text-xl font-mono animate-pulse text-[var(--color-primary-light)]">Loading Pyodide...</p>
+        </div>
+      );
+    }
+    
+    if (pyodideError) {
+      return (
+        <div className="flex items-center justify-center h-40 w-60">
+          <p className="text-xl font-mono text-[var(--color-alert)]">Pyodide failed to load</p>
+        </div>
+      );
+    }
+    
     if (loading) {
       return (
         <div className="flex items-center justify-center h-40 w-60">
-          <p className="text-xl font-mono animate-pulse text-[var(--color-primary-light)]">Loading...</p>
+          <p className="text-xl font-mono animate-pulse text-[var(--color-primary-light)]">Generating maze...</p>
         </div>
       );
     }
@@ -75,7 +98,7 @@ const MazeTilemapAnalyzer: React.FC = () => {
           <Button
             onClick={handleGenerateTiles}
             variant="success"
-            disabled={loading}
+            disabled={loading || isPyodideLoading || !pyodide}
           >
             GENERATE TILES
           </Button>
@@ -105,13 +128,12 @@ const MazeTilemapAnalyzer: React.FC = () => {
           </div>
         ))}
         </div> {/* Closing div for flex flex-col items-center w-full */}
-        <Button
-          onClick={game.reboot}
-          variant="primary"
-          className="absolute top-8 left-8"
-        >
-          MAIN MENU
-        </Button>
+          <Button
+            onClick={goToMainMenu}
+            variant="primary"
+          >
+            BACK TO MAIN MENU
+          </Button>
       </div>
     </div>
   );
