@@ -14,13 +14,14 @@ export function useGraphicPositionInterpolation(
   lastPosition: Position,
 ) {
   const { view } = useDebugConfigStore();
-  
-  if (view.isDiscrete) {
-    return position;
-  }
   const [interpolatedPosition, setInterpolatedPosition] = useState(position);
 
   useFrame(() => {
+    if (view.isDiscrete) {
+      setInterpolatedPosition(position);
+      return;
+    }
+    
     if (!directions) {
       setInterpolatedPosition(position);
     } else {
@@ -34,5 +35,5 @@ export function useGraphicPositionInterpolation(
   });
 
   
-  return interpolatedPosition;
+  return view.isDiscrete ? position : interpolatedPosition;
 }

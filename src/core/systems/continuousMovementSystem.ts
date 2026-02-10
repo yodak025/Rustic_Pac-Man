@@ -13,8 +13,6 @@ import { ComponentType } from '@custom-types/componentTypes';
 import { Direction } from '@custom-types/gameComponents';
 import type {
   ContinuousPosition,
-  MovementSpeed,
-  MovementIntent,
   AlignmentState
 } from '@custom-types/components';
 
@@ -112,7 +110,8 @@ function updateAlignmentState(position: ContinuousPosition): AlignmentState {
  * Handle teleportation at map edges
  */
 function handleTeleportation(position: ContinuousPosition): ContinuousPosition {
-  let { x, y } = position;
+  let { x } = position;
+  const { y } = position;
   
   // Teleport at horizontal edges (x boundaries: 1 to 30)
   if (x <= 1) {

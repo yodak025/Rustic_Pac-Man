@@ -1,26 +1,25 @@
-import useMazeState from "@/state/useMazeStore";
 import {
   Direction,
   GhostBehaviorMode,
 } from "@custom-types/gameComponents";
-import { USE_ECS_MAZE } from "@config/featureFlags";
 import type { GameWorld } from "@core/GameWorld";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function decideGhostDirection(ghost: any, gameWorld?: GameWorld): void {
+  if (!gameWorld) {
+    console.error('[ghostDirectionDecider] GameWorld is required');
+    return;
+  }
+
   const { x: ghx, y: ghy } = ghost.components.position;
   const { x: tx, y: ty } = ghost.components.behavior.target.position;
   
-  // Use GameWorld if ECS flag is enabled, otherwise use legacy store
   const isWallAt = (x: number, y: number): boolean => {
-    return USE_ECS_MAZE && gameWorld
-      ? gameWorld.isWallAt(x, y)
-      : useMazeState.getState().isWallAt({ x, y });
+    return gameWorld.isWallAt(x, y);
   };
   
   const isHouseTileAt = (x: number, y: number): boolean => {
-    return USE_ECS_MAZE && gameWorld
-      ? gameWorld.isHouseAt(x, y)
-      : useMazeState.getState().isHouseTileAt({ x, y });
+    return gameWorld.isHouseAt(x, y);
   };
   
   const directions = ghost.components.directions as Array<Direction>;

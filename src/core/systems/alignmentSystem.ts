@@ -14,9 +14,7 @@ import { ComponentType } from '@custom-types/componentTypes';
 import { Direction } from '@custom-types/gameComponents';
 import type {
   ContinuousPosition,
-  MovementSpeed,
   AlignmentState,
-  PlayerIntent,
   InputState
 } from '@custom-types/components';
 
@@ -101,6 +99,7 @@ export function alignmentSystem(
     // Get alignment target
     const { targetX, targetY } = getAlignmentTarget(position, direction);
     
+    // eslint-disable-next-line prefer-const
     let newPos = { ...position };
     let shouldSnap = false;
 

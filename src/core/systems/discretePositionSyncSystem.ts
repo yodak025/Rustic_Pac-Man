@@ -15,7 +15,7 @@
 
 import type { GameWorld } from '@core/GameWorld';
 import { ComponentType } from '@custom-types/componentTypes';
-import type { ContinuousPosition, DiscretePosition } from '@custom-types/components';
+import type { DiscretePosition } from '@custom-types/components';
 
 /**
  * Sync discrete position from continuous position
