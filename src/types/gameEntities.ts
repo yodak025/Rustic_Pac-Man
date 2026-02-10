@@ -1,5 +1,7 @@
+import type { Component } from './components';
+
 export interface Entity {
   id: string;
-  components: Record<string, any>;
-  actions: Record<string, (...args:any[]) => any>; 
+  components: Record<string, Component>;
+  actions: Record<string, (...args: unknown[]) => unknown>; 
 }
