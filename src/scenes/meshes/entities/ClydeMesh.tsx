@@ -1,33 +1,11 @@
 import { useGLTF } from "@react-three/drei";
-import useGhostsStore from "@/state/useGhostsStore";
-import useDebugConfigStore from "@/state/useDebugConfigStore";
-import { GhostBehaviorMode, type Position, Direction } from "@/types/gameComponents";
-
-import { useGraphicPositionInterpolation } from "@/scenes/hooks/useGraphicPositionInterpolation";
-
-//! ESTE COMPONENTE VIOLA DRY, ARREGLALO
+import { GhostBehaviorMode } from "@/types/gameComponents";
+import { useGhostRenderState } from "@/scenes/hooks/useGhostRenderState";
 
 export default function ClydeMesh() {
-  const clydePosition = useGhostsStore((state) => state.clyde.components.position as Position);
-  const clydeDirection = useGhostsStore((state) => state.clyde.components.directions);
-  const clydeTimer = useGhostsStore((state) => state.clyde.components.movementTimer);
-  const lastPosition = useGhostsStore((state) => state.clyde.components.lastPosition as Position);
-  
-  const iPos = useGraphicPositionInterpolation(
-    clydePosition,
-    clydeTimer,
-    clydeDirection,
-    lastPosition
-  );
+  const { position, mode, rotationY, scale } = useGhostRenderState('clyde');
 
-  const mode = useGhostsStore((state) => state.clyde.components.behavior.mode);
-
-  const { debug } = useDebugConfigStore();
-
-  const { x: tx, y: tz } = useGhostsStore(
-    (state) => state.clyde.components.behavior.target.position
-  );
-
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { nodes, materials } = useGLTF("assets/clyde-model.glb") as any;
 
   const escapeMaterial = materials["Material.005"].clone();
@@ -35,54 +13,28 @@ export default function ClydeMesh() {
   const deadMaterial = materials["Material.005"].clone();
   deadMaterial.color.setHex(0x000000);
 
-  // Get rotation based on direction
-  const currentDirection = clydeDirection[0];
-  let rotationY = 0;
-  switch (currentDirection) {
-    case Direction.DOWN:
-      rotationY = 0;
-      break;
-    case Direction.UP:
-      rotationY = Math.PI;
-      break;
-    case Direction.RIGHT:
-      rotationY = Math.PI / 2;
-      break;
-    case Direction.LEFT:
-      rotationY = -Math.PI / 2;
-      break;
-  }
-
   return (
-    <>
-      <group position={[iPos.x, 0.5, iPos.y]} rotation={[0, rotationY, 0]} scale={0.5} dispose={null}>
-        <mesh
-          geometry={nodes.Sphere004.geometry}
-          material={materials["Material.004"]}
-          position={[0.416, 0.014, 0.961]}
-          scale={0.083}
-        />
-        <mesh
-          geometry={nodes.Sphere002.geometry}
-          material={materials["Material.002"]}
-          position={[0.4, 0, 0.811]}
-          scale={0.205}
-        />
-        <mesh
-          geometry={nodes.Sphere.geometry}
-          material={
-            mode === GhostBehaviorMode.EATEN ? deadMaterial
-            : mode === GhostBehaviorMode.FRIGHTENED ? escapeMaterial
-            : materials["Material.005"]
-          }
-        />
-      </group>
-      {debug && (
-        <mesh position={[tx, 3, tz]}>
-          <sphereGeometry args={[0.2, 30, 30]} />
-          <meshStandardMaterial color="orange" />
-        </mesh>
-      )}
-    </>
+    <group position={[position.x, 0.5, position.y]} rotation={[0, rotationY, 0]} scale={scale} dispose={null}>
+      <mesh
+        geometry={nodes.Sphere004.geometry}
+        material={materials["Material.004"]}
+        position={[0.416, 0.014, 0.961]}
+        scale={0.083}
+      />
+      <mesh
+        geometry={nodes.Sphere002.geometry}
+        material={materials["Material.002"]}
+        position={[0.4, 0, 0.811]}
+        scale={0.205}
+      />
+      <mesh
+        geometry={nodes.Sphere.geometry}
+        material={
+          mode === GhostBehaviorMode.EATEN ? deadMaterial
+          : mode === GhostBehaviorMode.FRIGHTENED ? escapeMaterial
+          : materials["Material.005"]
+        }
+      />
+    </group>
   );
 }
