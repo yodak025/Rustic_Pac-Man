@@ -1,13 +1,13 @@
 'use client'
 
-import React, { useState } from 'react';
+import React from 'react'
 
 export interface ButtonProps {
-  onClick: () => void;
-  children: React.ReactNode;
-  variant?: 'primary' | 'secondary' | 'danger' | 'success';
-  disabled?: boolean;
-  className?: string;
+  onClick: () => void
+  children: React.ReactNode
+  variant?: 'primary' | 'secondary' | 'danger' | 'success'
+  disabled?: boolean
+  className?: string
 }
 
 const Button: React.FC<ButtonProps> = ({
@@ -17,39 +17,48 @@ const Button: React.FC<ButtonProps> = ({
   disabled = false,
   className = ''
 }) => {
-  const [isHovered, setIsHovered] = useState(false);
-
   const variantStyles = {
-    primary: 'text-[var(--color-accent)] hover:text-[var(--color-text-body)]',
-    secondary: 'text-[var(--color-text-body)] hover:text-[var(--color-accent)]',
-    danger: 'text-[var(--color-alert)] hover:text-[var(--color-alert)]',
-    success: 'text-[var(--color-success)] hover:text-[var(--color-accent)]',
-  };
+    primary: `
+      bg-[var(--color-accent)] 
+      text-[var(--color-background)]
+      hover:text-[var(--color-text-main)]
+    `,
+    secondary: `
+      bg-[var(--color-main)] 
+      text-[var(--color-text-main)]
+    `,
+    danger: `
+      bg-[var(--color-alert)] 
+      text-[var(--color-text-main)]
+    `,
+    success: `
+      bg-[var(--color-success)] 
+      text-[var(--color-background)]
+      hover:text-[var(--color-text-main)]
+    `,
+  }
 
   const baseStyles = `
     font-mono font-bold text-lg uppercase tracking-wide
+    px-8 py-3
+    rounded-tech
+    shadow-inset-sm
+    hover-magnetize
     ${variantStyles[variant]}
-    transition-all duration-200 transform
-    ${disabled ? 'opacity-50 cursor-not-allowed' : ''}
+    ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
     ${className}
     inline-flex items-center justify-center
-  `;
+  `
 
   return (
     <button
       onClick={onClick}
       disabled={disabled}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      className={baseStyles}
+      className={baseStyles.trim().replace(/\s+/g, ' ')}
     >
-      {isHovered && <span className="mr-2">→</span>}
-      <span className={`inline-block ${isHovered ? 'scale-105' : ''} transition-transform duration-200`}>
-        {children}
-      </span>
-      {isHovered && <span className="ml-2">←</span>}
+      {children}
     </button>
-  );
-};
+  )
+}
 
-export default Button;
+export default Button

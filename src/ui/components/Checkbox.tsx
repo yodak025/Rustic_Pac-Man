@@ -1,13 +1,13 @@
 'use client'
 
-import React from 'react';
+import React from 'react'
 
 export interface CheckboxProps {
-  checked: boolean;
-  onChange: (checked: boolean) => void;
-  label: string;
-  disabled?: boolean;
-  className?: string;
+  checked: boolean
+  onChange: (checked: boolean) => void
+  label: string
+  disabled?: boolean
+  className?: string
 }
 
 const Checkbox: React.FC<CheckboxProps> = ({ 
@@ -18,7 +18,17 @@ const Checkbox: React.FC<CheckboxProps> = ({
   className = ''
 }) => {
   return (
-    <label className={`flex items-center gap-3 cursor-pointer ${disabled ? 'opacity-50 cursor-not-allowed' : ''} ${className}`}>
+    <label 
+      className={`
+        flex items-center gap-3
+        glass-light
+        px-3 py-2
+        rounded-tech
+        transition-organic
+        ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:bg-[var(--color-main-light)]'}
+        ${className}
+      `.trim().replace(/\s+/g, ' ')}
+    >
       <input
         type="checkbox"
         checked={checked}
@@ -30,7 +40,7 @@ const Checkbox: React.FC<CheckboxProps> = ({
         {label}
       </span>
     </label>
-  );
-};
+  )
+}
 
-export default Checkbox;
+export default Checkbox

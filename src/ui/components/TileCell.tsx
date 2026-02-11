@@ -15,14 +15,14 @@ const TileCell: React.FC<TileCellProps> = ({
 }) => {
   const getBgColor = (value: number) => {
     switch (value) {
-      case 0: return 'bg-[var(--color-background)]'; // Empty space
-      case 1: return 'bg-[var(--color-main-light)]'; // Wall
-      case 2: return 'bg-[var(--color-accent)]'; // Pac-dot
-      case 3: return 'bg-[var(--color-success)]'; // Power-pellet
-      case 4: return 'bg-[var(--color-alert)]'; // Special (e.g., ghost/pacman start)
-      default: return 'bg-gray-700';
+      case 0: return 'bg-[var(--color-background)]' // Empty space
+      case 1: return 'bg-[var(--color-main-light)]' // Wall
+      case 2: return 'bg-[var(--color-accent)]' // Pac-dot
+      case 3: return 'bg-[var(--color-success)]' // Power-pellet
+      case 4: return 'bg-[var(--color-alert)]' // Special (e.g., ghost/pacman start)
+      default: return 'bg-[var(--color-main)]' // Unknown type
     }
-  };
+  }
 
   return (
     <div 

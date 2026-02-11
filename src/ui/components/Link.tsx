@@ -21,29 +21,30 @@ const Link: React.FC<LinkProps> = ({
       case 'primary':
         return `
           font-mono font-bold text-lg uppercase tracking-wide
-          text-[var(--color-accent)]
-          hover:text-[var(--color-text-body)]
-          transition-all duration-200 transform hover:scale-105
-          inline-flex items-center justify-center
           px-8 py-3
-          border-2 border-[var(--color-accent)]
-          hover:border-[var(--color-text-body)]
-          rounded
+          bg-[var(--color-accent)]
+          text-[var(--color-background)]
+          hover:text-[var(--color-text-main)]
+          rounded-tech
+          shadow-inset-sm
+          hover-magnetize
+          inline-flex items-center justify-center
         `
       case 'secondary':
         return `
           font-mono text-base
           text-[var(--color-text-main)]
           hover:text-[var(--color-accent)]
-          transition-all duration-200
+          transition-organic
           inline-flex items-center
+          underline decoration-transparent hover:decoration-[var(--color-accent)]
         `
       case 'text':
         return `
           font-mono text-sm
           text-[var(--color-text-body)]
           hover:text-[var(--color-text-main)]
-          transition-all duration-200
+          transition-organic
         `
       default:
         return ''
@@ -54,7 +55,7 @@ const Link: React.FC<LinkProps> = ({
     <NextLink
       href={href}
       prefetch={prefetch}
-      className={`${getVariantStyles()} ${className}`}
+      className={`${getVariantStyles().trim().replace(/\s+/g, ' ')} ${className}`}
     >
       {children}
     </NextLink>
