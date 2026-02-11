@@ -1,18 +1,18 @@
-import React from 'react';
-import Button from '@/ui/components/Button';
+import React from 'react'
+import Button from '@/ui/components/Button'
 
 export interface MenuButtonGroupProps {
-  onPlay?: () => void;
-  onRestart?: () => void;
-  onMainMenu?: () => void;
-  onContinue?: () => void;
-  onDebug?: () => void;
-  playLabel?: string;
-  restartLabel?: string;
-  mainMenuLabel?: string;
-  continueLabel?: string;
-  debugLabel?: string;
-  className?: string;
+  onPlay?: () => void
+  onRestart?: () => void
+  onMainMenu?: () => void
+  onContinue?: () => void
+  onDebug?: () => void
+  playLabel?: string
+  restartLabel?: string
+  mainMenuLabel?: string
+  continueLabel?: string
+  debugLabel?: string
+  className?: string
 }
 
 const MenuButtonGroup: React.FC<MenuButtonGroupProps> = ({ 

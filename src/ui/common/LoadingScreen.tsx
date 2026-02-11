@@ -1,8 +1,8 @@
 'use client'
 
-import React from 'react';
-import PageTitle from '@/ui/components/PageTitle';
-import ProgressBar from '@/ui/components/ProgressBar';
+import React from 'react'
+import PageTitle from '@/ui/components/PageTitle'
+import ProgressBar from '@/ui/components/ProgressBar'
 
 const LoadingScreen: React.FC = () => {
   return (
@@ -10,14 +10,14 @@ const LoadingScreen: React.FC = () => {
       <PageTitle>RUSTIC PAC-MAN</PageTitle>
       
       <div className="flex flex-col items-center space-y-6">
-        <p className="text-2xl font-mono font-bold tracking-wide text-[var(--color-accent)]">
+        <p className="text-2xl font-mono font-bold tracking-widest text-[var(--color-accent)]">
           LOADING...
         </p>
         
         <ProgressBar progress={50} animated />
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default LoadingScreen;
+export default LoadingScreen

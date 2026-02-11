@@ -1,10 +1,11 @@
-import React from 'react';
+import React from 'react'
+import GlassPanel from '@/ui/components/GlassPanel'
 
 export interface ModalProps {
-  isOpen: boolean;
-  children: React.ReactNode;
-  title?: string;
-  className?: string;
+  isOpen: boolean
+  children: React.ReactNode
+  title?: string
+  className?: string
 }
 
 const Modal: React.FC<ModalProps> = ({ 
@@ -13,20 +14,24 @@ const Modal: React.FC<ModalProps> = ({
   title,
   className = ''
 }) => {
-  if (!isOpen) return null;
+  if (!isOpen) return null
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
-      <div className={`bg-[var(--color-background)] border-4 border-[var(--color-accent)] p-8 rounded-lg shadow-2xl shadow-[var(--color-accent)]/50 ${className}`}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-[var(--color-background)]/80 p-4">
+      <GlassPanel 
+        variant="heavy" 
+        insetShadow="lg"
+        className={`p-8 border-2 border-[var(--color-accent)] w-full h-auto max-w-3xl max-h-[95vh] overflow-y-auto ${className}`}
+      >
         {title && (
-          <h2 className="text-4xl font-bold text-[var(--color-accent)] font-mono text-center mb-8 tracking-wider">
+          <h2 className="text-4xl font-bold text-[var(--color-accent)] font-mono text-center mb-8 tracking-widest">
             {title}
           </h2>
         )}
         {children}
-      </div>
+      </GlassPanel>
     </div>
-  );
-};
+  )
+}
 
-export default Modal;
+export default Modal

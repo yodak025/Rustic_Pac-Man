@@ -1,11 +1,12 @@
-import React from 'react';
+import React from 'react'
+import GlassPanel from '@/ui/components/GlassPanel'
 
 export interface GameStatsProps {
-  level: number;
-  score: number;
-  currentPacDots?: number;
-  totalPacDots?: number;
-  className?: string;
+  level: number
+  score: number
+  currentPacDots?: number
+  totalPacDots?: number
+  className?: string
 }
 
 const GameStats: React.FC<GameStatsProps> = ({
@@ -16,13 +17,18 @@ const GameStats: React.FC<GameStatsProps> = ({
   className = ''
 }) => {
   return (
-    <div className={`flex gap-6 p-2 rounded-md border-2 border-[var(--color-accent)] bg-[var(--color-background)] shadow-lg shadow-[var(--color-accent)]/30 text-[var(--color-text-main)] font-mono text-lg ${className}`}>      <div>Nivel: {level}</div>
+    <GlassPanel 
+      variant="medium" 
+      insetShadow="md"
+      className={`flex gap-6 p-2 text-[var(--color-text-main)] font-mono text-lg ${className}`}
+    >
+      <div>Nivel: {level}</div>
       {currentPacDots !== undefined && totalPacDots !== undefined && (
         <div>PacDots: {`${currentPacDots}/${totalPacDots}`}</div>
       )}
       <div>Puntuación: {score}</div>
-    </div>
-  );
-};
+    </GlassPanel>
+  )
+}
 
-export default GameStats;
+export default GameStats
