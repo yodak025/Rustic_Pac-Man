@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from "react";
+import GlassPanel from "@/ui/components/GlassPanel";
 
 
 // TODO -  Implementar modo para visualizar el contenido del Maze store también en ASCII
@@ -91,14 +92,18 @@ export default function MazeViewer() {
   };
 
   return sidebarVisible && (
-    <div className="fixed left-0 top-0 bottom-0 z-50 p-4 border-r border-[var(--color-accent)] bg-[var(--color-background)] bg-opacity-20 text-[var(--color-text-main)] text-sm w-60 backdrop-blur-sm overflow-y-auto">
+    <GlassPanel
+      variant="heavy"
+      insetShadow="lg"
+      className="fixed left-0 top-0 bottom-0 z-50 p-4 border-r-2 border-[var(--color-accent)] text-[var(--color-text-main)] text-sm w-60 overflow-y-auto"
+    >
       <div className="mb-4">
-        <h3 className="font-bold border-b border-[var(--color-accent)] pb-1">Maze Viewer</h3>
+        <h3 className="font-bold font-mono text-[var(--color-accent)] border-b border-[var(--color-accent)] pb-1 tracking-wider">MAZE VIEWER</h3>
       </div>
       
       <div className="pl-2 mt-1">
         {renderMaze()}
       </div>
-    </div>
+    </GlassPanel>
   );
 }
