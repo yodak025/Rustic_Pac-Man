@@ -1,8 +1,8 @@
 ---
 title: "UI Architecture - Rustic Pac-Man"
 generated_by: agent
-date: 2025-10-27
-version: 1.1
+date: 2026-02-11
+version: 2.0
 scope: src/ui/
 ---
 
@@ -10,7 +10,7 @@ scope: src/ui/
 
 ## Summary
 
-This document describes the UI component architecture for Rustic Pac-Man, organized in four hierarchical levels (components → common → layout → pages) following SOLID principles and Atomic Design methodology. It defines component boundaries, composition rules, state integration patterns, and modification strategies. This architecture has recently undergone an integral redesign to achieve a clean, retro-cool aesthetic. Read this when creating new UI components, refactoring existing ones, or understanding the frontend architecture.
+This document describes the UI component architecture for Rustic Pac-Man, organized in four hierarchical levels (components → common → layout → pages) following SOLID principles and Atomic Design methodology. It defines component boundaries, composition rules, state integration patterns, modification strategies, and the complete "Hermetic Expedition Panel" design system. Read this when creating new UI components, refactoring existing ones, or understanding the frontend architecture.
 
 ---
 
@@ -46,7 +46,7 @@ Four-level hierarchy where each level builds upon lower levels. Higher levels ne
 ### Directory Layout
 ```
 src/ui/
-├── components/    # Level 1: Atomics (7 components)
+├── components/    # Level 1: Atomics (12 components)
 │   ├── Button.tsx
 │   ├── PageTitle.tsx
 │   ├── ProgressBar.tsx
@@ -54,6 +54,11 @@ src/ui/
 │   ├── DebugDetails.tsx
 │   ├── TileCell.tsx
 │   ├── HeartIcon.tsx
+│   ├── Checkbox.tsx
+│   ├── VersionInfo.tsx
+│   ├── KeyDisplay.tsx
+│   ├── Link.tsx
+│   ├── GlassPanel.tsx
 │   └── index.ts
 ├── common/        # Level 2: Composed (7 components)
 │   ├── LoadingScreen.tsx
@@ -302,17 +307,16 @@ Components expect:
 
 ### Styling Constraints
 - **Technology**: Tailwind CSS utility classes only, leveraging CSS variables for theme management.
-- **Color palette**: Defined via CSS variables in `src/assets/styles/globals.css` for consistency and easy modification.
-  - `--color-primary-light` (e.g., `#FDE047`)
-  - `--color-primary-medium` (e.g., `#FB923C`)
-  - `--color-primary-dark` (e.g., `#EA580C`)
-  - `--color-background` (e.g., `#1E1B4B`)
-  - `--color-text-light` (e.g., `#F3F4F6`)
-  - `--color-accent` (e.g., `#22D3EE`)
-  - `--color-alert` (e.g., `#EF4444`)
-  - `--color-alert-dark` (e.g., `#7F1D1D`)
-  - `--color-placeholder` (e.g., `#9CA3AF`)
-  - `--color-wall` (e.g., `#0E7490`)
+- **Color palette**: Defined via CSS variables in `src/assets/styles/globals.css` for consistency and easy modification. Based on "Chomp Core" theme with Amber accent and Slate Navy base.
+  - `--color-accent` (`#F59E0B`) - Chomp Core (Amber) - Primary accent for CTAs, highlights
+  - `--color-main` (`#1E293B`) - Base Slate Navy - Main UI elements
+  - `--color-main-light` (`#334155`) - Interactive/Hover states
+  - `--color-main-dark` (`#0F172A`) - Deep Containers
+  - `--color-background` (`#020617`) - App Background - Dark canvas
+  - `--color-text-main` (`#F1F5F9`) - Headings - Primary text
+  - `--color-text-body` (`#94A3B8`) - Paragraphs - Secondary text
+  - `--color-success` (`#10B981`) - Emerald - Success states
+  - `--color-alert` (`#EF4444`) - Matte Red - Errors/warnings
 - **Typography**: Primary font is 'Sixtyfour', imported globally and applied via `font-mono` utility class.
 - **Animations**: `transition-all duration-200` for smooth state changes, with specific interactions like button hover (slight scale increase, arrow appearance).
 
@@ -320,6 +324,198 @@ Components expect:
 - Requires React 18+ (uses hooks)
 - TypeScript 5+ (uses modern type features)
 - Tailwind CSS 3+ (utility classes)
+
+---
+
+## 6.5. Design System: "Hermetic Expedition Panel"
+
+### Philosophy
+
+The interface is not a decorative layer floating over the game; it is the visor glass through which the player observes the abyss. It must feel diegetic and physical. We are designing the control panel of a machine operating in complete darkness. Priority: legibility in low-contrast environments and sense of robustness.
+
+### Visual Aesthetic Pillars
+
+#### 1. **Smoked Industrial Glass** (Glassmorphism)
+Forget the ethereal, lightweight glassmorphism of modern mobile interfaces. Our glass is dense, heavy, and dark.
+
+**Implementation:**
+- Three intensity variants: `light` (75% opacity), `medium` (82.5% opacity), `heavy` (90% opacity)
+- Backdrop blur: 4px → 10px → 16px
+- Background surface feels like tinted bulletproof glass, not clouds
+- Use `GlassPanel` component or utility classes (`.glass-light`, `.glass-medium`, `.glass-heavy`)
+
+**When to use:**
+- **Light**: Subtle overlays, tooltips, debug panels
+- **Medium**: Standard containers, cards, HUD elements (default)
+- **Heavy**: Modals, critical overlays, fullscreen panels
+
+#### 2. **Functional Brutalism** (Geometry)
+Balance between modern and severe.
+
+**Implementation:**
+- Border radius: `5px` (via `--border-radius-tech` or `.rounded-tech`)
+- Solid blocks, minimal curves
+- Elements feel magnetically anchored to invisible grid
+- Use inset shadows for depth: `.shadow-inset-sm/md/lg`
+
+**Philosophy:**
+- Surfaces don't "float" freely
+- Visual weight and gravity in composition
+- Industrial precision over organic softness
+
+#### 3. **Magnetic Solidification** (Hover/Focus States)
+Response is not mechanical (displacement), it's energetic.
+
+**Default State:**
+- Silent, matte, powered-off aesthetic
+- Subtle inset shadows for depth
+
+**Active State (Hover/Focus):**
+- Element increases opacity (solidifies, becomes more "real")
+- Amber border emerges (2px, `--color-accent`)
+- Subtle internal glow (`box-shadow: inset 0 0 12px rgba(245, 158, 11, 0.15)`)
+- Transition: 250ms ease-out (organic latency, like filament warming)
+
+**Implementation:**
+- Use `.hover-magnetize` utility class
+- Conveys warmth in a cold world
+- Indicates system is alive and ready to receive command
+
+#### 4. **Dual Typography System**
+Manages narrative duality in text:
+
+**Display Voice (Sixtyfour - `font-mono`):**
+- Represents labyrinth identity / machine software
+- Assertive, character-driven
+- For: titles, headings, brand elements
+- Aggressive visual hierarchy
+
+**Data Voice (Montserrat - `font-sans`):**
+- Represents human/scientific clarity
+- Geometric, open, legible
+- For: body text, data displays, UI labels
+- Acts as rational counterpoint to darkness
+
+**Usage:**
+```tsx
+<h1 className="font-mono">CHOMP CRAWLER</h1>
+<p className="font-sans">Score: 1,234,567</p>
+```
+
+### Design Tokens
+
+#### Glassmorphism
+```css
+--glass-opacity-light: 0.75;
+--glass-opacity-medium: 0.825;
+--glass-opacity-heavy: 0.9;
+--blur-light: 4px;
+--blur-medium: 10px;
+--blur-heavy: 16px;
+```
+
+#### Geometry
+```css
+--border-radius-tech: 5px;  /* Functional moderate rounding */
+```
+
+#### Transitions
+```css
+--transition-organic: 250ms ease-out;  /* Moderate organic timing */
+```
+
+#### Depth (Inset Shadows)
+```css
+.shadow-inset-sm   /* inset 0 1px 3px rgba(0,0,0,0.5) */
+.shadow-inset-md   /* inset 0 2px 6px rgba(0,0,0,0.6) */
+.shadow-inset-lg   /* inset 0 4px 12px rgba(0,0,0,0.7) */
+```
+
+### Core Components
+
+#### GlassPanel
+Foundation component for all glassmorphic containers.
+
+**Props:**
+- `variant`: `'light' | 'medium' | 'heavy'` (default: `'medium'`)
+- `insetShadow`: `'none' | 'sm' | 'md' | 'lg'` (default: `'sm'`)
+- `showBorder`: `boolean` (default: `true`)
+- `as`: HTML element type (default: `'div'`)
+- `children`: React.ReactNode
+- `className`: Additional classes
+
+**Example:**
+```tsx
+<GlassPanel variant="heavy" insetShadow="md" className="p-8">
+  <h2>Modal Content</h2>
+</GlassPanel>
+```
+
+**Location:** `src/ui/components/GlassPanel.tsx`
+
+### Usage Guidelines
+
+#### Component Patterns
+
+**Modals:**
+```tsx
+<GlassPanel variant="heavy" className="fixed inset-0 z-50 p-8">
+  {/* Modal content */}
+</GlassPanel>
+```
+
+**Cards/Containers:**
+```tsx
+<GlassPanel variant="medium" className="p-6">
+  {/* Card content */}
+</GlassPanel>
+```
+
+**Tooltips/Overlays:**
+```tsx
+<GlassPanel variant="light" showBorder={false} className="p-3">
+  {/* Tooltip content */}
+</GlassPanel>
+```
+
+**Interactive Elements:**
+```tsx
+<button className="glass-medium hover-magnetize rounded-tech p-4">
+  Click Me
+</button>
+```
+
+#### Anti-Patterns
+❌ Mixing glassmorphism with drop shadows (use inset only)  
+❌ Using backdrop-blur without sufficient opacity (causes readability issues)  
+❌ Forgetting `.hover-magnetize` on interactive elements  
+❌ Hardcoding opacity/blur values (use tokens)  
+❌ Using system-default border-radius (use `.rounded-tech`)
+
+### Testing & Validation
+
+**Visual Styleguide:** `/styleguide`
+- Interactive showcase of all design system components
+- Live preview of glassmorphism variants
+- Hover state demonstrations
+- Color palette reference
+- Typography examples
+
+**Access:** Navigate to `http://localhost:3000/styleguide` during development
+
+### Accessibility Considerations
+
+- Glass panels maintain WCAG contrast ratios via controlled opacity
+- Hover states include focus-visible for keyboard navigation
+- Inset shadows provide tactile depth cues without compromising legibility
+- Dual typography ensures hierarchy is clear regardless of font rendering
+
+### Performance Notes
+
+- `backdrop-filter` can be GPU-intensive; use `will-change: backdrop-filter` on animated panels
+- Limit simultaneous blur layers (max 3-4 overlapping panels)
+- Inset shadows are more performant than drop shadows
+- Transition duration (250ms) balances perception and performance
 
 ---
 

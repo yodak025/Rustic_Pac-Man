@@ -10,7 +10,7 @@ const MainMenu: React.FC = () => {
   const { goToGame, goToTutorial, goToDebugMazeAnalyzer, goToDebugSettings } = useAppStateStore();
   
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-[var(--color-background)] text-[var(--color-text-light)]">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-[var(--color-background)] text-[var(--color-text-main)]">
       <VersionInfo />
       <PageTitle>RUSTIC PAC-MAN</PageTitle>
       

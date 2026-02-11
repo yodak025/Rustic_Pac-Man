@@ -10,6 +10,7 @@ export { default as Checkbox } from './Checkbox';
 export { default as VersionInfo } from './VersionInfo';
 export { default as KeyDisplay } from './KeyDisplay';
 export { default as Link } from './Link';
+export { default as GlassPanel } from './GlassPanel';
 
 // Types
 export type { ButtonProps } from './Button';
@@ -20,3 +21,4 @@ export type { DebugDetailsProps } from './DebugDetails';
 export type { TileCellProps } from './TileCell';
 export type { CheckboxProps } from './Checkbox';
 export type { LinkProps } from './Link';
+export type { GlassPanelProps } from './GlassPanel';

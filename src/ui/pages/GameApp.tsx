@@ -97,10 +97,10 @@ export default function GameApp() {
     return (
       <div className="flex items-center justify-center h-screen">
         <div className="text-center">
-          <h1 className="text-2xl text-[var(--color-alert-error)] mb-4">
+          <h1 className="text-2xl text-[var(--color-alert)] mb-4">
             Failed to load game engine
           </h1>
-          <p className="text-[var(--color-text-secondary)]">
+          <p className="text-[var(--color-text-body)]">
             {pyodideError.message}
           </p>
         </div>

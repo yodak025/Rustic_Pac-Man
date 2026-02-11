@@ -29,7 +29,7 @@ const DebugInput: React.FC<DebugInputProps> = ({
       type={type}
       placeholder={placeholder}
       min={min}
-      className={`w-full px-2 py-1 text-xs bg-[var(--color-background)] bg-opacity-50 border border-[var(--color-accent)] rounded text-[var(--color-text-light)] placeholder-[var(--color-placeholder)] ${className}`}
+      className={`w-full px-2 py-1 text-xs bg-[var(--color-background)] bg-opacity-50 border border-[var(--color-accent)] rounded text-[var(--color-text-main)] ${className}`}
       onKeyDown={handleKeyDown}
     />
   );

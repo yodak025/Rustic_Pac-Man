@@ -26,8 +26,8 @@ const DebugSettings = () => {
         <PageTitle>Debug Settings</PageTitle>
         
         <div className="mt-8 space-y-6">
-          <div className="p-4 bg-transparent border-2 border-[var(--color-primary-medium)] rounded">
-            <h2 className="mb-4 text-xl font-bold text-[var(--color-primary-medium)] font-mono">General</h2>
+          <div className="p-4 bg-transparent border-2 border-[var(--color-accent)] rounded">
+            <h2 className="mb-4 text-xl font-bold text-[var(--color-accent)] font-mono">General</h2>
             <Checkbox
               checked={debug}
               onChange={setDebug}
@@ -35,8 +35,8 @@ const DebugSettings = () => {
             />
           </div>
 
-          <div className="p-4 bg-transparent border-2 border-[var(--color-primary-medium)] rounded">
-            <h2 className="mb-4 text-xl font-bold text-[var(--color-primary-medium)] font-mono">Debug Tools</h2>
+          <div className="p-4 bg-transparent border-2 border-[var(--color-accent)] rounded">
+            <h2 className="mb-4 text-xl font-bold text-[var(--color-accent)] font-mono">Debug Tools</h2>
             <div className="space-y-3">
               <Checkbox
                 checked={tools.infoBar.isDisplayed}
@@ -53,8 +53,8 @@ const DebugSettings = () => {
             </div>
           </div>
 
-          <div className="p-4 bg-transparent border-2 border-[var(--color-primary-medium)] rounded">
-            <h2 className="mb-4 text-xl font-bold text-[var(--color-primary-medium)] font-mono">View Settings</h2>
+          <div className="p-4 bg-transparent border-2 border-[var(--color-accent)] rounded">
+            <h2 className="mb-4 text-xl font-bold text-[var(--color-accent)] font-mono">View Settings</h2>
             <Checkbox
               checked={view.isDiscrete}
               onChange={setViewDiscrete}

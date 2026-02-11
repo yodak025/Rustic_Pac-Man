@@ -1,40 +1,136 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap');
 @import "tailwindcss" ;
 
 :root {
-  --color-primary-light: #FDE047; /* yellow-300 */
-  --color-primary-medium: #FB923C; /* orange-400 */
-  --color-primary-dark: #EA580C; /* orange-600 */
-  --color-background: #1E1B4B; /* indigo-950 */
-  --color-text-light: #F3F4F6; /* gray-100 */
-  --color-accent: #22D3EE; /* cyan-400 */
-  --color-alert: #EF4444; /* red-500 */
-  --color-alert-dark: #7F1D1D; /* red-900 */
-  --color-placeholder: #9CA3AF; /* gray-400 */
-  --color-wall: #0E7490; /* cyan-700 */
+  /* Chomp Core - Primary accent color */
+  --color-accent: #F59E0B; /* Amber - Chomp Core */
+  
+  /* Base colors - Slate Navy theme */
+  --color-main: #1E293B; /* Base Slate Navy */
+  --color-main-light: #334155; /* Interactive/Hover */
+  --color-main-dark: #0F172A; /* Deep Containers */
+  
+  /* Background */
+  --color-background: #020617; /* App Background */
+  
+  /* Text colors */
+  --color-text-main: #F1F5F9; /* Headings */
+  --color-text-body: #94A3B8; /* Paragraphs */
+  
+  /* Semantic colors */
+  --color-success: #10B981; /* Emerald */
+  --color-alert: #EF4444; /* Matte Red */
+
+  /* Glassmorphism Tokens - "Panel de Expedición Hermético" */
+  --glass-opacity-light: 0.75;
+  --glass-opacity-medium: 0.825;
+  --glass-opacity-heavy: 0.9;
+  --blur-light: 4px;
+  --blur-medium: 10px;
+  --blur-heavy: 16px;
+  
+  /* Geometry Tokens - Functional Brutalist */
+  --border-radius-tech: 5px; /* 4-6px range for functional moderate rounding */
+  
+  /* Transition Tokens - Organic Latency */
+  --transition-organic: 250ms ease-out;
 }
 
 @font-face{
   font-family: "Sixtyfour";
   src: url("../fonts/Sixtyfour.ttf") format("truetype");
   font-style: normal ;
-  font-display: swap; /* hace que se muestre la fuente por defecto mientras se carga la fuente del proyecto en vez de no mostrar nada */
+  font-display: swap; /* Display fallback font while project font loads instead of showing nothing */
 }
 
 @theme{
   --font-mono: 'Sixtyfour', sans-serif;
-  --font-sans: var(--font-mono);
+  --font-sans: 'Montserrat', sans-serif;
 }
 
 @layer base {
   html {
-    /* Establece el tamaño de fuente base. 
-    Por defecto, Tailwind usa 1rem (16px) en el elemento 'body'.
-    Cambiándolo aquí a 0.875rem (14px) hará que todos los tamaños 
-    relativos (como text-base, text-sm, etc.) sean más pequeños.
+    /* Sets the base font size. 
+    By default, Tailwind uses 1rem (16px) on the 'body' element.
+    Changing it here to 0.875rem (14px) will make all relative sizes 
+    (like text-base, text-sm, etc.) smaller.
     */
-    font-size: 0.85rem; /* El tamaño de text-base ahora será 0.875rem */
+    font-size: 0.85rem; /* text-base size will now be 0.875rem */
     
-    /* Opcional: Si quieres que el nuevo tamaño base (0.875rem) tenga una altura de línea específica */
+    /* Optional: If you want the new base size (0.875rem) to have a specific line-height */
     /* line-height: 1.25rem; */ 
+  }
+}
+
+/* ========================================
+   DESIGN SYSTEM: Hermetic Expedition Panel
+   Custom Utility Classes for Glassmorphism and Magnetism
+   ======================================== */
+
+@layer utilities {
+  /* === GLASSMORPHISM: Smoked Industrial Glass === */
+  
+  .glass-light {
+    background-color: color-mix(in srgb, var(--color-background) calc(var(--glass-opacity-light) * 100%), transparent);
+    backdrop-filter: blur(var(--blur-light));
+    -webkit-backdrop-filter: blur(var(--blur-light));
+  }
+  
+  .glass-medium {
+    background-color: color-mix(in srgb, var(--color-background) calc(var(--glass-opacity-medium) * 100%), transparent);
+    backdrop-filter: blur(var(--blur-medium));
+    -webkit-backdrop-filter: blur(var(--blur-medium));
+  }
+  
+  .glass-heavy {
+    background-color: color-mix(in srgb, var(--color-background) calc(var(--glass-opacity-heavy) * 100%), transparent);
+    backdrop-filter: blur(var(--blur-heavy));
+    -webkit-backdrop-filter: blur(var(--blur-heavy));
+  }
+  
+  /* === MAGNETIC HOVER: Solidification + Anchoring === */
+  
+  .hover-magnetize {
+    transition: all var(--transition-organic);
+    border: 2px solid transparent;
+  }
+  
+  .hover-magnetize:hover:not(:disabled) {
+    background-color: color-mix(in srgb, var(--color-background) calc((var(--glass-opacity-medium) + 0.1) * 100%), transparent);
+    border-color: var(--color-accent);
+    box-shadow: inset 0 0 12px rgba(245, 158, 11, 0.15);
+  }
+  
+  .hover-magnetize:focus-visible:not(:disabled) {
+    background-color: color-mix(in srgb, var(--color-background) calc((var(--glass-opacity-medium) + 0.1) * 100%), transparent);
+    border-color: var(--color-accent);
+    box-shadow: inset 0 0 12px rgba(245, 158, 11, 0.15);
+    outline: none;
+  }
+  
+  /* === INSET SHADOWS: Brutalist Depth === */
+  
+  .shadow-inset-sm {
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.5);
+  }
+  
+  .shadow-inset-md {
+    box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.6);
+  }
+  
+  .shadow-inset-lg {
+    box-shadow: inset 0 4px 12px rgba(0, 0, 0, 0.7);
+  }
+  
+  /* === ORGANIC TRANSITION === */
+  
+  .transition-organic {
+    transition: all var(--transition-organic);
+  }
+  
+  /* === TECHNICAL BORDER RADIUS === */
+  
+  .rounded-tech {
+    border-radius: var(--border-radius-tech);
   }
 }

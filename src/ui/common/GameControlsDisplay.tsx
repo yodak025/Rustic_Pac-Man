@@ -8,7 +8,7 @@ export interface GameControlsDisplayProps {
 const GameControlsDisplay: React.FC<GameControlsDisplayProps> = ({ className }) => {
   return (
     <div className={`flex flex-col items-center gap-4 ${className}`}>
-      <p className="text-xl font-mono text-[var(--color-text-light)]">Direction keys</p>
+      <p className="text-xl font-mono text-[var(--color-text-main)]">Direction keys</p>
       <div className="grid grid-cols-3 gap-2">
         <KeyDisplay value="W" className="col-start-2" />
         <KeyDisplay value="A" className="col-start-1" />

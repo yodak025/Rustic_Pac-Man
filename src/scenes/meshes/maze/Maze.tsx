@@ -7,6 +7,9 @@ import PacDot from "@scenes/meshes/maze/PacDot";
 import Floor from "@scenes/meshes/maze/Floor";
 import PowerPellet from "@scenes/meshes/maze/PowerPellet";
 
+
+
+
 export default function Maze() {
   const mazeState = useMazeHotState();
 

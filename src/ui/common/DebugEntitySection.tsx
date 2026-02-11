@@ -81,19 +81,19 @@ const DebugEntitySection: React.FC<DebugEntitySectionProps> = ({
         )}
 
         {directions && (
-          <p className="text-xs text-[var(--color-text-light)]">{`Direction: ${formatDirections(directions)}`}</p>
+          <p className="text-xs text-[var(--color-text-body)]">{`Direction: ${formatDirections(directions)}`}</p>
         )}
 
         {mode && (
-          <p className="text-xs text-[var(--color-text-light)]">{`Mode: ${mode}`}</p>
+          <p className="text-xs text-[var(--color-text-body)]">{`Mode: ${mode}`}</p>
         )}
 
         {ticks !== undefined && (
-          <p className="text-xs text-[var(--color-text-light)]">{`Ticks: ${ticks}`}</p>
+          <p className="text-xs text-[var(--color-text-body)]">{`Ticks: ${ticks}`}</p>
         )}
 
         {targetPosition !== undefined && (
-          <p className="text-xs text-[var(--color-text-light)]">{`Target: x=${targetPosition?.x || 0}, y=${targetPosition?.y || 0}`}</p>
+          <p className="text-xs text-[var(--color-text-body)]">{`Target: x=${targetPosition?.x || 0}, y=${targetPosition?.y || 0}`}</p>
         )}
 
         {health && (

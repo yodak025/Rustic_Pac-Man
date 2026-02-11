@@ -25,7 +25,7 @@ const PageTitle: React.FC<PageTitleProps> = ({
   };
 
   return (
-    <h1 className={`font-bold mb-8 text-[var(--color-primary-light)] font-mono tracking-wider ${getSizeStyles()} ${className}}`}>
+    <h1 className={`font-bold mb-8 text-[var(--color-accent)] font-mono tracking-wider ${getSizeStyles()} ${className}}`}>
       {children}
     </h1>
   );

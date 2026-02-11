@@ -16,7 +16,7 @@ const GameStats: React.FC<GameStatsProps> = ({
   className = ''
 }) => {
   return (
-    <div className={`flex gap-6 p-2 rounded-md border-2 border-[var(--color-accent)] bg-[var(--color-background)] shadow-lg shadow-[var(--color-accent)]/30 text-[var(--color-text-light)] font-mono text-lg ${className}`}>      <div>Nivel: {level}</div>
+    <div className={`flex gap-6 p-2 rounded-md border-2 border-[var(--color-accent)] bg-[var(--color-background)] shadow-lg shadow-[var(--color-accent)]/30 text-[var(--color-text-main)] font-mono text-lg ${className}`}>      <div>Nivel: {level}</div>
       {currentPacDots !== undefined && totalPacDots !== undefined && (
         <div>PacDots: {`${currentPacDots}/${totalPacDots}`}</div>
       )}

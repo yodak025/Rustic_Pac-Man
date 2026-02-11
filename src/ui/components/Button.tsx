@@ -20,10 +20,10 @@ const Button: React.FC<ButtonProps> = ({
   const [isHovered, setIsHovered] = useState(false);
 
   const variantStyles = {
-    primary: 'text-[var(--color-primary-light)] hover:text-[var(--color-primary-medium)]',
-    secondary: 'text-[var(--color-accent)] hover:text-[var(--color-primary-light)]',
-    danger: 'text-[var(--color-alert)] hover:text-[var(--color-alert-dark)]',
-    success: 'text-[var(--color-accent)] hover:text-[var(--color-primary-light)]',
+    primary: 'text-[var(--color-accent)] hover:text-[var(--color-text-body)]',
+    secondary: 'text-[var(--color-text-body)] hover:text-[var(--color-accent)]',
+    danger: 'text-[var(--color-alert)] hover:text-[var(--color-alert)]',
+    success: 'text-[var(--color-success)] hover:text-[var(--color-accent)]',
   };
 
   const baseStyles = `

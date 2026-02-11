@@ -49,7 +49,7 @@ const MazeTilemapAnalyzer: React.FC = () => {
     if (isPyodideLoading) {
       return (
         <div className="flex items-center justify-center h-40 w-60">
-          <p className="text-xl font-mono animate-pulse text-[var(--color-primary-light)]">Loading Pyodide...</p>
+          <p className="text-xl font-mono animate-pulse text-[var(--color-accent)]">Loading Pyodide...</p>
         </div>
       );
     }
@@ -65,7 +65,7 @@ const MazeTilemapAnalyzer: React.FC = () => {
     if (loading) {
       return (
         <div className="flex items-center justify-center h-40 w-60">
-          <p className="text-xl font-mono animate-pulse text-[var(--color-primary-light)]">Generating maze...</p>
+          <p className="text-xl font-mono animate-pulse text-[var(--color-accent)]">Generating maze...</p>
         </div>
       );
     }
@@ -74,13 +74,13 @@ const MazeTilemapAnalyzer: React.FC = () => {
       <TileGrid tilesData={tilesData} tileTypes={TILE_TYPES} />
     ) : (
       <div className="flex items-center justify-center h-40 w-60">
-        <p className="text-xl font-mono text-[var(--color-text-light)]">No tiles data available</p>
+        <p className="text-xl font-mono text-[var(--color-text-main)]">No tiles data available</p>
       </div>
     );
   };
 
   return (
-    <div className="relative flex flex-col min-h-screen bg-[var(--color-background)] text-[var(--color-text-light)] p-8">
+    <div className="relative flex flex-col min-h-screen bg-[var(--color-background)] text-[var(--color-text-main)] p-8">
       <div className="flex flex-col items-center w-full">
         <PageTitle size="medium">MAZE TILEMAP ANALYZER</PageTitle>
         
@@ -88,7 +88,7 @@ const MazeTilemapAnalyzer: React.FC = () => {
         <div className="max-w-2xl text-center mb-6 font-mono">
           <p className="text-lg leading-relaxed">
             This tool allows you to visualize procedurally generated mazes
-            in <span className="text-[var(--color-primary-light)] font-bold">tilemap</span> form.
+            in <span className="text-[var(--color-accent)] font-bold">tilemap</span> form.
             Each cell represents a different tile type in the maze matrix.
           </p>
         </div>
@@ -105,13 +105,13 @@ const MazeTilemapAnalyzer: React.FC = () => {
         </div>
 
       {error && (
-        <div className="bg-[var(--color-alert-dark)] text-[var(--color-text-light)] p-4 mb-6 border-2 border-[var(--color-alert)] font-mono">
+        <div className="bg-[var(--color-alert)] text-[var(--color-text-main)] p-4 mb-6 border-2 border-[var(--color-alert)] font-mono">
           {error}
         </div>
       )}
 
       <div className="bg-[var(--color-background)] p-6 border-4 border-[var(--color-accent)] shadow-2xl shadow-[var(--color-accent)]/30">
-        <h2 className="text-2xl font-mono mb-4 text-center text-[var(--color-primary-light)]">
+        <h2 className="text-2xl font-mono mb-4 text-center text-[var(--color-accent)]">
           Tilemap Visualization
         </h2>
         
@@ -119,8 +119,8 @@ const MazeTilemapAnalyzer: React.FC = () => {
       </div>
       
       {/* Legend */}
-      <div className="mt-8 bg-[var(--color-background)] p-4 border-2 border-[var(--color-accent)] text-sm font-mono text-[var(--color-text-light)]">
-        <h3 className="text-lg mb-2 underline text-[var(--color-primary-light)]">Tile Legend:</h3>
+      <div className="mt-8 bg-[var(--color-background)] p-4 border-2 border-[var(--color-accent)] text-sm font-mono text-[var(--color-text-main)]">
+        <h3 className="text-lg mb-2 underline text-[var(--color-accent)]">Tile Legend:</h3>
         {Object.entries(TILE_TYPES).map(([key, value]) => (
           <div key={key} className="flex items-center gap-2 mb-1">
             <div className="w-4 h-4 bg-[var(--color-background)] border border-[var(--color-accent)]"></div>

@@ -14,7 +14,7 @@ const TutorialPage: React.FC = () => {
   };
 
   return (
-    <div className="relative flex flex-col min-h-screen bg-[var(--color-background)] text-[var(--color-text-light)] p-8">
+    <div className="relative flex flex-col min-h-screen bg-[var(--color-background)] text-[var(--color-text-main)] p-8">
       <Button
         onClick={handleBackToMainMenu}
         variant="primary"
@@ -30,13 +30,13 @@ const TutorialPage: React.FC = () => {
         <div className="flex flex-col md:flex-row justify-center items-start gap-20 mt-12 w-full">
           {/* Controls Section - now using GameControlsDisplay */}
           <div className="flex flex-col items-center md:items-start">
-            <h2 className="text-3xl font-bold text-[var(--color-primary-light)] font-mono mb-8">Controls</h2>
+            <h2 className="text-3xl font-bold text-[var(--color-accent)] font-mono mb-8">Controls</h2>
             <GameControlsDisplay />
           </div>
 
           {/* Rules Section */}
           <div className="flex flex-col items-center md:items-start max-w-[40vw]">
-            <h2 className="text-3xl font-bold text-[var(--color-primary-light)] font-mono mb-8">Rules</h2>
+            <h2 className="text-3xl font-bold text-[var(--color-accent)] font-mono mb-8">Rules</h2>
             <ul className="list-none space-y-4 text-lg font-mono">
               <li>- Collect all the Pac-Dots in the level to win.</li>
               <li>- If a ghost catches Pac-Man, he will lose one live. The game ends if Pacman loses all of his lifes.</li>
