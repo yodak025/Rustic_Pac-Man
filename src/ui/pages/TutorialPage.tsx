@@ -48,14 +48,14 @@ const TutorialPage: React.FC = () => {
       </div>
 
       {/* Warning Section */}
-      <div className="w-full max-w-[80vw] mx-auto mb-8 p-6 bg-yellow-900/30 border-2 border-yellow-500 rounded-lg">
-        <p className="text-center text-xl font-bold text-yellow-400 font-mono">
+      <div className="w-full max-w-[80vw] mx-auto mb-8 p-6 glass-medium border-2 border-[var(--color-accent)] rounded-tech">
+        <p className="text-center text-xl font-bold text-[var(--color-accent)] font-mono">
           ⚠️ DEVELOPMENT WARNING ⚠️
         </p>
-        <p className="text-center text-lg text-yellow-300 font-mono mt-4">
+        <p className="text-center text-lg text-[var(--color-text-main)] font-mono mt-4">
           <strong>Known Bug:</strong> When starting the first level, ghosts may not load correctly and appear stuck with Pac-Man in the top-left corner outside the maze. 
           <br />
-          <strong>Workaround:</strong> Press <span className="bg-yellow-700 px-2 py-1 rounded">ESC</span> to open the in-game menu, then click <strong>RESUME GAME</strong> to fix the issue.
+          <strong>Workaround:</strong> Press <span className="glass-light px-2 py-1 rounded-tech text-[var(--color-accent)]">ESC</span> to open the in-game menu, then click <strong>RESUME GAME</strong> to fix the issue.
         </p>
       </div>
     </div>
