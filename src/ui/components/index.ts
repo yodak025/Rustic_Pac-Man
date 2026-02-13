@@ -11,6 +11,9 @@ export { default as VersionInfo } from './VersionInfo';
 export { default as KeyDisplay } from './KeyDisplay';
 export { default as Link } from './Link';
 export { default as GlassPanel } from './GlassPanel';
+export { default as TechPill } from './TechPill';
+export { default as SectionTitle } from './SectionTitle';
+export { default as ImagePlaceholder } from './ImagePlaceholder';
 
 // Types
 export type { ButtonProps } from './Button';
@@ -22,3 +25,6 @@ export type { TileCellProps } from './TileCell';
 export type { CheckboxProps } from './Checkbox';
 export type { LinkProps } from './Link';
 export type { GlassPanelProps } from './GlassPanel';
+export type { TechPillProps } from './TechPill';
+export type { SectionTitleProps } from './SectionTitle';
+export type { ImagePlaceholderProps } from './ImagePlaceholder';
