@@ -1,4 +1,5 @@
 import React from 'react'
+import Image from 'next/image'
 import HeartIcon from '@/ui/components/HeartIcon'
 import GlassPanel from '@/ui/components/GlassPanel'
 
@@ -10,12 +11,18 @@ export interface LivesDisplayProps {
 const LivesDisplay: React.FC<LivesDisplayProps> = ({ lives, className = '' }) => {
   return (
     <div className={`flex items-center gap-2 ${className}`}>
-      {/* Pac-Man Sphere */}
-      <div className="w-12 h-12 rounded-full bg-[var(--color-accent)] shadow-inset-md"></div>
-      
+      {/* Chomp Character */}
+      <Image
+        src="/assets/images/chomp-hud-base.webp"
+        alt="Chomp"
+        width={144}
+        height={144}
+        className="w-36 h-36 object-contain"
+      />
+
       {/* Lives Count */}
-      <GlassPanel 
-        variant="medium" 
+      <GlassPanel
+        variant="medium"
         insetShadow="md"
         className="flex items-center gap-1 p-1 text-[var(--color-text-main)] font-mono text-lg"
       >

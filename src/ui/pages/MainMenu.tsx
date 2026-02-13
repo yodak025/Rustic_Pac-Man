@@ -12,7 +12,7 @@ const MainMenu: React.FC = () => {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-[var(--color-background)] text-[var(--color-text-main)]">
       <VersionInfo />
-      <PageTitle>RUSTIC PAC-MAN</PageTitle>
+      <PageTitle>CHOMP CRAWLER</PageTitle>
       
       <div className="flex flex-col gap-4">
         <Button onClick={goToGame}>

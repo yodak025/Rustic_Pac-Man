@@ -5,9 +5,17 @@ import GlassPanel from '@/ui/components/GlassPanel'
 import Button from '@/ui/components/Button'
 import Link from '@/ui/components/Link'
 import PageTitle from '@/ui/components/PageTitle'
+import SectionTitle from '@/ui/components/SectionTitle'
 import ProgressBar from '@/ui/components/ProgressBar'
 import Checkbox from '@/ui/components/Checkbox'
 import KeyDisplay from '@/ui/components/KeyDisplay'
+import TechPill from '@/ui/components/TechPill'
+import ImagePlaceholder from '@/ui/components/ImagePlaceholder'
+import HeartIcon from '@/ui/components/HeartIcon'
+import TileCell from '@/ui/components/TileCell'
+import VersionInfo from '@/ui/components/VersionInfo'
+import DebugInput from '@/ui/components/DebugInput'
+import DebugDetails from '@/ui/components/DebugDetails'
 
 const Styleguide: React.FC = () => {
   const [checkboxState, setCheckboxState] = useState(false)
@@ -321,6 +329,107 @@ const Styleguide: React.FC = () => {
                 <p className="font-sans text-sm text-[var(--color-text-body)]">
                   Solid blocks, minimal curves, magnetic anchoring, industrial weight
                 </p>
+              </div>
+            </div>
+          </GlassPanel>
+        </section>
+
+        {/* New Components Section - Landing Page Elements */}
+        <section>
+          <GlassPanel variant="medium" className="p-8">
+            <h2 className="text-3xl font-bold font-mono text-[var(--color-accent)] mb-6">
+              Landing Page Components
+            </h2>
+            
+            <div className="space-y-8">
+              <div>
+                <h3 className="font-mono text-lg text-[var(--color-text-main)] mb-4">SectionTitle</h3>
+                <SectionTitle size="large">Large Section Title</SectionTitle>
+                <SectionTitle size="medium">Medium Section Title</SectionTitle>
+                <SectionTitle size="small">Small Section Title</SectionTitle>
+              </div>
+              
+              <div>
+                <h3 className="font-mono text-lg text-[var(--color-text-main)] mb-4">TechPill</h3>
+                <div className="flex flex-wrap gap-3">
+                  <TechPill>Next.js 16</TechPill>
+                  <TechPill>React 19</TechPill>
+                  <TechPill>TypeScript</TechPill>
+                  <TechPill>Three.js</TechPill>
+                </div>
+              </div>
+              
+              <div>
+                <h3 className="font-mono text-lg text-[var(--color-text-main)] mb-4">ImagePlaceholder</h3>
+                <ImagePlaceholder height="200px" label="Screenshot Placeholder" />
+              </div>
+            </div>
+          </GlassPanel>
+        </section>
+
+        {/* Game UI Components Section */}
+        <section>
+          <GlassPanel variant="medium" className="p-8">
+            <h2 className="text-3xl font-bold font-mono text-[var(--color-accent)] mb-6">
+              Game UI Components
+            </h2>
+            
+            <div className="space-y-8">
+              <div>
+                <h3 className="font-mono text-lg text-[var(--color-text-main)] mb-4">HeartIcon</h3>
+                <div className="flex gap-2">
+                  <HeartIcon />
+                  <HeartIcon />
+                  <HeartIcon />
+                </div>
+              </div>
+              
+              <div>
+                <h3 className="font-mono text-lg text-[var(--color-text-main)] mb-4">TileCell</h3>
+                <div className="flex gap-2">
+                  <TileCell value={0} rowIndex={0} colIndex={0} tileTypes={{ 0: 'Empty' }} />
+                  <TileCell value={1} rowIndex={0} colIndex={1} tileTypes={{ 1: 'Wall' }} />
+                  <TileCell value={2} rowIndex={0} colIndex={2} tileTypes={{ 2: 'Pellet' }} />
+                  <TileCell value={3} rowIndex={0} colIndex={3} tileTypes={{ 3: 'Power' }} />
+                  <TileCell value={4} rowIndex={0} colIndex={4} tileTypes={{ 4: 'Special' }} />
+                </div>
+                <p className="font-sans text-sm text-[var(--color-text-body)] mt-2">
+                  Types: 0=Empty, 1=Wall, 2=Pellet, 3=Power, 4=Special
+                </p>
+              </div>
+              
+              <div>
+                <h3 className="font-mono text-lg text-[var(--color-text-main)] mb-4">VersionInfo</h3>
+                <VersionInfo />
+              </div>
+            </div>
+          </GlassPanel>
+        </section>
+
+        {/* Debug Components Section */}
+        <section>
+          <GlassPanel variant="medium" className="p-8">
+            <h2 className="text-3xl font-bold font-mono text-[var(--color-accent)] mb-6">
+              Debug Components
+            </h2>
+            
+            <div className="space-y-8">
+              <div>
+                <h3 className="font-mono text-lg text-[var(--color-text-main)] mb-4">DebugInput</h3>
+                <DebugInput
+                  placeholder="Enter debug value..."
+                  type="number"
+                  onSubmit={(val) => console.log('Debug value:', val)}
+                  min="0"
+                />
+              </div>
+              
+              <div>
+                <h3 className="font-mono text-lg text-[var(--color-text-main)] mb-4">DebugDetails</h3>
+                <DebugDetails summary="Debug Information" open={false}>
+                  <p className="font-sans text-sm">This is debug content that can be expanded.</p>
+                  <p className="font-sans text-sm">Used in debug panels and settings.</p>
+                </DebugDetails>
               </div>
             </div>
           </GlassPanel>
