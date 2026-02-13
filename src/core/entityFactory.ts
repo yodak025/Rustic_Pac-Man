@@ -10,7 +10,7 @@
 import type { GameWorld } from '@core/GameWorld';
 import { ComponentType, type EntityId } from '@custom-types/componentTypes';
 import { GhostBehaviorMode, TargetKind, type GhostBehaviorKind } from '@custom-types/gameComponents';
-import * as config from '@config/ghostBehavior.json';
+import * as config from '@config/defaultPositions.json';
 
 const HOUSE_POSITION = config.DEFAULT_POSITIONS.HOME;
 

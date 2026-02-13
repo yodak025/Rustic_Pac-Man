@@ -1,0 +1,17 @@
+# World 06 - Master
+# Extended chase periods, rare scatter
+
+style:
+  name: "Crimson Fault"
+  colors:
+    void: "#280808"
+    floor: "#7f1d1d"
+    walls: "#450a0a"
+
+mode_change_schema:
+  - CHASE:
+      PROBABILITY: 1
+      SECONDS: 25
+    SCATTER:
+      PROBABILITY: 0.3
+      SECONDS: 4

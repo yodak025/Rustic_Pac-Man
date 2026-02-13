@@ -17,7 +17,7 @@
 import type { GameWorld } from '@core/GameWorld';
 import { ComponentType, PACMAN_ENTITY_ID, BLINKY_ENTITY_ID } from '@custom-types/componentTypes';
 import { GhostBehaviorMode, GhostBehaviorKind, TargetKind, Direction } from '@custom-types/gameComponents';
-import * as config from '@config/ghostBehavior.json';
+import * as config from '@config/defaultPositions.json';
 
 const SCATTER_TARGET = config.DEFAULT_POSITIONS.SCATTER;
 

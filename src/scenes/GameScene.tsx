@@ -1,4 +1,9 @@
+'use client'
+
 import { PerspectiveCamera } from "@react-three/drei";
+import { useThree } from "@react-three/fiber";
+import { useEffect } from "react";
+import * as THREE from "three";
 
 import PacmanMesh from "@scenes/meshes/entities/PacmanMesh";
 import BlinkyMesh from "@scenes/meshes/entities/BlinkyMesh";
@@ -7,8 +12,17 @@ import PinkyMesh from "./meshes/entities/PinkyMesh";
 import InkyMesh from "./meshes/entities/InkyMesh";
 
 import Maze from "./meshes/maze/Maze";
+import { useWorldColors } from "@core/hooks/useWorldColors";
 
 export default function GameScene() {
+  const { scene } = useThree();
+  const { void: voidColor } = useWorldColors();
+
+  // Update scene background color when world changes
+  useEffect(() => {
+    scene.background = new THREE.Color(voidColor);
+  }, [scene, voidColor]);
+
   return (
     <>
       <PerspectiveCamera

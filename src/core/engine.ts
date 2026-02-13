@@ -3,9 +3,10 @@ import { generateMaze } from './mazeGen';
 import { useHotState } from '@/state/useHotState';
 import type { Position } from '@custom-types/gameComponents';
 import GameStatus from '@custom-types/gameStatus';
-import * as config from '@/config/ghostBehavior.json';
+import * as config from '@/config/defaultPositions.json';
 import { CollectableKind } from '@custom-types/gameComponents';
 import type { PyodideInterface } from 'pyodide';
+import { preloadAllWorldConfigs } from '@core/worldConfigLoader';
 
 // New ECS Architecture imports
 import { GameWorld } from './GameWorld';
@@ -348,6 +349,10 @@ export class RusticGameEngine {
   }
 
   async load(): Promise<void> {
+    // Preload all world configs before starting game
+    await preloadAllWorldConfigs();
+    console.log('[Engine] World configs preloaded');
+    
     await this.initMazeEntities();
     console.log('[Engine] Maze entities initialized');
     this.setupKeyboardListeners();

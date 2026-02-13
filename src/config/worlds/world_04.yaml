@@ -1,0 +1,17 @@
+# World 04 - Advanced
+# Guaranteed chase mode with reduced scatter
+
+style:
+  name: "Dried Bed"
+  colors:
+    void: "#271a12"
+    floor: "#78350f"
+    walls: "#451a03"
+
+mode_change_schema:
+  - CHASE:
+      PROBABILITY: 1
+      SECONDS: 20
+    SCATTER:
+      PROBABILITY: 0.75
+      SECONDS: 5

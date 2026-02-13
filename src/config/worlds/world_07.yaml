@@ -1,0 +1,17 @@
+# World 07 - Nightmare
+# Longer chases, very brief scatter windows
+
+style:
+  name: "Abyssal Trench"
+  colors:
+    void: "#020205"
+    floor: "#172554"
+    walls: "#0a0a0a"
+
+mode_change_schema:
+  - CHASE:
+      PROBABILITY: 1
+      SECONDS: 30
+    SCATTER:
+      PROBABILITY: 0.2
+      SECONDS: 3

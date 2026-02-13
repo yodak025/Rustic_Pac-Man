@@ -1,0 +1,17 @@
+# World 08 - Hellish
+# Extended relentless chases, minimal relief
+
+style:
+  name: "The Singularity"
+  colors:
+    void: "#000000"
+    floor: "#f8fafc"
+    walls: "#000000"
+
+mode_change_schema:
+  - CHASE:
+      PROBABILITY: 1
+      SECONDS: 35
+    SCATTER:
+      PROBABILITY: 0.15
+      SECONDS: 2

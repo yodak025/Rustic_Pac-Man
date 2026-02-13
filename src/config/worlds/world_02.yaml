@@ -1,0 +1,17 @@
+# World 02 - Beginner
+# Slightly increased chase probability
+
+style:
+  name: "Algae Depths"
+  colors:
+    void: "#042f2e"
+    floor: "#2d6a4f"
+    walls: "#114232"
+
+mode_change_schema:
+  - CHASE:
+      PROBABILITY: 0.75
+      SECONDS: 20
+    SCATTER:
+      PROBABILITY: 0.9
+      SECONDS: 7

@@ -1,0 +1,17 @@
+# World 09 - Impossible
+# Near-permanent chase mode, almost no scatter
+
+style:
+  name: "Inside the Void"
+  colors:
+    void: "#010409"
+    floor: "#335c67"
+    walls: "#131f24"
+
+mode_change_schema:
+  - CHASE:
+      PROBABILITY: 1
+      SECONDS: 40
+    SCATTER:
+      PROBABILITY: 0.1
+      SECONDS: 1

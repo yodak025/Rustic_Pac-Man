@@ -3,12 +3,16 @@ import type { Configuration as WebpackConfig } from 'webpack'
 import PyodidePlugin from '@pyodide/webpack-plugin'
 
 const nextConfig: NextConfig = {
-  // Rewrites para servir archivos Python desde src/maze-gen/
+  // Rewrites para servir archivos Python desde src/maze-gen/ y YAML desde src/config/worlds/
   async rewrites() {
     return [
       {
         source: '/maze-gen/:path*',
         destination: '/api/maze-gen/:path*',
+      },
+      {
+        source: '/config/worlds/:path*',
+        destination: '/api/config/worlds/:path*',
       },
     ]
   },
@@ -37,11 +41,15 @@ const nextConfig: NextConfig = {
 
   // Webpack configuration (replaces turbopack for Pyodide compatibility)
   webpack: (config: WebpackConfig, { isServer }) => {
-    // Regla para archivos .py - servir como raw text
+    // Regla para archivos .py y .yaml - servir como raw text
     config.module = config.module || {}
     config.module.rules = config.module.rules || []
     config.module.rules.push({
       test: /\.py$/,
+      type: 'asset/source',
+    })
+    config.module.rules.push({
+      test: /\.ya?ml$/,
       type: 'asset/source',
     })
 

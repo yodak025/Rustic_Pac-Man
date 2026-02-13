@@ -1,0 +1,17 @@
+# World 05 - Expert
+# Minimal scatter opportunities
+
+style:
+  name: "Basalt Core"
+  colors:
+    void: "#18181b"
+    floor: "#3f3f46"
+    walls: "#27272a"
+
+mode_change_schema:
+  - CHASE:
+      PROBABILITY: 1
+      SECONDS: 20
+    SCATTER:
+      PROBABILITY: 0.5
+      SECONDS: 5

@@ -11,6 +11,7 @@ import { useEffect } from "react";
 import { usePacmanHotState, useGameHotState, useMazeHotState } from "@state/useHotState";
 import useDebugConfigStore from "@/state/useDebugConfigStore";
 import { useGameWorldContext } from "@core/contexts/GameWorldContext";
+import { useWorldColors } from "@core/hooks/useWorldColors";
 
 
 const HUD = () => {
@@ -18,6 +19,7 @@ const HUD = () => {
   const gameState = useGameHotState();
   const lives = usePacmanHotState().health;
   const mazeState = useMazeHotState();
+  const { worldName } = useWorldColors();
 
   const { debug } = useDebugConfigStore();
 
@@ -41,7 +43,8 @@ const HUD = () => {
         <div className="absolute top-4 right-4">
           <GameStats 
             level={gameState.level} 
-            score={gameState.score} 
+            score={gameState.score}
+            worldName={worldName}
             currentPacDots={mazeState.pacDotsCollected}
             totalPacDots={mazeState.pacDotsTotal}
           />

@@ -9,7 +9,7 @@ import type { GameWorld } from '../GameWorld';
 import { ComponentType } from '@custom-types/componentTypes';
 import type { CollectionEvent, BehaviorMode, TargetPosition } from '@custom-types/components';
 import { CollectableKind, GhostBehaviorMode, TargetKind } from '@custom-types/gameComponents';
-import * as config from '@config/ghostBehavior.json';
+import * as config from '@config/defaultPositions.json';
 
 const EXIT_POSITIONS = config.DEFAULT_POSITIONS.EXIT_HOME;
 

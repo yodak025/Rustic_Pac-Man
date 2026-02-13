@@ -16,15 +16,14 @@ import type { GameWorld } from '@core/GameWorld';
 import { ComponentType, type EntityId } from '@custom-types/componentTypes';
 // Component types imported for reference, used by getComponent
 import { GhostBehaviorMode, TargetKind } from '@custom-types/gameComponents';
-import * as config from '@config/ghostBehavior.json';
+import * as config from '@config/defaultPositions.json';
+import { getWorldConfigSync } from '@core/worldConfigLoader';
 
 const {
   HOME: HOUSE_POSITION,
   EXIT_HOME: EXIT_POSITION,
   SCATTER: SCATTER_TARGET,
 } = config.DEFAULT_POSITIONS;
-
-const MODE_CHANGE = config.MODE_CHANGE_SCHEMA;
 
 // ============================================================================
 // HELPER FUNCTIONS
@@ -97,6 +96,15 @@ export function ghostBehaviorModeSystem(gameWorld: GameWorld, currentLevel: numb
     const ghostKind = ghostTag.kind;
     const { x, y } = position;
     const { x: tx, y: ty } = targetPosition;
+    
+    // Get world config for current level
+    const worldConfig = getWorldConfigSync(currentLevel);
+    if (!worldConfig) {
+      console.error(`[ghostBehaviorModeSystem] World config not loaded for level ${currentLevel}`);
+      continue;
+    }
+    
+    const MODE_CHANGE = worldConfig.mode_change_schema;
     const levelIndex = Math.min(currentLevel - 1, MODE_CHANGE.length - 1);
 
     // ════════════════════════════════════════════════════════════════════════

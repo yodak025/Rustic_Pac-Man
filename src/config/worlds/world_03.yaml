@@ -1,0 +1,17 @@
+# World 03 - Intermediate
+# Shorter scatter periods begin
+
+style:
+  name: "Violet Haze"
+  colors:
+    void: "#1e1b4b"
+    floor: "#4c1d95"
+    walls: "#312e81"
+
+mode_change_schema:
+  - CHASE:
+      PROBABILITY: 0.75
+      SECONDS: 20
+    SCATTER:
+      PROBABILITY: 0.9
+      SECONDS: 5

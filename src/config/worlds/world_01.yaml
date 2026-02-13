@@ -1,0 +1,17 @@
+# World 01 - Tutorial
+# Easy introduction with balanced chase/scatter patterns
+
+style:
+  name: "Surface Echo"
+  colors:
+    void: "#0f172a"
+    floor: "#475569"
+    walls: "#1e293b"
+
+mode_change_schema:
+  - CHASE:
+      PROBABILITY: 0.5
+      SECONDS: 20
+    SCATTER:
+      PROBABILITY: 1
+      SECONDS: 7
