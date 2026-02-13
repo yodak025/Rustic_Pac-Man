@@ -527,9 +527,13 @@ export class GameWorld {
   // ══════════════════════════════════════════════════════════════════════════
   
   /**
-   * Reset the entire world state
+   * Reset the world state
+   * @param preserveProgress - If true, preserves score and level (for level transitions)
    */
-  reset(): void {
+  reset(preserveProgress: boolean = false): void {
+    const savedScore = preserveProgress ? this.gameState.score : 0;
+    const savedLevel = preserveProgress ? this.gameState.level : 1;
+    
     this.entities.clear();
     this.clearSpatialGrids();
     
@@ -540,8 +544,8 @@ export class GameWorld {
 
     this.gameState = {
       status: GameStatus.LOADING,
-      score: 0,
-      level: 1,
+      score: savedScore,
+      level: savedLevel,
     };
 
     this.mazeInfo = {

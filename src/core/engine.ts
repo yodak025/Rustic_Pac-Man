@@ -61,6 +61,37 @@ export class RusticGameEngine {
     return this.gameWorld;
   }
 
+  /**
+   * Load next level (preserve score, increment level)
+   */
+  async loadNextLevel(): Promise<void> {
+    console.log('[Engine] Loading next level...');
+    
+    const currentScore = this.gameWorld.getGameState().score;
+    const currentLevel = this.gameWorld.getGameState().level;
+    
+    this.stop();
+    
+    // Reset world but preserve progress (score and level)
+    this.gameWorld.reset(/* preserveProgress */ true);
+    
+    // Increment level and add bonus
+    this.gameWorld.setLevel(currentLevel + 1);
+    this.gameWorld.setScore(currentScore + 1000); // Level bonus
+    
+    // Load new level
+    await this.load();
+    
+    // Sync to HotState
+    syncToHotStateSystem(this.gameWorld);
+    
+    console.log('[Engine] Next level loaded, starting game...');
+    
+    // Automatically start playing
+    this.gameWorld.setGameStatus(GameStatus.PLAYING);
+    this.start();
+  }
+
   // ══════════════════════════════════════════════════════════════════════════
   // COMMAND METHODS (called from React via GameWorldContext)
   // ══════════════════════════════════════════════════════════════════════════
@@ -241,15 +272,6 @@ export class RusticGameEngine {
     }
   }
 
-  private initGameStatus(): void {
-    this.gameWorld.setScore(0);
-    this.gameWorld.setLevel(1);
-
-    if (DEBUG_LOG_GAME_WORLD) {
-      console.log('[GameWorld] Game state initialized:', this.gameWorld.getGameState());
-    }
-  }
-
   private initGhostsEntities(): void {
     const GHOST_MOVEMENT_INTERVAL = 250;
 
@@ -349,16 +371,16 @@ export class RusticGameEngine {
   }
 
   async load(): Promise<void> {
-    // Preload all world configs before starting game
-    await preloadAllWorldConfigs();
-    console.log('[Engine] World configs preloaded');
+    // Preload all world configs before starting game (only once)
+    if (this.gameWorld.getGameState().level === 1) {
+      await preloadAllWorldConfigs();
+      console.log('[Engine] World configs preloaded');
+    }
     
     await this.initMazeEntities();
     console.log('[Engine] Maze entities initialized');
     this.setupKeyboardListeners();
     console.log('[Engine] Keyboard listeners set up');
-    this.initGameStatus();
-    console.log('[Engine] Game status initialized');
     this.initPacmanEntity();
     console.log('[Engine] Pacman entity initialized');
     this.initGhostsEntities();
@@ -392,11 +414,12 @@ export class RusticGameEngine {
       
       switch (gameState.status) {
         case GameStatus.WON:
-          // Level completed - advance to next level
-          this.gameWorld.nextLevel();
-          this.gameWorld.addScore(1000); // Level bonus
-          this.load();
-          break;
+          // Level completed - advance to next level asynchronously
+          this.loadNextLevel().catch(err => {
+            console.error('[Engine] Error loading next level:', err);
+          });
+          // Don't continue the loop - loadNextLevel will restart it
+          return;
         
         case GameStatus.PLAYING:
           // Resume requested
