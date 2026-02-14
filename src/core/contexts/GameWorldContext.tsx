@@ -30,8 +30,17 @@ export interface GameWorldContextValue {
   /** Restart the current level */
   restartGame: () => Promise<void>;
   
+  /** Start restarting current level (triggers LOADING_GAME view) */
+  startRestartLevel: () => void;
+  
   /** Exit to main menu */
   exitToMenu: () => void;
+  
+  /** Start loading next level (called from VictoryScreen) */
+  startNextLevel: () => void;
+  
+  /** Load next level (internal, used by GameApp) */
+  loadNextLevel: (autoStart: boolean) => Promise<void>;
 }
 
 const GameWorldContext = createContext<GameWorldContextValue | null>(null);

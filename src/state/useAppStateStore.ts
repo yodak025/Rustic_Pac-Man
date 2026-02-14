@@ -29,6 +29,12 @@ interface AppStateStore {
   /** Whether game engine has been initialized */
   isEngineReady: boolean;
   
+  /** Whether currently transitioning between levels */
+  isLevelTransition: boolean;
+  
+  /** Whether currently restarting the current level */
+  isRestarting: boolean;
+  
   // ═══════════════════════════════════════════════════════════════
   // ACTIONS
   // ═══════════════════════════════════════════════════════════════
@@ -41,6 +47,12 @@ interface AppStateStore {
   
   /** Mark engine as ready */
   setEngineReady: (ready: boolean) => void;
+  
+  /** Mark level transition state */
+  setIsLevelTransition: (isTransition: boolean) => void;
+  
+  /** Mark restart state */
+  setIsRestarting: (isRestarting: boolean) => void;
   
   /** Navigate to main menu */
   goToMainMenu: () => void;
@@ -68,12 +80,18 @@ const useAppStateStore = create<AppStateStore>((set) => ({
   view: AppView.LOADING_PYODIDE,
   isPyodideReady: false,
   isEngineReady: false,
+  isLevelTransition: false,
+  isRestarting: false,
   
   setView: (view) => set({ view }),
   
   setPyodideReady: (ready) => set({ isPyodideReady: ready }),
   
   setEngineReady: (ready) => set({ isEngineReady: ready }),
+  
+  setIsLevelTransition: (isTransition) => set({ isLevelTransition: isTransition }),
+  
+  setIsRestarting: (isRestarting) => set({ isRestarting: isRestarting }),
   
   goToMainMenu: () => set({ view: AppView.MAIN_MENU }),
   
@@ -91,6 +109,8 @@ const useAppStateStore = create<AppStateStore>((set) => ({
     view: AppView.MAIN_MENU,
     isPyodideReady: false,
     isEngineReady: false,
+    isLevelTransition: false,
+    isRestarting: false,
   }),
 }));
 

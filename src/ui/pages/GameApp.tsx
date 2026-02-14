@@ -17,7 +17,7 @@ import HUD from "@ui/layout/HUD"
 import LoadingScreen from "@/ui/common/LoadingScreen"
 
 export default function GameApp() {
-  const { view, setPyodideReady, setEngineReady, goToMainMenu, showGameCanvas } = useAppStateStore()
+  const { view, setPyodideReady, setEngineReady, goToMainMenu, showGameCanvas, isLevelTransition, setIsLevelTransition, isRestarting, setIsRestarting } = useAppStateStore()
   
   const { pyodide, error: pyodideError } = usePyodide()
   
@@ -41,20 +41,45 @@ export default function GameApp() {
     }
   }, [engineReady, setEngineReady])
 
-  // When view changes to LOADING_GAME, start loading the game core
+  // When view changes to LOADING_GAME, start loading the game core or next level
   useEffect(() => {
-    if (view === AppView.LOADING_GAME && !gameInitializedRef.current) {
-      gameInitializedRef.current = true
-      assetsLoadedRef.current = false
+    if (view === AppView.LOADING_GAME) {
+      if (isLevelTransition) {
+        // Level transition - load next level
+        console.log('[GameApp] Loading next level...')
+        assetsLoadedRef.current = false
+        contextValue.loadNextLevel(false).then(() => {
+          console.log('[GameApp] Next level loaded, waiting for assets...')
+          setIsLevelTransition(false)
+        }).catch((error: Error) => {
+          console.error('[GameApp] Failed to load next level:', error)
+          setIsLevelTransition(false)
+        })
+      } else if (isRestarting) {
+        // Restart current level - reload from scratch
+        console.log('[GameApp] Restarting level...')
+        assetsLoadedRef.current = false
+        contextValue.restartGame().then(() => {
+          console.log('[GameApp] Level restarted, waiting for assets...')
+          setIsRestarting(false)
+        }).catch((error: Error) => {
+          console.error('[GameApp] Failed to restart level:', error)
+          setIsRestarting(false)
+        })
+      } else if (!gameInitializedRef.current) {
+        // New game - load from scratch
+        gameInitializedRef.current = true
+        assetsLoadedRef.current = false
 
-      console.log('[GameApp] Starting new game...')
-      contextValue.startNewGame().then(() => {
-        console.log('[GameApp] Core loaded, waiting for assets...')
-      }).catch((error) => {
-        console.error('[GameApp] Failed to start new game:', error)
-      })
+        console.log('[GameApp] Starting new game...')
+        contextValue.startNewGame().then(() => {
+          console.log('[GameApp] Core loaded, waiting for assets...')
+        }).catch((error: Error) => {
+          console.error('[GameApp] Failed to start new game:', error)
+        })
+      }
     }
-  }, [view, contextValue])
+  }, [view, contextValue, isLevelTransition, setIsLevelTransition, isRestarting, setIsRestarting])
 
   // Callback for when R3F finishes loading assets
   const handleAssetsLoaded = useCallback(() => {

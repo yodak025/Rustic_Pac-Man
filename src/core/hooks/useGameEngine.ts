@@ -2,6 +2,8 @@ import { useEffect, useRef, useState, useMemo } from 'react'
 import type { PyodideInterface } from 'pyodide'
 import { RusticGameEngine } from '@core/engine'
 import type { GameWorldContextValue } from '@core/contexts/GameWorldContext'
+import useAppStateStore from '@/state/useAppStateStore'
+import AppView from '@custom-types/appView'
 
 interface UseGameEngineReturn {
   engine: RusticGameEngine | null
@@ -43,7 +45,19 @@ export function useGameEngine(pyodide: PyodideInterface | null): UseGameEngineRe
     pauseGame: () => engineRef.current?.pauseGame(),
     resumeGame: () => engineRef.current?.resumeGame(),
     restartGame: () => engineRef.current?.restartGame() ?? Promise.resolve(),
+    startRestartLevel: () => {
+      // Mark as restarting and trigger transition to LOADING_GAME view
+      useAppStateStore.getState().setIsRestarting(true)
+      useAppStateStore.getState().setView(AppView.LOADING_GAME)
+    },
     exitToMenu: () => engineRef.current?.exitToMenu(),
+    startNextLevel: () => {
+      // Mark as level transition and trigger transition to LOADING_GAME view
+      useAppStateStore.getState().setIsLevelTransition(true)
+      useAppStateStore.getState().setView(AppView.LOADING_GAME)
+    },
+    loadNextLevel: (autoStart: boolean) => 
+      engineRef.current?.loadNextLevel(autoStart) ?? Promise.resolve(),
   }), [isReady])
 
   return {
