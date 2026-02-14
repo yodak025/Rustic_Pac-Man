@@ -41,7 +41,7 @@ const TutorialPage: React.FC = () => {
               <li>- Collect all the Pac-Dots in the level to win.</li>
               <li>- If a ghost catches Pac-Man, he will lose one live. The game ends if Pacman loses all of his lifes.</li>
               <li>- When Pacman collects a Power-Pellet, all ghosts gets frightened. Try to catch them before they reach the ghost home!</li>
-              <li>- Be careful! even the dead ghost will frightened</li>
+              <li>- Be careful! even the dead ghost will frighten</li>
             </ul>
           </div>
         </div>
@@ -53,7 +53,7 @@ const TutorialPage: React.FC = () => {
           ⚠️ DEVELOPMENT WARNING ⚠️
         </p>
         <p className="text-center text-lg text-[var(--color-text-main)] font-mono mt-4">
-          <strong>Known Bug:</strong> When starting the first level, ghosts may not load correctly and appear stuck with Pac-Man in the top-left corner outside the maze. 
+          <strong>Known Bug:</strong> When starting the first level, ghosts may not load correctly and appear stuck with Pac-Man in the top-left corner outside the maze.
           <br />
           <strong>Workaround:</strong> Press <span className="glass-light px-2 py-1 rounded-tech text-[var(--color-accent)]">ESC</span> to open the in-game menu, then click <strong>RESUME GAME</strong> to fix the issue.
         </p>
