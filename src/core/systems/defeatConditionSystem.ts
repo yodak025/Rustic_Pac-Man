@@ -14,6 +14,11 @@ import GameStatus from '@custom-types/gameStatus';
  * Check if player health has reached 0 (defeat condition)
  */
 export function defeatConditionSystem(gameWorld: GameWorld): void {
+  const gameState = gameWorld.getGameState();
+  
+  // Only check defeat condition when actively playing
+  if (gameState.status !== GameStatus.PLAYING) return;
+  
   const playerEntities = gameWorld.query(
     ComponentType.PLAYER_TAG,
     ComponentType.HEALTH

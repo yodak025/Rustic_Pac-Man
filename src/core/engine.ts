@@ -63,8 +63,9 @@ export class RusticGameEngine {
 
   /**
    * Load next level (preserve score, increment level)
+   * @param autoStart If true, automatically start playing. If false, wait for beginGame() call.
    */
-  async loadNextLevel(): Promise<void> {
+  async loadNextLevel(autoStart: boolean = true): Promise<void> {
     console.log('[Engine] Loading next level...');
     
     const currentScore = this.gameWorld.getGameState().score;
@@ -85,11 +86,18 @@ export class RusticGameEngine {
     // Sync to HotState
     syncToHotStateSystem(this.gameWorld);
     
-    console.log('[Engine] Next level loaded, starting game...');
+    console.log('[Engine] Next level loaded');
     
-    // Automatically start playing
-    this.gameWorld.setGameStatus(GameStatus.PLAYING);
-    this.start();
+    if (autoStart) {
+      // Automatically start playing (for debug key)
+      console.log('[Engine] Auto-starting game...');
+      this.gameWorld.setGameStatus(GameStatus.PLAYING);
+      this.start();
+    } else {
+      // Wait for React to call beginGame() (for VictoryScreen flow)
+      console.log('[Engine] Waiting for beginGame() call...');
+      // Status is already READY from load()
+    }
   }
 
   // ══════════════════════════════════════════════════════════════════════════
@@ -199,9 +207,10 @@ export class RusticGameEngine {
         case 'n':
           // Debug: Skip to next level (only works when playing)
           if (this.gameWorld.getGameState().status === GameStatus.PLAYING) {
-            console.log('[Engine] Debug: Forcing level transition...');
-            this.gameWorld.setGameStatus(GameStatus.WON);
-            // Note: The gameLoop will detect WON status and call loadNextLevel()
+            console.log('[Engine] Debug: Forcing instant level transition...');
+            this.loadNextLevel(true).catch(err => {
+              console.error('[Engine] Error loading next level:', err);
+            });
           }
           break;
       }
@@ -422,12 +431,11 @@ export class RusticGameEngine {
       
       switch (gameState.status) {
         case GameStatus.WON:
-          // Level completed - advance to next level asynchronously
-          this.loadNextLevel().catch(err => {
-            console.error('[Engine] Error loading next level:', err);
-          });
-          // Don't continue the loop - loadNextLevel will restart it
-          return;
+          // Level completed - stop and sync to show VictoryScreen
+          // React will handle the transition by calling startNextLevel()
+          this.stop();
+          syncToHotStateSystem(this.gameWorld);
+          break;
         
         case GameStatus.PLAYING:
           // Resume requested
