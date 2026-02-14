@@ -13,21 +13,27 @@ import InkyMesh from "./meshes/entities/InkyMesh";
 
 import Maze from "./meshes/maze/Maze";
 import { useWorldColors } from "@core/hooks/useWorldColors";
+import { usePacmanHotState } from "@/state/useHotState";
 
 export default function GameScene() {
   const { scene } = useThree();
   const { void: voidColor } = useWorldColors();
+  const pacmanPosition = usePacmanHotState().position;
 
   // Update scene background color when world changes
   useEffect(() => {
     scene.background = new THREE.Color(voidColor);
   }, [scene, voidColor]);
 
+  // Camera follows player with offset (adapted from concept/giant-mazes)
+  const cameraX = 16 + pacmanPosition.x - 14;
+  const cameraZ = 30 + pacmanPosition.y - 16;
+
   return (
     <>
       <PerspectiveCamera
         makeDefault
-        position={[16, 12, 30]}
+        position={[cameraX, 12, cameraZ]}
         rotation={[-Math.PI / 3.5, 0, 0]}
         fov={75}
         near={0.1}

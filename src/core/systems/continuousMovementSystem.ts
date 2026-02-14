@@ -107,23 +107,6 @@ function updateAlignmentState(position: ContinuousPosition): AlignmentState {
 }
 
 /**
- * Handle teleportation at map edges
- */
-function handleTeleportation(position: ContinuousPosition): ContinuousPosition {
-  let { x } = position;
-  const { y } = position;
-  
-  // Teleport at horizontal edges (x boundaries: 1 to 30)
-  if (x <= 1) {
-    x = 30;
-  } else if (x >= 30) {
-    x = 1;
-  }
-  
-  return { x, y };
-}
-
-/**
  * Move entities with continuous position based on speed and direction
  * 
  * @param gameWorld - The ECS world
@@ -164,9 +147,6 @@ export function continuousMovementSystem(
 
     // Check wall collision and clamp if necessary
     newPos = checkWallCollision(gameWorld, position, newPos, intent.direction);
-
-    // Handle teleportation
-    newPos = handleTeleportation(newPos);
 
     // Update position
     gameWorld.setComponent(entityId, ComponentType.CONTINUOUS_POSITION, newPos);
