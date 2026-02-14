@@ -53,6 +53,27 @@ def get_tiles(cells: np.ndarray, set_manual_tiles: Def[[Def[[int, int, str], Non
         x -= 2
         value = tiles[y, tiles_demirow_size + x]
         return value 
+    
+    def set_asym_tile(y, x, value, is_left: bool):
+        """Sets a tile value for asymmetric mazes."""
+        if x < 0 or x >= aux_row_size or y < 0 or y >= aux_col_size:
+            return
+        x -= 2
+        if is_left:
+            tiles[y, tiles_demirow_size -1 - x] = value
+        else:
+            tiles[y, tiles_demirow_size + x] = value
+
+    def get_asym_tile(y, x, is_left: bool):
+        """Retrieves a tile value for asymmetric mazes."""
+        if x < 0 or x >= aux_row_size or y < 0 or y >= aux_col_size:
+            return None
+        x -= 2
+        if is_left:
+            value = tiles[y, tiles_demirow_size -1 - x]
+        else:
+            value = tiles[y, tiles_demirow_size + x]
+        return value
 
     def set_aux_tile_cell(y, x, cell):
         """Sets an auxiliary tile reference to a cell."""
@@ -136,6 +157,15 @@ def get_tiles(cells: np.ndarray, set_manual_tiles: Def[[Def[[int, int, str], Non
                 set_tile(i, j, '.')
     LOGGER.debug("Tile path filling completed.")
 
+    # Before generating tunnels, clean all the open paths on the edges 
+    # that are not tunnels to ensure clean borders.
+    LOGGER.debug("Processing edge path erasure (before tunnels)...")
+    x_erasing_edge = tiles_demirow_size - 1
+    for y in range(tiles_col_size):
+        if get_tile(y, x_erasing_edge) == '.':
+            LOGGER.debug(f"Cleaning edge path at row {y}")
+            erase_until_intersection(x_erasing_edge, y, get_tile, set_tile)
+
     # Detect and handle tunnels at the edges
     LOGGER.debug("Detecting tunnels at maze edges...")
     no_tunnel = True
@@ -146,34 +176,68 @@ def get_tiles(cells: np.ndarray, set_manual_tiles: Def[[Def[[int, int, str], Non
             set_tile(3*i + 1, tiles_demirow_size - 1, '.')
             no_tunnel = False
             LOGGER.debug(f"Found top tunnel at row {i}")
+        if c.is_left_tunnel:
+            # Iterate from leftmost edge towards center
+            # tiles_demirow_size + 1 maps to the extreme left edge (tiles[y, 0])
+            # Iterate backwards from edge to center until we hit an existing path
+            tunnel_y = 3*i + 1
+            # Start from extreme left edge and work inward (decreasing x in aux coords)
+            for current_x in range(tiles_demirow_size + 1, 1, -1):
+                # Check if this position already has a path
+                if get_asym_tile(tunnel_y, current_x, True) == '.':
+                    # Already a path, stop here
+                    break
+                # Set this position as path and continue inward
+                set_asym_tile(tunnel_y, current_x, '.', True)
+            no_tunnel = False
+            LOGGER.debug(f"Found left tunnel at row {i}, filled path from edge to existing path")
+        if c.is_right_tunnel:
+            # Iterate from rightmost edge towards center
+            # tiles_demirow_size + 1 maps to the extreme right edge (tiles[y, tiles_row_size - 1])
+            # Iterate backwards from edge to center until we hit an existing path
+            tunnel_y = 3*i + 1
+            # Start from extreme right edge and work inward (decreasing x in aux coords)
+            for current_x in range(tiles_demirow_size + 1, 1, -1):
+                # Check if this position already has a path
+                if get_asym_tile(tunnel_y, current_x, False) == '.':
+                    # Already a path, stop here
+                    break
+                # Set this position as path and continue inward
+                set_asym_tile(tunnel_y, current_x, '.', False)
+            no_tunnel = False
+            LOGGER.debug(f"Found right tunnel at row {i}, filled path from edge to existing path")
     if no_tunnel:
         LOGGER.debug("No top tunnels found, filling with walls")
 
     # Fill wall tiles adjacent to any path tile
     i, j = 0, 0
-    # Before generating the wall tiles, we need to clean all the 
-    # open paths on the edges that are not tunnels to ensure clean borders.
-    LOGGER.debug("Processing tunnel pellet erasure...")
-    x_erasing_edge = tiles_demirow_size - 1
-    for y in range(tiles_col_size):
-        if get_tile(y, x_erasing_edge) == '.':
-            LOGGER.debug(f"Cleaning edge path at row {y}")
-            erase_until_intersection(x_erasing_edge, y, get_tile, set_tile)
     
     # Fill tiles adjacent to paths with wall markers ('|')
     LOGGER.debug("Filling wall tiles adjacent to paths...")
     for i in range(aux_col_size):
         for j in range(aux_row_size):
-            if get_tile(i, j) == '_':
-                if (get_tile(i - 1, j) == '.' or
-                    get_tile(i + 1, j) == '.' or
-                    get_tile(i, j - 1) == '.' or
-                    get_tile(i, j + 1) == '.' or
-                    get_tile(i - 1, j - 1) == '.' or
-                    get_tile(i - 1, j + 1) == '.' or
-                    get_tile(i + 1, j - 1) == '.' or
-                    get_tile(i + 1, j + 1) == '.'):
-                    set_tile(i, j, '|')
+            # Fill walls for left side (asymmetric)
+            if get_asym_tile(i, j, True) == '_':
+                if (get_asym_tile(i - 1, j, True) == '.' or
+                    get_asym_tile(i + 1, j, True) == '.' or
+                    get_asym_tile(i, j - 1, True) == '.' or
+                    get_asym_tile(i, j + 1, True) == '.' or
+                    get_asym_tile(i - 1, j - 1, True) == '.' or
+                    get_asym_tile(i - 1, j + 1, True) == '.' or
+                    get_asym_tile(i + 1, j - 1, True) == '.' or
+                    get_asym_tile(i + 1, j + 1, True) == '.'):
+                    set_asym_tile(i, j, '|', True)
+            # Fill walls for right side (asymmetric)
+            if get_asym_tile(i, j, False) == '_':
+                if (get_asym_tile(i - 1, j, False) == '.' or
+                    get_asym_tile(i + 1, j, False) == '.' or
+                    get_asym_tile(i, j - 1, False) == '.' or
+                    get_asym_tile(i, j + 1, False) == '.' or
+                    get_asym_tile(i - 1, j - 1, False) == '.' or
+                    get_asym_tile(i - 1, j + 1, False) == '.' or
+                    get_asym_tile(i + 1, j - 1, False) == '.' or
+                    get_asym_tile(i + 1, j + 1, False) == '.'):
+                    set_asym_tile(i, j, '|', False)
     LOGGER.debug("Wall filling completed.")
 
     # Place power pellets evenly distributed in maze halves
