@@ -7,6 +7,7 @@ import MazeViewer from "@/ui/layout/MazeViewer";
 import LivesDisplay from "@/ui/common/LivesDisplay";
 import GameStats from "@/ui/common/GameStats";
 import DeathScreen from "@/ui/pages/DeathScreen";
+import VictoryScreen from "@/ui/pages/VictoryScreen";
 import { useEffect } from "react";
 import { usePacmanHotState, useGameHotState, useMazeHotState } from "@state/useHotState";
 import useDebugConfigStore from "@/state/useDebugConfigStore";
@@ -15,7 +16,7 @@ import { useWorldColors } from "@core/hooks/useWorldColors";
 
 
 const HUD = () => {
-  const { pauseGame } = useGameWorldContext();
+  const { pauseGame, resumeGame } = useGameWorldContext();
   const gameState = useGameHotState();
   const lives = usePacmanHotState().health;
   const mazeState = useMazeHotState();
@@ -25,14 +26,18 @@ const HUD = () => {
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape" && gameState.status === GameStatus.PLAYING) {
-        pauseGame();
+      if (event.key === "Escape") {
+        if (gameState.status === GameStatus.PLAYING) {
+          pauseGame();
+        } else if (gameState.status === GameStatus.PAUSED) {
+          resumeGame();
+        }
       }
     };
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [pauseGame, gameState.status]);
+  }, [pauseGame, resumeGame, gameState.status]);
 
   return (
     <>
@@ -56,6 +61,7 @@ const HUD = () => {
 
       {gameState.status === GameStatus.PAUSED && <InGameMenu />}
       {gameState.status === GameStatus.LOST && <DeathScreen />}
+      {gameState.status === GameStatus.WON && <VictoryScreen />}
     </>
   );
 };

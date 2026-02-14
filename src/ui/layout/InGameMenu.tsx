@@ -6,7 +6,7 @@ import { useGameWorldContext } from "@core/contexts/GameWorldContext";
 import useAppStateStore from "@/state/useAppStateStore";
 
 const InGameMenu = () => {
-  const { resumeGame, restartGame, exitToMenu } = useGameWorldContext();
+  const { resumeGame, startRestartLevel, exitToMenu } = useGameWorldContext();
   const { goToMainMenu } = useAppStateStore();
 
   const handleMainMenu = () => {
@@ -18,7 +18,7 @@ const InGameMenu = () => {
     <Modal isOpen={true} title="PAUSE" className="w-3xl h-2/7">
       <MenuButtonGroup
         onContinue={resumeGame}
-        onRestart={restartGame}
+        onRestart={startRestartLevel}
         onMainMenu={handleMainMenu}
         continueLabel="RESUME GAME"
         restartLabel="RESTART LEVEL"
