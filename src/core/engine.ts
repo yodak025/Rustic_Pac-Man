@@ -196,6 +196,14 @@ export class RusticGameEngine {
         case 'd':
           this.keyState.d = true;
           break;
+        case 'n':
+          // Debug: Skip to next level (only works when playing)
+          if (this.gameWorld.getGameState().status === GameStatus.PLAYING) {
+            console.log('[Engine] Debug: Forcing level transition...');
+            this.gameWorld.setGameStatus(GameStatus.WON);
+            // Note: The gameLoop will detect WON status and call loadNextLevel()
+          }
+          break;
       }
     });
 

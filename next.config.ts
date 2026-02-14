@@ -3,7 +3,7 @@ import type { Configuration as WebpackConfig } from 'webpack'
 import PyodidePlugin from '@pyodide/webpack-plugin'
 
 const nextConfig: NextConfig = {
-  // Rewrites para servir archivos Python desde src/maze-gen/ y YAML desde src/config/worlds/
+  // Rewrites para servir archivos Python desde src/maze-gen/ y YAML desde src/config/
   async rewrites() {
     return [
       {
@@ -13,6 +13,10 @@ const nextConfig: NextConfig = {
       {
         source: '/config/worlds/:path*',
         destination: '/api/config/worlds/:path*',
+      },
+      {
+        source: '/config/collectables.yaml',
+        destination: '/api/config/collectables',
       },
     ]
   },
