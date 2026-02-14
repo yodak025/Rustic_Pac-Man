@@ -97,10 +97,73 @@ def create_maze(rows=9, cols=5, max_figure_size=5):
         LOGGER.debug("String tilemap converted to integer tilemap")
         LOGGER.info("Maze generated successfully")
         return tiles_array
+    
+def create_rustic_giant_layer(rows, cols, max_figure_size, left, right):
+    """
+    Generates a single layer for a giant maze with asymmetric tunnels.
+    """
+    while True:
+        LOGGER.info("Generating giant maze layer...")
+        cells = create_cell_array(rows, cols)
+        LOGGER.debug(f"New cell array with {rows} rows and {cols} columns created")
+        reset(cells, lambda c: _echoes_chamber_cells(c, cols))
+        LOGGER.debug("Cells prepared for generation")
+
+        cell_connections = CellConnectionsGenerator(cells, max_figure_size)
+        cell_connections.generate()
+        if not is_desirable(cells):
+            LOGGER.warning("Generated maze is not desirable, regenerating...")
+            continue
+        tunnels = TunnelsGenerator(cells)
+        tunnels.generate_asym(left, right)
+        if not tunnels.is_valid_cell_map:
+            LOGGER.info("Generated maze with tunnels is not valid, regenerating...")
+            continue
+        LOGGER.debug("Tunnels generated successfully")
+
+        tiles = get_tiles(cells, _set_echoes_chamber_door_tiles)
+        LOGGER.debug("String tilemap generated from cells")
+        tile_map = {
+            '.': 0, 
+            '|': 1,
+            'o': 2, 
+            '_': -2, 
+            'h': -3, 
+            'd': -4, 
+            '-': 3
+            }
+        tiles_array = np.vectorize(lambda x: tile_map.get(x, -1))(tiles).astype(int)
+        LOGGER.debug("String tilemap converted to integer tilemap")
+        LOGGER.info("Giant maze layer generated successfully")
+        return tiles_array
+    
+def create_rustic_giant_maze(max_figure_size=5, init_row=2, final_row=11):
+    """
+    Generates a giant maze by combining multiple layers connected through asymmetric tunnels.
+    Fixed configuration: 2 layers connected horizontally.
+    """
+    LOGGER.info("Generating rustic giant maze...")
+    ROWS = 18
+    COLS = 5
+    current_tunnel = 14
+    
+    layer_tilemaps = []
+    # First layer: connects from init_row to current_tunnel
+    layer_tilemaps.append(create_rustic_giant_layer(ROWS, COLS, max_figure_size, init_row, current_tunnel))
+    last_tunnel = current_tunnel 
+    
+    # Second layer: connects from last_tunnel to final_row
+    layer_tilemaps.append(create_rustic_giant_layer(ROWS, COLS, max_figure_size, last_tunnel, final_row))
+
+    # Concatenate layers horizontally
+    giant_maze = np.hstack(layer_tilemaps)
+            
+    LOGGER.info("Rustic giant maze generated successfully")
+    return giant_maze
 
 
 if __name__ == '__main__':
-    maze = create_maze()
+    maze = create_rustic_giant_maze()
     int_to_tile = {
         0: '.', 
         1: '|',

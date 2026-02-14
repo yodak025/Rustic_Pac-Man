@@ -179,6 +179,89 @@ class TunnelsGenerator:
                 c.is_connected_at[UP] = True
                 c.next[UP].is_connected_at[DOWN] = True
 
+    def _find_asymmetric_tunnels(self, left_target, right_target) -> bool:
+        """
+        Given two target y-coordinates on the left and right sides of the maze,
+        tries to find valid tunnel candidates. Returns True if successful, False otherwise.
+        """
+        c_left: Cell | None = None  
+        c_right: Cell | None = None
+
+        if len(self._void_tunnel_cells) > 0:
+            for c in self._void_tunnel_cells:
+                if c.y == right_target and not c_right:
+                    c_right = c
+                    LOGGER.debug("Found right void tunnel candidate.")
+                if c.y == left_target and not c_left:
+                    c_left = c
+                    LOGGER.debug("Found left void tunnel candidate.")
+                if c_left and c_right:
+                   break
+        if not c_left or not c_right:
+            if len(self._single_dead_end_cells) > 0:
+                for c in self._single_dead_end_cells:
+                    if c.y == right_target and not c_right:
+                        c_right = c
+                        LOGGER.debug("Found right single dead-end candidate.")
+                    if c.y == left_target and not c_left:
+                        c_left = c
+                        LOGGER.debug("Found left single dead-end candidate.")
+                    if c_left and c_right:
+                        break
+        if not c_left or not c_right:
+            if len(self._edge_tunnel_cells) > 0:
+                for c in self._edge_tunnel_cells:
+                    if c.y == right_target and not c_right:
+                        c_right = c
+                        LOGGER.debug("Found right edge tunnel candidate.")
+                    if c.y == left_target and not c_left:
+                        c_left = c
+                        LOGGER.debug("Found left edge tunnel candidate.")
+                    if c_left and c_right:
+                        break
+        
+        if c_left and c_right:
+            c_left.is_left_tunnel = True
+            c_right.is_right_tunnel = True
+            LOGGER.debug(f"Asymmetric tunnels created at left ({c_left.x}, {c_left.y}) and right ({c_right.x}, {c_right.y}).")
+            return True
+        
+        LOGGER.debug("No valid asymmetric tunnel candidates found.")
+        return False
+
+    def _is_valid_asymmetric_tunnels(self):
+        """ Ensures that no vertical paths cut through the asymmetric tunnels. """
+        exit_tunnel_left = True
+        exit_tunnel_right = True
+        topy_left = None
+        topy_right = None
+        for y in range(self.height):
+            c : Cell = self.cells[y, self.width - 1]
+            if c.is_right_tunnel:
+                exit_tunnel_right = True
+                topy_right = c.y
+                while c.next[LEFT]:
+                    c = c.next[LEFT]
+                    # Check if cell is at same level and doesn't connect upward
+                    if not c.is_connected_at[UP] and c.y == topy_right:
+                        continue
+                    else:
+                        exit_tunnel_right = False
+                        break
+            if c.is_left_tunnel:
+                exit_tunnel_left = True
+                topy_left = c.y
+                while c.next[LEFT]:
+                    c = c.next[LEFT]
+                    # Check if cell is at same level and doesn't connect upward
+                    if not c.is_connected_at[UP] and c.y == topy_left:
+                        continue
+                    else:
+                        exit_tunnel_left = False
+                        break
+            if exit_tunnel_left or exit_tunnel_right:
+                return False
+        return True
 
     def generate(self):
         LOGGER.info("Generating tunnels...")
@@ -200,6 +283,32 @@ class TunnelsGenerator:
             self.is_valid_cell_map = False
             return
         if not self._is_valid_tunnels():
+            LOGGER.info("Tunnel generation failed: Invalid tunnel configuration.")
+            self.is_valid_cell_map = False
+            return
+        self._clear_dead_ends()
+
+    def generate_asym(self, left_target: int, right_target: int):
+        """Generate asymmetric tunnels at specific Y coordinates for connecting giant maze layers."""
+        LOGGER.info("Generating asymmetric tunnels...")
+        LOGGER.debug("Preparing tunnel candidates...")
+        self._prepare_candidates()
+        LOGGER.debug("Candidates found:")
+        LOGGER.debug(f"Single dead end cells: {len(self._single_dead_end_cells)}")
+        LOGGER.debug(f"  - Top: {len(self._top_single_dead_end_cells)}")
+        LOGGER.debug(f"  - Bottom: {len(self._bottom_single_dead_end_cells)}")
+        LOGGER.debug(f"Double dead end cells: {len(self._double_dead_end_cells)}")
+        LOGGER.debug(f"Void tunnel cells: {len(self._void_tunnel_cells)}")
+        LOGGER.debug(f"  - Top: {len(self._top_void_tunnel_cells)}")
+        LOGGER.debug(f"  - Bottom: {len(self._bottom_void_tunnel_cells)}")
+        LOGGER.debug(f"Edge tunnel cells: {len(self._edge_tunnel_cells)}")
+        LOGGER.debug(f"  - Top: {len(self._top_edge_tunnel_cells)}")
+        LOGGER.debug(f"  - Bottom: {len(self._bottom_edge_tunnel_cells)}")
+        if not self._find_asymmetric_tunnels(left_target, right_target):
+            LOGGER.info("Tunnel generation failed: No valid candidates.")
+            self.is_valid_cell_map = False
+            return
+        if False and not self._is_valid_asymmetric_tunnels():
             LOGGER.info("Tunnel generation failed: Invalid tunnel configuration.")
             self.is_valid_cell_map = False
             return

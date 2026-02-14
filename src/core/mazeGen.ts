@@ -1,28 +1,29 @@
 import type { PyodideInterface } from "pyodide";
 
 /**
- * Generates a new maze using the Python generator
+ * Generates a new giant maze using the Python generator.
+ * Giant mazes consist of multiple horizontally-connected layers with asymmetric tunnels.
  * @param pyodide Already initialized PyodideInterface instance
- * @param rows Number of rows (default: 9)
- * @param cols Number of columns (default: 5)
  * @param maxFigureSize Maximum figure size (default: 5)
+ * @param initRow Initial row for first layer tunnel connection (default: 2)
+ * @param finalRow Final row for last layer tunnel connection (default: 11)
  * @returns 2D array with maze tiles
  */
 export async function generateMaze(
   pyodide: PyodideInterface,
-  rows: number = 9,
-  cols: number = 5,
-  maxFigureSize: number = 5
+  maxFigureSize: number = 5,
+  initRow: number = 2,
+  finalRow: number = 11
 ): Promise<number[][]> {
   try {
-    console.log(`Generating maze ${rows}x${cols}...`);
+    console.log('Generating giant maze...');
 
     const result = await pyodide.runPythonAsync(`
-      from maze import create_maze
+      from maze import create_rustic_giant_maze
       import json
 
-      # Generate maze
-      maze_array = create_maze(${rows}, ${cols}, ${maxFigureSize})
+      # Generate giant maze with asymmetric layers
+      maze_array = create_rustic_giant_maze(${maxFigureSize}, ${initRow}, ${finalRow})
 
       # Convert to Python list for serialization
       maze_list = maze_array.tolist()
@@ -33,11 +34,11 @@ export async function generateMaze(
 
     const mazeData: number[][] = JSON.parse(result as string);
 
-    console.log("Maze generated successfully");
+    console.log("Giant maze generated successfully");
     return mazeData;
   } catch (error) {
-    console.error("Error generating maze:", error);
-    throw new Error(`Error generating maze: ${error}`);
+    console.error("Error generating giant maze:", error);
+    throw new Error(`Error generating giant maze: ${error}`);
   }
 }
 

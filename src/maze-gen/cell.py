@@ -40,6 +40,9 @@ class Cell :
         self.is_double_dead_end_candidate = False
         self.is_top_tunnel = False
         self.is_bottom_tunnel = False
+        # Used for asymmetric tunnel generation
+        self.is_left_tunnel = False
+        self.is_right_tunnel = False
 
     def __eq__(self, other):
         if isinstance(other, Cell):
