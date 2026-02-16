@@ -183,9 +183,17 @@ class TunnelsGenerator:
         """
         Given two target y-coordinates on the left and right sides of the maze,
         tries to find valid tunnel candidates. Returns True if successful, False otherwise.
+        
+        Args:
+            left_target: Target y-coordinate for left tunnel, or None for random selection
+            right_target: Target y-coordinate for right tunnel, or None for random selection
         """
         c_left: Cell | None = None  
         c_right: Cell | None = None
+
+        # If targets are None, select random candidates
+        if left_target is None or right_target is None:
+            return self._find_random_asymmetric_tunnels(left_target, right_target)
 
         if len(self._void_tunnel_cells) > 0:
             for c in self._void_tunnel_cells:
@@ -227,6 +235,106 @@ class TunnelsGenerator:
             return True
         
         LOGGER.debug("No valid asymmetric tunnel candidates found.")
+        return False
+    
+    def _find_random_asymmetric_tunnels(self, left_target, right_target) -> bool:
+        """
+        Finds random tunnel candidates when specific positions are not provided.
+        
+        Args:
+            left_target: Target y-coordinate for left tunnel, or None for random
+            right_target: Target y-coordinate for right tunnel, or None for random
+        """
+        import random as rd
+        
+        c_left: Cell | None = None
+        c_right: Cell | None = None
+        
+        # Try void tunnels first (best candidates)
+        if len(self._void_tunnel_cells) > 0:
+            void_candidates = self._void_tunnel_cells.copy()
+            rd.shuffle(void_candidates)
+            
+            if left_target is not None:
+                for c in void_candidates:
+                    if c.y == left_target:
+                        c_left = c
+                        break
+            else:
+                c_left = void_candidates[0] if void_candidates else None
+            
+            if right_target is not None:
+                for c in void_candidates:
+                    if c.y == right_target and c != c_left:
+                        c_right = c
+                        break
+            else:
+                for c in void_candidates:
+                    if c != c_left:
+                        c_right = c
+                        break
+        
+        # Fallback to single dead-end cells
+        if not c_left or not c_right:
+            if len(self._single_dead_end_cells) > 0:
+                dead_end_candidates = self._single_dead_end_cells.copy()
+                rd.shuffle(dead_end_candidates)
+                
+                if not c_left:
+                    if left_target is not None:
+                        for c in dead_end_candidates:
+                            if c.y == left_target:
+                                c_left = c
+                                break
+                    else:
+                        c_left = dead_end_candidates[0] if dead_end_candidates else None
+                
+                if not c_right:
+                    if right_target is not None:
+                        for c in dead_end_candidates:
+                            if c.y == right_target and c != c_left:
+                                c_right = c
+                                break
+                    else:
+                        for c in dead_end_candidates:
+                            if c != c_left:
+                                c_right = c
+                                break
+        
+        # Final fallback to edge tunnels
+        if not c_left or not c_right:
+            if len(self._edge_tunnel_cells) > 0:
+                edge_candidates = self._edge_tunnel_cells.copy()
+                rd.shuffle(edge_candidates)
+                
+                if not c_left:
+                    if left_target is not None:
+                        for c in edge_candidates:
+                            if c.y == left_target:
+                                c_left = c
+                                break
+                    else:
+                        c_left = edge_candidates[0] if edge_candidates else None
+                
+                if not c_right:
+                    if right_target is not None:
+                        for c in edge_candidates:
+                            if c.y == right_target and c != c_left:
+                                c_right = c
+                                break
+                    else:
+                        for c in edge_candidates:
+                            if c != c_left:
+                                c_right = c
+                                break
+        
+        if c_left and c_right:
+            c_left.is_left_tunnel = True
+            c_right.is_right_tunnel = True
+            LOGGER.debug(f"Random asymmetric tunnels created at left ({c_left.x}, {c_left.y}) and right ({c_right.x}, {c_right.y}).")
+            return True
+        
+        LOGGER.debug("No valid random asymmetric tunnel candidates found.")
         return False
 
     def _is_valid_asymmetric_tunnels(self):
@@ -288,8 +396,14 @@ class TunnelsGenerator:
             return
         self._clear_dead_ends()
 
-    def generate_asym(self, left_target: int, right_target: int):
-        """Generate asymmetric tunnels at specific Y coordinates for connecting giant maze layers."""
+    def generate_asym(self, left_target: int | None, right_target: int | None):
+        """
+        Generate asymmetric tunnels for connecting giant maze layers.
+        
+        Args:
+            left_target: Target y-coordinate for left tunnel. If None, selects randomly from valid candidates.
+            right_target: Target y-coordinate for right tunnel. If None, selects randomly from valid candidates.
+        """
         LOGGER.info("Generating asymmetric tunnels...")
         LOGGER.debug("Preparing tunnel candidates...")
         self._prepare_candidates()
