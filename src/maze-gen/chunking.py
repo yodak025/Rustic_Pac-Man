@@ -1,6 +1,6 @@
 import logging
 import random
-from typing import List, Optional
+from typing import List
 
 from config_schema import MazeConfig
 
@@ -28,9 +28,7 @@ class Chunk:
         chunk_id: int,
         start_row: int,
         end_row: int,
-        cols: int,
-        left_tunnel_y: Optional[int] = None,
-        right_tunnel_y: Optional[int] = None
+        cols: int
     ):
         """
         Initialize a chunk.
@@ -41,8 +39,6 @@ class Chunk:
             start_row: Starting row index (inclusive, 0-based)
             end_row: Ending row index (exclusive, 0-based)
             cols: Number of columns (width) in cells
-            left_tunnel_y: Cell row position of left tunnel (None if leftmost layer)
-            right_tunnel_y: Cell row position of right tunnel (None if rightmost layer)
         """
         self.layer_id = layer_id
         self.chunk_id = chunk_id
@@ -50,14 +46,15 @@ class Chunk:
         self.end_row = end_row
         self.rows = end_row - start_row
         self.cols = cols
-        self.left_tunnel_y = left_tunnel_y
-        self.right_tunnel_y = right_tunnel_y
+        # Tunnels are stored as lists since a chunk can have multiple connections
+        self.left_tunnels: List[int] = []  # List of row positions for left tunnels
+        self.right_tunnels: List[int] = []  # List of row positions for right tunnels
     
     def __repr__(self) -> str:
         return (
             f"Chunk(layer={self.layer_id}, id={self.chunk_id}, "
             f"rows={self.start_row}-{self.end_row}, "
-            f"left_tunnel={self.left_tunnel_y}, right_tunnel={self.right_tunnel_y})"
+            f"left_tunnels={self.left_tunnels}, right_tunnels={self.right_tunnels})"
         )
 
 
