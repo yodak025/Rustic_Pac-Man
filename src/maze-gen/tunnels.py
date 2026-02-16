@@ -396,35 +396,73 @@ class TunnelsGenerator:
             return
         self._clear_dead_ends()
 
-    def generate_asym(self, left_target: int | None, right_target: int | None):
+    def generate_multi(self, left_targets: list[int] | None, right_targets: list[int] | None):
         """
-        Generate asymmetric tunnels for connecting giant maze layers.
+        Generate multiple tunnels on left and/or right sides for chunk connectivity.
         
         Args:
-            left_target: Target y-coordinate for left tunnel. If None, selects randomly from valid candidates.
-            right_target: Target y-coordinate for right tunnel. If None, selects randomly from valid candidates.
+            left_targets: List of y-coordinates for left tunnels, or None if no left tunnels needed
+            right_targets: List of y-coordinates for right tunnels, or None if no right tunnels needed
         """
-        LOGGER.info("Generating asymmetric tunnels...")
+        LOGGER.info(f"Generating multiple tunnels (left={left_targets}, right={right_targets})...")
         LOGGER.debug("Preparing tunnel candidates...")
         self._prepare_candidates()
-        LOGGER.debug("Candidates found:")
-        LOGGER.debug(f"Single dead end cells: {len(self._single_dead_end_cells)}")
-        LOGGER.debug(f"  - Top: {len(self._top_single_dead_end_cells)}")
-        LOGGER.debug(f"  - Bottom: {len(self._bottom_single_dead_end_cells)}")
-        LOGGER.debug(f"Double dead end cells: {len(self._double_dead_end_cells)}")
-        LOGGER.debug(f"Void tunnel cells: {len(self._void_tunnel_cells)}")
-        LOGGER.debug(f"  - Top: {len(self._top_void_tunnel_cells)}")
-        LOGGER.debug(f"  - Bottom: {len(self._bottom_void_tunnel_cells)}")
-        LOGGER.debug(f"Edge tunnel cells: {len(self._edge_tunnel_cells)}")
-        LOGGER.debug(f"  - Top: {len(self._top_edge_tunnel_cells)}")
-        LOGGER.debug(f"  - Bottom: {len(self._bottom_edge_tunnel_cells)}")
-        if not self._find_asymmetric_tunnels(left_target, right_target):
-            LOGGER.info("Tunnel generation failed: No valid candidates.")
-            self.is_valid_cell_map = False
-            return
-        if False and not self._is_valid_asymmetric_tunnels():
-            LOGGER.info("Tunnel generation failed: Invalid tunnel configuration.")
-            self.is_valid_cell_map = False
-            return
+        
+        # Track which cells we've marked as tunnels (using list of coordinates instead of set)
+        marked_positions = []
+        
+        # Process left tunnels
+        if left_targets:
+            for y_target in left_targets:
+                c_left = self._find_tunnel_candidate_at(y_target, marked_positions)
+                if c_left:
+                    c_left.is_left_tunnel = True
+                    marked_positions.append((c_left.x, c_left.y))
+                    LOGGER.debug(f"Left tunnel created at ({c_left.x}, {c_left.y})")
+                else:
+                    LOGGER.warning(f"Could not find left tunnel candidate at y={y_target}")
+                    self.is_valid_cell_map = False
+                    return
+        
+        # Process right tunnels
+        if right_targets:
+            for y_target in right_targets:
+                c_right = self._find_tunnel_candidate_at(y_target, marked_positions)
+                if c_right:
+                    c_right.is_right_tunnel = True
+                    marked_positions.append((c_right.x, c_right.y))
+                    LOGGER.debug(f"Right tunnel created at ({c_right.x}, {c_right.y})")
+                else:
+                    LOGGER.warning(f"Could not find right tunnel candidate at y={y_target}")
+                    self.is_valid_cell_map = False
+                    return
+        
         self._clear_dead_ends()
-
+    
+    def _find_tunnel_candidate_at(self, y_target: int, marked_positions: list) -> Cell | None:
+        """
+        Find a valid tunnel candidate at the specified y-coordinate.
+        
+        Args:
+            y_target: Target y-coordinate
+            marked_positions: List of (x, y) tuples already marked as tunnels (to avoid duplicates)
+            
+        Returns:
+            Cell if found, None otherwise
+        """
+        # Try void tunnels first (best candidates)
+        for c in self._void_tunnel_cells:
+            if c.y == y_target and (c.x, c.y) not in marked_positions:
+                return c
+        
+        # Try single dead-end cells
+        for c in self._single_dead_end_cells:
+            if c.y == y_target and (c.x, c.y) not in marked_positions:
+                return c
+        
+        # Try edge tunnels as fallback
+        for c in self._edge_tunnel_cells:
+            if c.y == y_target and (c.x, c.y) not in marked_positions:
+                return c
+        
+        return None
