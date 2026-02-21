@@ -56,6 +56,7 @@ export interface MazeRenderState {
   powerPellets: Set<PositionKey>;
   pacDotsCollected: number;
   pacDotsTotal: number;
+  powerPelletsTotal: number;
 }
 
 // ============================================================================
@@ -148,6 +149,7 @@ function createInitialMazeState(): MazeRenderState {
     powerPellets: new Set(),
     pacDotsCollected: 0,
     pacDotsTotal: 0,
+    powerPelletsTotal: 0,
   };
 }
 
