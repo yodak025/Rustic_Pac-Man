@@ -240,44 +240,6 @@ def get_tiles(cells: np.ndarray, set_manual_tiles: Def[[Def[[int, int, str], Non
                     set_asym_tile(i, j, '|', False)
     LOGGER.debug("Wall filling completed.")
 
-    # Place power pellets evenly distributed in maze halves
-    #! [SHIT CODE] Power pellet placement logic should be extracted to separate function for reusability
-    num_power_pellets = 2  #! [HARD CODED] Total number of power pellets
-    LOGGER.debug(f"Placing {num_power_pellets} power pellets in maze halves...")
-    # Calculate vertical middle point for upper/lower distribution
-    vertical_middle = aux_col_size // 2
-    # Place half of the pellets in the upper half
-    upper_pellets_placed = 0
-    for i in range(num_power_pellets // 2):
-        attempts = 0
-        while attempts < 100:  # Limit attempts to prevent infinite loops
-            # Random position within upper half
-            random_y = random.randint(0, vertical_middle - 1)
-            # [HARD CODED] Fixed x position: temporarily set to first/last column for better distribution
-            random_x = aux_row_size - 3
-            if get_tile(random_y, random_x) == '.':
-                set_tile(random_y, random_x, 'o')
-                upper_pellets_placed += 1
-                LOGGER.debug(f"Placed power pellet in upper half at ({random_y}, {random_x})")
-                break
-            attempts += 1
-    # Place remaining pellets in the lower half
-    lower_pellets_placed = 0
-    for i in range(num_power_pellets // 2):
-        attempts = 0
-        while attempts < 100:  # Limit attempts to prevent infinite loops
-            # Random position within lower half
-            random_y = random.randint(vertical_middle, aux_col_size - 1)
-            # [HARD CODED] Fixed x position: temporarily set to first/last column for better distribution
-            random_x = aux_row_size - 3 
-            if get_tile(random_y, random_x) == '.':
-                set_tile(random_y, random_x, 'o')
-                lower_pellets_placed += 1
-                LOGGER.debug(f"Placed power pellet in lower half at ({random_y}, {random_x})")
-                break 
-            attempts += 1
-    LOGGER.debug(f"Power pellets placement completed: {upper_pellets_placed} upper, {lower_pellets_placed} lower")
-
     # Apply manual tile modifications via callback
     LOGGER.debug("Applying manual tile modifications...")
     set_manual_tiles(set_tile)

@@ -8,8 +8,11 @@ from get_tiles import get_tiles
 from is_desirable import is_desirable
 from tunnels import TunnelsGenerator
 from config_schema import MazeConfig
+from entity_placement import place_entities_on_tilemap
+from chunk_assembly import generate_giant_maze_with_chunks
 import numpy as np
 import logging
+from typing import Dict, Any, Tuple
 
 
 logging.basicConfig(level=logging.INFO)
@@ -130,7 +133,10 @@ def create_rustic_giant_layer(rows, cols, max_figure_size, left=None, right=None
             LOGGER.warning("Generated maze is not desirable, regenerating...")
             continue
         tunnels = TunnelsGenerator(cells)
-        tunnels.generate_asym(left, right)
+        # Use generate_multi with single-element lists (or None)
+        left_targets = [left] if left is not None else None
+        right_targets = [right] if right is not None else None
+        tunnels.generate_multi(left_targets, right_targets)
         if not tunnels.is_valid_cell_map:
             LOGGER.info("Generated maze with tunnels is not valid, regenerating...")
             continue
@@ -279,28 +285,107 @@ def create_rustic_giant_maze(max_figure_size=5, init_row=2, final_row=11):
     return giant_maze
 
 
+def create_giant_maze_with_entities(config: MazeConfig) -> Tuple[np.ndarray, Dict[str, Any]]:
+    """
+    Generates a giant maze with entity placement (power pellets, chomp, echoes).
+    
+    Uses the chunk assembly system with MST-based connectivity and entity placement.
+    
+    Simplified tilemap:
+    - '_' = empty/void
+    - '.' = pacdot
+    - '|' = wall
+    - 'c' = chomp (player) spawn
+    - 'x' = echo (ghost) spawn
+    - 'o' = power pellet
+    
+    Workflow:
+    1. Generate giant maze using chunk assembly system (max 50 attempts)
+    2. If chunk assembly fails, retry up to 10000 times
+    3. Convert integer tilemap to ASCII tilemap
+    4. Place entities using spatial distribution algorithms
+    5. Return ASCII tilemap and metadata
+    
+    Args:
+        config: MazeConfig instance with generation parameters
+    
+    Returns:
+        Tuple of (tilemap, metadata) where:
+        - tilemap: ASCII numpy array (dtype='<U1') with simplified tile characters
+        - metadata: Dict with entity info (pacdot_count, powerpellet_count, echo_count, etc.)
+    """
+    if not isinstance(config, MazeConfig):
+        raise TypeError("config must be a MazeConfig instance")
+    
+    LOGGER.info(f"Generating giant maze with entities using chunk assembly system...")
+    
+    MAX_CHUNK_ATTEMPTS = 700
+    MAX_MACRO_RETRIES = 10000
+    
+    for macro_retry in range(MAX_MACRO_RETRIES):
+        try:
+            LOGGER.info(f"Macro retry {macro_retry + 1}/{MAX_MACRO_RETRIES}: Attempting chunk assembly...")
+            
+            # Generate giant maze with chunk assembly system
+            # Returns ASCII tilemap directly
+            ascii_maze = generate_giant_maze_with_chunks(config, max_macro_attempts=MAX_CHUNK_ATTEMPTS)
+            
+            LOGGER.info(f"Chunk assembly successful: {ascii_maze.shape}")
+            
+            # Place entities on the ASCII maze
+            LOGGER.info("Placing entities (power pellets, chomp, echoes)...")
+            maze_with_entities, metadata = place_entities_on_tilemap(ascii_maze, config)
+            
+            LOGGER.info(
+                f"Giant maze with entities generated successfully: {maze_with_entities.shape}, "
+                f"{metadata['pacdot_count']} pacdots, {metadata['powerpellet_count']} power pellets, "
+                f"{metadata['echo_count']} echoes"
+            )
+            
+            return maze_with_entities, metadata
+            
+        except (ValueError, RuntimeError) as e:
+            LOGGER.warning(f"Macro retry {macro_retry + 1}/{MAX_MACRO_RETRIES} failed: {e}. Retrying...")
+            continue
+    
+    raise RuntimeError(
+        f"Failed to generate giant maze with entities after {MAX_MACRO_RETRIES} macro retries. "
+        f"Consider adjusting configuration parameters."
+    )
+
+
 if __name__ == '__main__':
-    # Test simple giant maze generation with 4 layers
+    # Test NEW giant maze generation with entities
+    print("=== Testing Giant Maze with Entity Placement ===\n")
+    
     config = MazeConfig({
         'dimensions': {
             'layer_rows': 36,
             'layer_cols': 5,
             'num_layers': 4
+        },
+        'tunnels': {
+            'entry_position': 10,
+            'exit_position': 25
+        },
+        'entities': {
+            'ghost_ratio': 100,
+            'powerpellet_ratio': 60
         }
     })
     
-    maze = create_giant_maze_simple(config)
+    maze_ascii, metadata = create_giant_maze_with_entities(config)
     
-    int_to_tile = {
-        0: '.', 
-        1: '|',
-        2: 'o', 
-        -2: '_', 
-        -3: 'h', 
-        -4: 'd', 
-        3: '-'
-    }
-    # recreate the string tilemap from the integer maze
-    redone_maze = np.vectorize(lambda x: int_to_tile.get(int(x), '?'))(maze)
-    for row in redone_maze:
-        print(' '.join(f"{cell}" for cell in row))
+    print(f"\n=== Generation Results ===")
+    print(f"Maze size: {maze_ascii.shape}")
+    print(f"Pacdots: {metadata['pacdot_count']}")
+    print(f"Power Pellets: {metadata['powerpellet_count']}")
+    print(f"Echoes: {metadata['echo_count']}")
+    print(f"Chomp spawn: {metadata['chomp_spawn']}")
+    print(f"Echo spawns: {len(metadata['echo_spawns'])} positions")
+    
+    print("\n=== ASCII Tilemap (first 50 rows) ===")
+    print("Legend: _ = empty, . = pacdot, | = wall, o = powerpellet, c = chomp, x = echo")
+    for row in maze_ascii[:50]:
+        print(''.join(row))
+
