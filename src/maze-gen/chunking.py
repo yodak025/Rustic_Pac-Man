@@ -18,8 +18,8 @@ class Chunk:
     """
     
     # Chunking probability constants
-    SINGLE_CHUNK_PROBABILITY = 0.3
-    TWO_CHUNKS_PROBABILITY = 0.5
+    SINGLE_CHUNK_PROBABILITY = 0.1
+    TWO_CHUNKS_PROBABILITY = 0.4
     # THREE_CHUNKS_PROBABILITY = 0.2 (implicit: 1 - SINGLE - TWO)
     
     def __init__(

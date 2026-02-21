@@ -19,11 +19,22 @@ def is_desirable(cells: np.ndarray) -> bool:
     c = cells[0, col_count - 1]
     if c.is_connected_at[UP] or c.is_connected_at[RIGHT]:
         LOGGER.info("Undesirable maze: Top-right corner cell connects outwards.")
-        return False
+        # this exit condition is responsible for 33% of the restarts. in a a perfect world
+        # we should find a better way to improbe generation performance, but players 
+        # probably won't notice the difference since now the goal is to explore and the 
+        # playable space is huge.
+        #return False
     c = cells[row_count - 1, col_count - 1]
     if c.is_connected_at[DOWN] or c.is_connected_at[RIGHT]:
         LOGGER.info("Undesirable maze: Bottom-right corner cell connects outwards.")
-        return False
+        # Similarly, this condition is responsible for 26% of the restarts. Beware of the 
+        # fact that these conditions do not accelerate the generation by 59% (33% + 26%).
+        # Since this process is iterated by a macro generation system that eventually gives up 
+        # and restarts itself after a certain number of iterations, the impact of accepting 
+        # right corner cell connections is far too more than 59%. Please, take a moment to 
+        # run the algorithm with and without these conditions to see the difference in performance.
+        # then imagine how much this fact made my day jajajaja. 
+        #return False
     
     def is_hori(x, y):
         """Checks for horizontal 2-cell figure with form q1(x,y)---q2(x+1,y)."""
