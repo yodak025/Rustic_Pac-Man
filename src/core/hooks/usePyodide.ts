@@ -41,10 +41,28 @@ async function loadPyodideInstance(): Promise<PyodideInterface> {
       fetch('/api/maze-gen/is_desirable.py').then((r) => r.text()),
       fetch('/api/maze-gen/tunnels.py').then((r) => r.text()),
       fetch('/api/maze-gen/maze.py').then((r) => r.text()),
+      fetch('/api/maze-gen/config_schema.py').then((r) => r.text()),
+      fetch('/api/maze-gen/chunking.py').then((r) => r.text()),
+      fetch('/api/maze-gen/graph_mst.py').then((r) => r.text()),
+      fetch('/api/maze-gen/chunk_assembly.py').then((r) => r.text()),
+      fetch('/api/maze-gen/entity_placement.py').then((r) => r.text()),
     ])
 
-    const [directions, cell, reset, gen, getTiles, isDesirable, tunnels, maze] =
-      pythonFiles
+    const [
+      directions,
+      cell,
+      reset,
+      gen,
+      getTiles,
+      isDesirable,
+      tunnels,
+      maze,
+      configSchema,
+      chunking,
+      graphMst,
+      chunkAssembly,
+      entityPlacement,
+    ] = pythonFiles
 
     pyodide.FS.writeFile('directions.py', directions)
     pyodide.FS.writeFile('cell.py', cell)
@@ -54,6 +72,11 @@ async function loadPyodideInstance(): Promise<PyodideInterface> {
     pyodide.FS.writeFile('is_desirable.py', isDesirable)
     pyodide.FS.writeFile('tunnels.py', tunnels)
     pyodide.FS.writeFile('maze.py', maze)
+    pyodide.FS.writeFile('config_schema.py', configSchema)
+    pyodide.FS.writeFile('chunking.py', chunking)
+    pyodide.FS.writeFile('graph_mst.py', graphMst)
+    pyodide.FS.writeFile('chunk_assembly.py', chunkAssembly)
+    pyodide.FS.writeFile('entity_placement.py', entityPlacement)
 
     console.log('Pyodide initialized successfully')
 
