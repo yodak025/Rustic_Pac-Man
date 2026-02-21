@@ -118,6 +118,7 @@ export function syncToHotStateSystem(gameWorld: GameWorld): void {
     powerPellets: gameWorld.getPowerPellets(),
     pacDotsTotal: mazeInfo.pacDots.total,
     pacDotsCollected: mazeInfo.pacDots.total - mazeInfo.pacDots.current,
+    powerPelletsTotal: mazeInfo.powerPellets.total,
   };
 
   // ========================================================================

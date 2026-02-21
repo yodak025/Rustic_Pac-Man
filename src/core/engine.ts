@@ -67,27 +67,27 @@ export class RusticGameEngine {
    */
   async loadNextLevel(autoStart: boolean = true): Promise<void> {
     console.log('[Engine] Loading next level...');
-    
+
     const currentScore = this.gameWorld.getGameState().score;
     const currentLevel = this.gameWorld.getGameState().level;
-    
+
     this.stop();
-    
+
     // Reset world but preserve progress (score and level)
     this.gameWorld.reset(/* preserveProgress */ true);
-    
+
     // Increment level and add bonus
     this.gameWorld.setLevel(currentLevel + 1);
     this.gameWorld.setScore(currentScore + 1000); // Level bonus
-    
+
     // Load new level
     await this.load();
-    
+
     // Sync to HotState
     syncToHotStateSystem(this.gameWorld);
-    
+
     console.log('[Engine] Next level loaded');
-    
+
     if (autoStart) {
       // Automatically start playing (for debug key)
       console.log('[Engine] Auto-starting game...');
@@ -112,9 +112,9 @@ export class RusticGameEngine {
     this.stop();
     this.gameWorld.reset();
     this.gameWorld.setGameStatus(GameStatus.LOADING);
-    
+
     await this.load();
-    
+
     console.log('[Engine] New game loaded, ready to begin');
   }
 
@@ -141,10 +141,10 @@ export class RusticGameEngine {
     }
     this.isRunning = false;
     this.gameWorld.setGameStatus(GameStatus.PAUSED);
-    
+
     // Sync to HotState immediately so React UI updates
     syncToHotStateSystem(this.gameWorld);
-    
+
     console.log('[Engine] Game paused');
   }
 
@@ -156,10 +156,10 @@ export class RusticGameEngine {
       return;
     }
     this.gameWorld.setGameStatus(GameStatus.PLAYING);
-    
+
     // Sync to HotState before starting
     syncToHotStateSystem(this.gameWorld);
-    
+
     this.start();
     console.log('[Engine] Game resumed');
   }
@@ -170,10 +170,10 @@ export class RusticGameEngine {
   async restartGame(): Promise<void> {
     console.log('[Engine] Restarting game...');
     await this.startNewGame();
-    
+
     // Sync LOADING state to HotState
     syncToHotStateSystem(this.gameWorld);
-    
+
     this.beginGame();
   }
 
@@ -184,7 +184,7 @@ export class RusticGameEngine {
     console.log('[Engine] Exiting to menu...');
     this.stop();
     this.gameWorld.reset();
-    
+
     // Sync reset state to HotState
     syncToHotStateSystem(this.gameWorld);
   }
@@ -234,7 +234,7 @@ export class RusticGameEngine {
     });
   }
 
-  private initPacmanEntity(): void {
+  private initPacmanEntity(initialPosition: Position): void {
     const defaults = gameDefaults.pacman;
     const baseSpeed = gameDefaults.movement.baseSpeed;
 
@@ -248,12 +248,12 @@ export class RusticGameEngine {
       isTimeToMove: false
     });
     this.gameWorld.addComponent(PACMAN_ENTITY_ID, ComponentType.CONTINUOUS_POSITION, {
-      x: defaults.initialPosition.x,
-      y: defaults.initialPosition.y
+      x: initialPosition.x,
+      y: initialPosition.y
     });
     this.gameWorld.addComponent(PACMAN_ENTITY_ID, ComponentType.DISCRETE_POSITION, {
-      x: defaults.initialPosition.x,
-      y: defaults.initialPosition.y
+      x: initialPosition.x,
+      y: initialPosition.y
     });
     this.gameWorld.addComponent(PACMAN_ENTITY_ID, ComponentType.MOVEMENT_SPEED, {
       current: baseSpeed,
@@ -285,9 +285,14 @@ export class RusticGameEngine {
     });
 
     if (DEBUG_LOG_GAME_WORLD) {
-      console.log('[GameWorld] Pacman entity created:', PACMAN_ENTITY_ID);
+      console.log('[GameWorld] Pacman entity created at position:', initialPosition);
     }
   }
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // GHOST INITIALIZATION (Currently disabled - kept for future use)
+  // ══════════════════════════════════════════════════════════════════════════
+
 
   private initGhostsEntities(): void {
     const GHOST_MOVEMENT_INTERVAL = 250;
@@ -333,37 +338,66 @@ export class RusticGameEngine {
     }
   }
 
-  private async initMazeEntities(): Promise<void> {
-    const mazeTiles = await generateMaze(this.pyodide);
-    const WALL = 1;
-    const HOUSE = -3;
-    const PAC_DOT = 0;
-    const POWER_PELLET = 2;
+  private async initMazeEntities(): Promise<Position> {
+    const mazeResult = await generateMaze(this.pyodide);
+
+    // ASCII tile character constants
+    const TILE_PACDOT = '.';
+    const TILE_WALL = '|';
+    const TILE_CHOMP = 'c';
+    const TILE_ECHO = 'x';
+    const TILE_POWERPELLET = 'o';
+    // Note: TILE_EMPTY ('_') is not processed - empty tiles are ignored
+
     let pacDotCounter = 0;
     let powerPelletCounter = 0;
+    let chompPosition: Position | null = null;
 
     this.gameWorld.clearSpatialGrids();
 
-    if (!mazeTiles) {
+    if (!mazeResult || !mazeResult.tilemap) {
       console.error('Failed to load maze tiles');
       throw new Error('Maze tiles not found');
     }
 
-    mazeTiles.forEach((row, y) => {
-      row.forEach((tile, x) => {
-        if (tile === WALL) {
+    // Process ASCII tilemap
+    mazeResult.tilemap.forEach((row: string[], y: number) => {
+      row.forEach((tile: string, x: number) => {
+        if (tile === TILE_WALL) {
           this.gameWorld.addWall(x, y);
-        } else if (tile === PAC_DOT) {
+        } else if (tile === TILE_PACDOT) {
           this.gameWorld.addCollectable(x, y, CollectableKind.PAC_DOT);
           pacDotCounter++;
-        } else if (tile === POWER_PELLET) {
+        } else if (tile === TILE_POWERPELLET) {
           this.gameWorld.addCollectable(x, y, CollectableKind.POWER_PELLET);
           powerPelletCounter++;
-        } else if (tile === HOUSE) {
-          this.gameWorld.addHouseTile(x, y);
+        } else if (tile === TILE_CHOMP) {
+          // Mark chomp spawn position
+          chompPosition = { x, y };
+          // Add pacdot at chomp position so it's walkable
+          this.gameWorld.addCollectable(x, y, CollectableKind.PAC_DOT);
+          pacDotCounter++;
+        } else if (tile === TILE_ECHO) {
+          // Ghost spawn position - for now just make it walkable
+          // TODO: Initialize ghosts here in the future
+          this.gameWorld.addCollectable(x, y, CollectableKind.PAC_DOT);
+          pacDotCounter++;
         }
+        // TILE_EMPTY ('_') is ignored - no tile added
       });
     });
+
+    // Use chomp position from metadata if available, otherwise use detected position
+    if (mazeResult.metadata.chomp_spawn) {
+      const [row, col] = mazeResult.metadata.chomp_spawn;
+      chompPosition = { x: col, y: row };
+      console.log(`[Engine] Chomp spawn from metadata: (${col}, ${row})`);
+    }
+
+    if (!chompPosition) {
+      console.error('No chomp spawn position found in maze');
+      throw new Error('Chomp spawn position not found');
+    }
 
     this.gameWorld.initializeMazeInfo(pacDotCounter, powerPelletCounter);
     this.gameWorld.setMazeLoaded(true);
@@ -382,9 +416,12 @@ export class RusticGameEngine {
         collectables: stats.collectableCount,
         house: stats.houseCount,
         pacDots: pacDotCounter,
-        powerPellets: powerPelletCounter
+        powerPellets: powerPelletCounter,
+        chompSpawn: chompPosition
       });
     }
+
+    return chompPosition;
   }
 
   async load(): Promise<void> {
@@ -393,15 +430,16 @@ export class RusticGameEngine {
       await preloadAllWorldConfigs();
       console.log('[Engine] World configs preloaded');
     }
-    
-    await this.initMazeEntities();
+
+    const chompSpawn = await this.initMazeEntities();
     console.log('[Engine] Maze entities initialized');
     this.setupKeyboardListeners();
     console.log('[Engine] Keyboard listeners set up');
-    this.initPacmanEntity();
+    this.initPacmanEntity(chompSpawn);
     console.log('[Engine] Pacman entity initialized');
-    this.initGhostsEntities();
-    console.log('[Engine] Ghosts entities initialized');
+    // Ghosts disabled for now
+    // this.initGhostsEntities();
+    console.log('[Engine] Ghosts entities initialization skipped (disabled)');
     this.gameWorld.setGameStatus(GameStatus.READY);
     console.log('[Engine] Core loaded!');
   }
@@ -428,7 +466,7 @@ export class RusticGameEngine {
     if (!this.isRunning) {
       // Engine stopped - check if we need to perform any transitions
       const gameState = this.gameWorld.getGameState();
-      
+
       switch (gameState.status) {
         case GameStatus.WON:
           // Level completed - stop and sync to show VictoryScreen
@@ -436,21 +474,21 @@ export class RusticGameEngine {
           this.stop();
           syncToHotStateSystem(this.gameWorld);
           break;
-        
+
         case GameStatus.PLAYING:
           // Resume requested
           this.start();
           break;
-          
+
         default:
           // Stay stopped
           break;
       }
-      
+
       this.animationFrameId = requestAnimationFrame(() => this.gameLoop());
       return;
     }
-    
+
     // Check if game should pause
     const currentStatus = this.gameWorld.getGameState().status;
     if (currentStatus !== GameStatus.PLAYING) {
