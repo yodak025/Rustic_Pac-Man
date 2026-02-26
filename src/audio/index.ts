@@ -49,3 +49,20 @@ export type {
   PercussionConfig,
   BassConfig,
 } from './instruments'
+
+// Generators
+export {
+  PatternGenerator,
+  PercussionPatternGenerator,
+  BassPatternGenerator,
+  PadPatternGenerator,
+  LeadPatternGenerator,
+  euclidean,
+  kickGrid,
+  snareGrid,
+  hihatGrid,
+  distributeSteps,
+  activeSteps,
+  noteCountForTexture,
+} from './generators'
+export type { GeneratedPatterns } from './generators'
