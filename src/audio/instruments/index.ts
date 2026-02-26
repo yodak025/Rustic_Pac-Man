@@ -22,3 +22,7 @@ export { Percussion } from './Percussion'
 export type { PercussionStep } from './Percussion'
 
 export { Bass } from './Bass'
+
+export { Pad } from './Pad'
+
+export { Lead } from './Lead'

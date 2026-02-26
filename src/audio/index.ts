@@ -41,13 +41,15 @@ export { Pattern } from './patterns'
 export type { NoteEvent } from './patterns'
 
 // Instruments
-export { Instrument, Percussion, Bass } from './instruments'
+export { Instrument, Percussion, Bass, Pad, Lead } from './instruments'
 export type {
   InstrumentRole,
   PercussionStep,
   EnvelopeConfig,
   PercussionConfig,
   BassConfig,
+  PadConfig,
+  LeadConfig,
 } from './instruments'
 
 // Generators
