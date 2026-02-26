@@ -59,6 +59,7 @@ export {
   BassPatternGenerator,
   PadPatternGenerator,
   LeadPatternGenerator,
+  VariationEngine,
   euclidean,
   kickGrid,
   snareGrid,
@@ -67,4 +68,4 @@ export {
   activeSteps,
   noteCountForTexture,
 } from './generators'
-export type { GeneratedPatterns } from './generators'
+export type { GeneratedPatterns, VariationType, VariationRequest } from './generators'
