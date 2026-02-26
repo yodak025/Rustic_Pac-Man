@@ -1,4 +1,5 @@
 import { AudioEngine } from '../AudioEngine'
+import type { BeatCallback } from '../core/Clock'
 import { Percussion } from '../instruments/Percussion'
 import { Bass } from '../instruments/Bass'
 import { Pad } from '../instruments/Pad'
@@ -11,7 +12,7 @@ import {
   DEFAULT_LEAD_CONFIG,
 } from '../instruments/base/InstrumentConfig'
 import { MusicContext, type TextureDensity } from '../theory/MusicContext'
-import { VariationEngine, type VariationRequest } from '../generators/VariationEngine'
+import { VariationEngine, type VariationRequest, type VariationType } from '../generators/VariationEngine'
 import { LayerController } from './LayerController'
 import { TransitionManager } from './TransitionManager'
 import type { Pattern } from '../patterns/Pattern'
@@ -71,6 +72,21 @@ export class MusicOrchestrator {
   private readonly layers = new LayerController()
   private _transitions: TransitionManager | null = null
   private readonly variation = new VariationEngine()
+  private _chordAdvanceListener: BeatCallback | null = null
+
+  /** How many bars between automatic variation cycles. */
+  private static readonly AUTO_VARIATION_BARS = 2
+
+  /** Variation types used for auto-variation, with relative weights. */
+  private static readonly AUTO_VARIATION_POOL: Array<{ type: VariationType; weight: number }> = [
+    { type: 'shiftPitch',    weight: 4 },
+    { type: 'scaleVelocity', weight: 3 },
+    { type: 'shiftRhythm',   weight: 2 },
+    { type: 'addNote',       weight: 2 },
+    { type: 'removeNote',    weight: 2 },
+    { type: 'double',        weight: 1 },
+    { type: 'invert',        weight: 1 },
+  ]
 
   private constructor() {}
 
@@ -139,6 +155,25 @@ export class MusicOrchestrator {
     this._transitions = new TransitionManager(engine.transport)
     this._transitions.onTransition((ctx) => { this._context = ctx })
 
+    // Chord progression: advance one step every bar via the Clock.
+    // Auto-variation: every AUTO_VARIATION_BARS bars, mutate all active layers.
+    this._chordAdvanceListener = (beat: number, bar: number) => {
+      if (beat !== 0) return
+      if (!this._context || !this._transitions) return
+
+      // Advance chord progression
+      this.requestContextUpdate({
+        currentChordIndex:
+          (this._context.currentChordIndex + 1) % this._context.chordProgression.length,
+      })
+
+      // Auto-variation every N bars
+      if (bar % MusicOrchestrator.AUTO_VARIATION_BARS === 0) {
+        this.applyAutoVariation(bar)
+      }
+    }
+    engine.clock.addListener(this._chordAdvanceListener)
+
     this._initialized = true
   }
 
@@ -169,6 +204,13 @@ export class MusicOrchestrator {
    * AudioEngine is NOT disposed here — that is the caller's responsibility.
    */
   dispose(): void {
+    if (this._chordAdvanceListener) {
+      const engine = AudioEngine.getInstance()
+      if (engine.state !== 'uninitialized' && engine.state !== 'disposed') {
+        engine.clock.removeListener(this._chordAdvanceListener)
+      }
+      this._chordAdvanceListener = null
+    }
     this._percussion?.dispose()
     this._percussion = null
     this._bass = null
@@ -315,6 +357,33 @@ export class MusicOrchestrator {
     this._transitions!.requestTransition(newCtx, this.layers.getAll())
   }
 
+  /**
+   * Applies one weighted-random variation to every active instrument layer.
+   *
+   * Each instrument gets its own independently chosen variation type so the
+   * layers evolve differently rather than all shifting in unison.
+   *
+   * The `bar` number is mixed into the selection to break the deterministic
+   * seed that would otherwise repeat when the pattern hasn't changed.
+   */
+  private applyAutoVariation(bar: number): void {
+    if (!this._context) return
+    const instruments = this.layers.getAll()
+
+    instruments.forEach((instrument, idx) => {
+      if (!instrument.isActive) return
+      const pattern = instrument.currentPattern
+      if (!pattern) return
+
+      const type = pickWeightedVariationType(
+        MusicOrchestrator.AUTO_VARIATION_POOL,
+        bar * 31 + idx * 7,   // cheap deterministic per-instrument salt
+      )
+      const mutated = this.variation.applyOne(pattern, this._context!, { type, amount: 0.3 })
+      instrument.setPattern(mutated)
+    })
+  }
+
   private assertInitialized(): void {
     if (!this._initialized) {
       throw new Error(
@@ -338,4 +407,24 @@ function intensityToMaxRole(intensity: number): InstrumentRole {
   if (intensity < 0.6) return 'pad'
   if (intensity < 0.8) return 'lead1'
   return 'lead2'
+}
+
+/**
+ * Picks a VariationType from a weighted pool using a cheap integer seed.
+ * Same seed → same pick, but the bar/index salt makes each call differ.
+ */
+function pickWeightedVariationType(
+  pool: Array<{ type: VariationType; weight: number }>,
+  seed: number,
+): VariationType {
+  const totalWeight = pool.reduce((s, e) => s + e.weight, 0)
+  // lcg-like scramble for the seed
+  const r = ((seed * 1664525 + 1013904223) >>> 0) / 0x100000000
+  const threshold = r * totalWeight
+  let acc = 0
+  for (const entry of pool) {
+    acc += entry.weight
+    if (threshold < acc) return entry.type
+  }
+  return pool[pool.length - 1].type
 }
