@@ -15,7 +15,7 @@
 import type { GameWorld } from '@core/GameWorld';
 import { ComponentType, type EntityId } from '@custom-types/componentTypes';
 // Component types imported for reference, used by getComponent
-import { GhostBehaviorMode, TargetKind } from '@custom-types/gameComponents';
+import { BehaviorMode, TargetKind } from '@custom-types/gameComponents';
 import * as config from '@config/defaultPositions.json';
 import { getWorldConfigSync } from '@core/worldConfigLoader';
 
@@ -32,7 +32,7 @@ const {
 function setMode(
   gameWorld: GameWorld,
   entityId: EntityId,
-  mode: GhostBehaviorMode
+  mode: BehaviorMode
 ): void {
   gameWorld.setComponent(entityId, ComponentType.BEHAVIOR_MODE, { mode });
 }
@@ -112,31 +112,31 @@ export function ghostBehaviorModeSystem(gameWorld: GameWorld, currentLevel: numb
     // ════════════════════════════════════════════════════════════════════════
 
     switch (mode) {
-      case GhostBehaviorMode.HOUSE: {
+      case BehaviorMode.HOUSE: {
         if (behaviorTimer.ticksRemaining <= 0) {
-          setMode(gameWorld, entityId, GhostBehaviorMode.EXITING_HOUSE);
+          setMode(gameWorld, entityId, BehaviorMode.EXITING_HOUSE);
           const exitPos = EXIT_POSITION[ghostKind];
           setTarget(gameWorld, entityId, exitPos.x, exitPos.y, TargetKind.TILE);
         }
         break;
       }
 
-      case GhostBehaviorMode.EXITING_HOUSE: {
+      case BehaviorMode.EXITING_HOUSE: {
         if (x === tx && y === ty) {
-          setMode(gameWorld, entityId, GhostBehaviorMode.CHASE);
+          setMode(gameWorld, entityId, BehaviorMode.CHASE);
           setTarget(gameWorld, entityId, x, y, TargetKind.PLAYER);
           setCounter(gameWorld, entityId, MODE_CHANGE[levelIndex].CHASE.SECONDS);
         }
         break;
       }
 
-      case GhostBehaviorMode.SCATTER: {
+      case BehaviorMode.SCATTER: {
         if (behaviorTimer.ticksRemaining <= 0) {
           const shouldChase = Math.random() < MODE_CHANGE[levelIndex].CHASE.PROBABILITY;
 
           if (shouldChase) {
             // Transition to CHASE
-            setMode(gameWorld, entityId, GhostBehaviorMode.CHASE);
+            setMode(gameWorld, entityId, BehaviorMode.CHASE);
             setTarget(gameWorld, entityId, x, y, TargetKind.PLAYER);
             setCounter(gameWorld, entityId, MODE_CHANGE[levelIndex].CHASE.SECONDS);
           } else {
@@ -147,13 +147,13 @@ export function ghostBehaviorModeSystem(gameWorld: GameWorld, currentLevel: numb
         break;
       }
 
-      case GhostBehaviorMode.CHASE: {
+      case BehaviorMode.CHASE: {
         if (behaviorTimer.ticksRemaining <= 0) {
           const shouldScatter = Math.random() < MODE_CHANGE[levelIndex].SCATTER.PROBABILITY;
 
           if (shouldScatter) {
             // Transition to SCATTER
-            setMode(gameWorld, entityId, GhostBehaviorMode.SCATTER);
+            setMode(gameWorld, entityId, BehaviorMode.SCATTER);
 
             const scatterPos = SCATTER_TARGET[ghostKind];
             setTarget(gameWorld, entityId, scatterPos.x, scatterPos.y, TargetKind.TILE);
@@ -166,7 +166,7 @@ export function ghostBehaviorModeSystem(gameWorld: GameWorld, currentLevel: numb
         break;
       }
 
-      case GhostBehaviorMode.FRIGHTENED: {
+      case BehaviorMode.FRIGHTENED: {
         const exitPos = EXIT_POSITION[ghostKind];
         const housePos = HOUSE_POSITION[ghostKind];
 
@@ -176,14 +176,14 @@ export function ghostBehaviorModeSystem(gameWorld: GameWorld, currentLevel: numb
         }
         // Reached house, transition to HOUSE mode
         else if (x === housePos.x && y === housePos.y) {
-          setMode(gameWorld, entityId, GhostBehaviorMode.HOUSE);
+          setMode(gameWorld, entityId, BehaviorMode.HOUSE);
           setTarget(gameWorld, entityId, housePos.x, housePos.y, TargetKind.HOUSE);
           setCounter(gameWorld, entityId, 15);
         }
         break;
       }
 
-      case GhostBehaviorMode.EATEN: {
+      case BehaviorMode.EATEN: {
         // EATEN ghosts don't update behavior - handled by damage system
         break;
       }

@@ -3,6 +3,10 @@
  * 
  * PHASE: EFFECTS (5)
  * RESPONSIBILITY: Remove collectables and update score
+ * 
+ * Handles both Chomp and Echo collections:
+ * - Chomp: Points go to global score
+ * - Echo: Points go to Echo's COLLECTED_SCORE component
  */
 
 import type { GameWorld } from '../GameWorld';
@@ -31,9 +35,10 @@ export function collectionEffectSystem(gameWorld: GameWorld): void {
 
     const { position, kind } = collectionEvent;
 
+    // Remove collectable from the map
     gameWorld.removeCollectable(position.x, position.y);
 
-    const currentScore = gameWorld.getGameState().score;
+    // Calculate points based on collectable type
     let pointsToAdd = 0;
 
     switch (kind) {
@@ -45,6 +50,21 @@ export function collectionEffectSystem(gameWorld: GameWorld): void {
         break;
     }
 
-    gameWorld.setScore(currentScore + pointsToAdd);
+    // Check if collector is an Echo
+    const isEcho = gameWorld.hasComponent(entityId, ComponentType.ECHO_TAG);
+
+    if (isEcho) {
+      // Add points to Echo's COLLECTED_SCORE
+      const collectedScore = gameWorld.getComponent(entityId, ComponentType.COLLECTED_SCORE);
+      if (collectedScore) {
+        gameWorld.setComponent(entityId, ComponentType.COLLECTED_SCORE, {
+          points: collectedScore.points + pointsToAdd
+        });
+      }
+    } else {
+      // Add points to global score (Chomp collection)
+      const currentScore = gameWorld.getGameState().score;
+      gameWorld.setScore(currentScore + pointsToAdd);
+    }
   }
 }

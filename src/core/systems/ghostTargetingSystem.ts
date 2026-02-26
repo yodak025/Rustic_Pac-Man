@@ -16,7 +16,7 @@
 
 import type { GameWorld } from '@core/GameWorld';
 import { ComponentType, PACMAN_ENTITY_ID, BLINKY_ENTITY_ID } from '@custom-types/componentTypes';
-import { GhostBehaviorMode, GhostBehaviorKind, TargetKind, Direction } from '@custom-types/gameComponents';
+import { BehaviorMode, GhostBehaviorKind, TargetKind, Direction } from '@custom-types/gameComponents';
 import * as config from '@config/defaultPositions.json';
 
 const SCATTER_TARGET = config.DEFAULT_POSITIONS.SCATTER;
@@ -59,7 +59,7 @@ export function ghostTargetingSystem(gameWorld: GameWorld): void {
     }
 
     // Only update target if in CHASE mode
-    if (behaviorMode.mode !== GhostBehaviorMode.CHASE) {
+    if (behaviorMode.mode !== BehaviorMode.CHASE) {
       continue;
     }
 
@@ -98,7 +98,7 @@ export function ghostTargetingSystem(gameWorld: GameWorld): void {
         const blinkyMode = gameWorld.getComponent(BLINKY_ENTITY_ID, ComponentType.BEHAVIOR_MODE);
 
         // If Blinky is not chasing, Inky acts like Blinky
-        if (!blinkyPosition || !blinkyMode || blinkyMode.mode !== GhostBehaviorMode.CHASE) {
+        if (!blinkyPosition || !blinkyMode || blinkyMode.mode !== BehaviorMode.CHASE) {
           targetX = pacmanPosition.x;
           targetY = pacmanPosition.y;
           break;

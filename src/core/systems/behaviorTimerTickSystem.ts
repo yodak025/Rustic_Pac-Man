@@ -12,7 +12,7 @@
 
 import type { GameWorld } from '@core/GameWorld';
 import { ComponentType } from '@custom-types/componentTypes';
-import { GhostBehaviorMode } from '@custom-types/gameComponents';
+import { BehaviorMode } from '@custom-types/gameComponents';
 
 /**
  * Decrement behavior timers for ghosts in timed modes
@@ -50,9 +50,9 @@ export function behaviorTimerTickSystem(gameWorld: GameWorld): void {
 
     // Only decrement timers for specific modes
     const timedModes = [
-      GhostBehaviorMode.HOUSE,
-      GhostBehaviorMode.CHASE,
-      GhostBehaviorMode.SCATTER
+      BehaviorMode.HOUSE,
+      BehaviorMode.CHASE,
+      BehaviorMode.SCATTER
     ];
 
     if (timedModes.includes(mode.mode) && timer.isTimeToMove && counter.ticksRemaining > 0) {

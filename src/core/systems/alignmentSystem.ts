@@ -74,7 +74,8 @@ export function alignmentSystem(
     ComponentType.CONTINUOUS_POSITION,
     ComponentType.MOVEMENT_SPEED,
     ComponentType.ALIGNMENT_STATE,
-    ComponentType.PLAYER_INTENT
+    ComponentType.PLAYER_INTENT,
+    ComponentType.MOVEMENT_INTENT
   );
 
   for (const entityId of entities) {
@@ -163,5 +164,10 @@ export function alignmentSystem(
     };
 
     gameWorld.setComponent(entityId, ComponentType.ALIGNMENT_STATE, updatedAlignmentState);
+
+    // If alignment is complete, stop movement
+    if (shouldSnap && isAlignedX && isAlignedY) {
+      gameWorld.setComponent(entityId, ComponentType.MOVEMENT_INTENT, { direction: null });
+    }
   }
 }

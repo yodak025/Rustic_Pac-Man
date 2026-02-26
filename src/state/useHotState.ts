@@ -14,7 +14,7 @@
  */
 
 import { create } from 'zustand';
-import { Direction, GhostBehaviorMode } from '@custom-types/gameComponents';
+import { Direction, BehaviorMode } from '@custom-types/gameComponents';
 import GameStatus from '@custom-types/gameStatus';
 import type { PositionKey } from '@custom-types/componentTypes';
 import * as gameDefaults from '@config/gameDefaults.json';
@@ -25,8 +25,23 @@ import * as gameDefaults from '@config/gameDefaults.json';
 
 export interface GhostRenderState {
   position: { x: number; y: number };
-  mode: GhostBehaviorMode;
+  mode: BehaviorMode;
   direction: Direction | null;
+  timer: {
+    elapsed: number;
+    interval: number;
+  };
+}
+
+// ============================================================================
+// ECHO RENDER STATE
+// ============================================================================
+
+export interface EchoRenderState {
+  position: { x: number; y: number };
+  mode: BehaviorMode;
+  direction: Direction | null;
+  collectedScore: number;
   timer: {
     elapsed: number;
     interval: number;
@@ -82,19 +97,20 @@ export interface HotState {
     inky: GhostRenderState;
     clyde: GhostRenderState;
   };
-  
+  echos: Map<string, EchoRenderState>; // Dynamic map of echo entities
+
   // Maze state
   maze: MazeRenderState;
-  
+
   // Game state
   game: GameRenderState;
-  
+
   // Sync action (called by SyncToHotStateSystem at end of each frame)
   sync: (partial: Partial<HotStateSyncPayload>) => void;
-  
+
   // Initialize floor tiles (called once after maze loads, never updated)
   initializeFloorTiles: (floorPositions: Set<PositionKey>) => void;
-  
+
   // Reset action (called when game restarts)
   reset: () => void;
 }
@@ -111,6 +127,7 @@ export interface HotStateSyncPayload {
     inky: Partial<GhostRenderState>;
     clyde: Partial<GhostRenderState>;
   }>;
+  echos: Map<string, EchoRenderState>;
   maze: Partial<MazeRenderState>;
   game: Partial<GameRenderState>;
 }
@@ -131,7 +148,7 @@ function createInitialPacmanState(): PacmanRenderState {
 function createInitialGhostState(): GhostRenderState {
   return {
     position: { x: 0, y: 0 },
-    mode: GhostBehaviorMode.HOUSE,
+    mode: BehaviorMode.HOUSE,
     direction: null,
     timer: {
       elapsed: 0,
@@ -178,53 +195,59 @@ export const useHotState = create<HotState>((set) => ({
   // Initial entity states
   pacman: createInitialPacmanState(),
   ghosts: createInitialGhostsState(),
-  
+  echos: new Map<string, EchoRenderState>(), // Start with empty map
+
   // Initial maze state
   maze: createInitialMazeState(),
-  
+
   // Initial game state
   game: createInitialGameState(),
-  
+
   // Sync action - merges partial state updates
   sync: (partial) => set((state) => {
     const newState: Partial<HotState> = {};
-    
+
     // Sync pacman if provided
     if (partial.pacman) {
       newState.pacman = { ...state.pacman, ...partial.pacman };
     }
-    
+
     // Sync ghosts if provided
     if (partial.ghosts) {
       newState.ghosts = {
-        blinky: partial.ghosts.blinky 
+        blinky: partial.ghosts.blinky
           ? { ...state.ghosts.blinky, ...partial.ghosts.blinky }
           : state.ghosts.blinky,
-        pinky: partial.ghosts.pinky 
+        pinky: partial.ghosts.pinky
           ? { ...state.ghosts.pinky, ...partial.ghosts.pinky }
           : state.ghosts.pinky,
-        inky: partial.ghosts.inky 
+        inky: partial.ghosts.inky
           ? { ...state.ghosts.inky, ...partial.ghosts.inky }
           : state.ghosts.inky,
-        clyde: partial.ghosts.clyde 
+        clyde: partial.ghosts.clyde
           ? { ...state.ghosts.clyde, ...partial.ghosts.clyde }
           : state.ghosts.clyde,
       };
     }
-    
+
+    // Sync echos if provided (replace entire map)
+    if (partial.echos) {
+      newState.echos = new Map(partial.echos);
+    }
+
     // Sync maze if provided
     if (partial.maze) {
       newState.maze = { ...state.maze, ...partial.maze };
     }
-    
+
     // Sync game if provided
     if (partial.game) {
       newState.game = { ...state.game, ...partial.game };
     }
-    
+
     return newState;
   }),
-  
+
   // Initialize floor tiles - called once after maze loads
   initializeFloorTiles: (floorPositions) => set((state) => ({
     maze: {
@@ -232,11 +255,12 @@ export const useHotState = create<HotState>((set) => ({
       floorTiles: floorPositions
     }
   })),
-  
+
   // Reset action - returns to initial state using factory functions
   reset: () => set({
     pacman: createInitialPacmanState(),
     ghosts: createInitialGhostsState(),
+    echos: new Map<string, EchoRenderState>(),
     maze: createInitialMazeState(),
     game: createInitialGameState(),
   }),
@@ -254,13 +278,18 @@ export const usePacmanHotState = () => useHotState((state) => state.pacman);
 /**
  * Select a specific ghost's state
  */
-export const useGhostHotState = (ghostId: 'blinky' | 'pinky' | 'inky' | 'clyde') => 
+export const useGhostHotState = (ghostId: 'blinky' | 'pinky' | 'inky' | 'clyde') =>
   useHotState((state) => state.ghosts[ghostId]);
 
 /**
  * Select all ghosts state
  */
 export const useGhostsHotState = () => useHotState((state) => state.ghosts);
+
+/**
+ * Select all echos state
+ */
+export const useEchosHotState = () => useHotState((state) => state.echos);
 
 /**
  * Select maze state

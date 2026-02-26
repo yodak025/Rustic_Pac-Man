@@ -56,14 +56,22 @@ export enum GhostBehaviorKind {
   CLYDE = 'CLYDE'
 }
 
-export enum GhostBehaviorMode {
+export enum EchoBehaviorKind {
+  SINUSOID = 'SINUSOID'
+}
+
+export enum BehaviorMode {
   HOUSE = 'HOUSE',
   EXITING_HOUSE = 'EXITING_HOUSE',
   SCATTER = 'SCATTER',
   CHASE = 'CHASE',
   FRIGHTENED = 'FRIGHTENED',
-  EATEN = 'EATEN'
+  EATEN = 'EATEN',
+  IDLE = 'IDLE'
 }
+
+// Legacy alias for backwards compatibility during refactor
+export const GhostBehaviorMode = BehaviorMode;
 
 export enum TargetKind {
   PLAYER = 'PLAYER',
@@ -74,7 +82,7 @@ export enum TargetKind {
 
 export interface Behavior {
   kind: GhostBehaviorKind | null;
-  mode: GhostBehaviorMode;
+  mode: BehaviorMode;
   target : {
     kind: TargetKind;
     position: Position | null;

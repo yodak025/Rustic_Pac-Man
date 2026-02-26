@@ -12,7 +12,8 @@ import {
   Direction,
   CollectableKind,
   GhostBehaviorKind,
-  GhostBehaviorMode,
+  BehaviorMode as BehaviorModeEnum,
+  EchoBehaviorKind,
   TargetKind
 } from './gameComponents';
 
@@ -36,6 +37,10 @@ export interface PlayerTag extends Component {
 
 export interface GhostTag extends Component {
   kind: GhostBehaviorKind;
+}
+
+export interface EchoTag extends Component {
+  kind: EchoBehaviorKind;
 }
 
 export interface WallTag extends Component {
@@ -78,11 +83,12 @@ export interface ContinuousPosition extends Component {
 
 /**
  * Movement Timer - for discrete tile-by-tile movement
- * Used by: Ghosts
+ * Used by: Ghosts, Echos
  */
 export interface MovementTimer extends Component {
-  elapsed: number;  // ms accumulated
-  interval: number; // ms between movements
+  elapsed: number;     // ms accumulated
+  interval: number;    // ms between movements (current)
+  baseInterval: number; // ms between movements (base/reference for speed changes)
   isTimeToMove: boolean;
 }
 
@@ -155,10 +161,10 @@ export interface Playable extends Component {
 // ============================================================================
 
 /**
- * Behavior Mode - ghost state machine state
+ * Behavior Mode - entity state machine state (for ghosts and echos)
  */
 export interface BehaviorMode extends Component {
-  mode: GhostBehaviorMode;
+  mode: BehaviorModeEnum;
 }
 
 /**
@@ -210,6 +216,13 @@ export interface Collector extends Component {
   canCollect: CollectableKind[];
 }
 
+/**
+ * Collected Score - points accumulated by this entity (Echos only)
+ */
+export interface CollectedScore extends Component {
+  points: number;
+}
+
 // ============================================================================
 // EVENT COMPONENTS (one-frame, cleared each frame)
 // ============================================================================
@@ -219,7 +232,7 @@ export interface Collector extends Component {
  */
 export interface CollisionEvent extends Component {
   withEntity: EntityId;
-  type: 'ghost' | 'wall' | 'collectable';
+  type: 'ghost' | 'echo' | 'wall' | 'collectable';
 }
 
 /**
@@ -229,6 +242,14 @@ export interface CollectionEvent extends Component {
   collectableId: EntityId;
   kind: CollectableKind;
   position: { x: number; y: number };
+}
+
+/**
+ * Echo Eaten Event - triggered when Chomp eats an Echo
+ */
+export interface EchoEatenEvent extends Component {
+  echoId: EntityId;
+  collectedScore: number;
 }
 
 // ============================================================================
@@ -251,6 +272,7 @@ import { ComponentType } from './componentTypes';
 export interface ComponentTypeMap {
   [ComponentType.PLAYER_TAG]: PlayerTag;
   [ComponentType.GHOST_TAG]: GhostTag;
+  [ComponentType.ECHO_TAG]: EchoTag;
   [ComponentType.WALL_TAG]: WallTag;
   [ComponentType.COLLECTABLE_TAG]: CollectableTag;
   [ComponentType.HOUSE_TILE_TAG]: HouseTileTag;
@@ -271,7 +293,9 @@ export interface ComponentTypeMap {
   [ComponentType.HEALTH]: Health;
   [ComponentType.INVULNERABILITY]: Invulnerability;
   [ComponentType.COLLECTOR]: Collector;
+  [ComponentType.COLLECTED_SCORE]: CollectedScore;
   [ComponentType.COLLISION_EVENT]: CollisionEvent;
   [ComponentType.COLLECTION_EVENT]: CollectionEvent;
+  [ComponentType.ECHO_EATEN_EVENT]: EchoEatenEvent;
   [ComponentType.RENDERABLE]: Renderable;
 }

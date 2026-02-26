@@ -77,8 +77,8 @@ export async function generateMaze(
         exit_position: 25
       },
       entities: {
-        ghost_ratio: 100,
-        powerpellet_ratio: 60
+        ghost_ratio: 250,
+        powerpellet_ratio: 500
       },
       max_figure_size: 5
     };
@@ -131,7 +131,7 @@ export async function generateMaze(
     console.log("Giant maze generated successfully with entity placement");
     console.log(`Maze size: ${data.tilemap.length} rows × ${data.tilemap[0]?.length || 0} cols`);
     console.log(`Pacdots: ${data.metadata.pacdot_count}, Power pellets: ${data.metadata.powerpellet_count}, Echoes: ${data.metadata.echo_count}`);
-    
+
     return {
       tilemap: data.tilemap,
       metadata: data.metadata

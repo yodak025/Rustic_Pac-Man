@@ -13,8 +13,9 @@ import { GameWorld } from './GameWorld';
 import { DEBUG_LOG_GAME_WORLD } from '@config/featureFlags';
 import { ComponentType, PACMAN_ENTITY_ID, BLINKY_ENTITY_ID, PINKY_ENTITY_ID, INKY_ENTITY_ID, CLYDE_ENTITY_ID } from '@custom-types/componentTypes';
 import * as gameDefaults from '@config/gameDefaults.json';
-import { createGhostEntity } from './entityFactory';
-import { GhostBehaviorKind } from '@custom-types/gameComponents';
+import { createGhostEntity, createEchoEntity } from './entityFactory';
+import { GhostBehaviorKind, EchoBehaviorKind } from '@custom-types/gameComponents';
+import { SINUSOID_CONFIG } from '@config/echoConfig';
 
 // ECS Systems
 import { inputCaptureSystem } from './systems/inputCaptureSystem';
@@ -25,7 +26,7 @@ import { discretePositionSyncSystem } from './systems/discretePositionSyncSystem
 import { syncToHotStateSystem } from './systems/syncToHotStateSystem';
 import { ghostBehaviorModeSystem } from './systems/ghostBehaviorModeSystem';
 import { ghostTargetingSystem } from './systems/ghostTargetingSystem';
-import { ghostDirectionSystem } from './systems/ghostDirectionSystem';
+import { targetBasedDirectionSystem } from './systems/targetBasedDirectionSystem';
 import { behaviorTimerTickSystem } from './systems/behaviorTimerTickSystem';
 import { timerUpdateSystem } from './systems/timerUpdateSystem';
 import { entityCollisionSystem } from './systems/entityCollisionSystem';
@@ -37,6 +38,9 @@ import { invulnerabilityTickSystem } from './systems/invulnerabilityTickSystem';
 import { victoryConditionSystem } from './systems/victoryConditionSystem';
 import { defeatConditionSystem } from './systems/defeatConditionSystem';
 import { cleanupEventsSystem } from './systems/cleanupEventsSystem';
+import { echoBehaviorModeSystem } from './systems/echoBehaviorModeSystem';
+import { echoTargetingSystem } from './systems/echoTargetingSystem';
+import { echoEatenSystem } from './systems/echoEatenSystem';
 
 const STARTING_POSITIONS = config.DEFAULT_POSITIONS.HOME;
 
@@ -245,6 +249,7 @@ export class RusticGameEngine {
     this.gameWorld.addComponent(PACMAN_ENTITY_ID, ComponentType.TIMER, {
       elapsed: 0,
       interval: defaults.movementInterval,
+      baseInterval: defaults.movementInterval,
       isTimeToMove: false
     });
     this.gameWorld.addComponent(PACMAN_ENTITY_ID, ComponentType.CONTINUOUS_POSITION, {
@@ -351,6 +356,7 @@ export class RusticGameEngine {
 
     let pacDotCounter = 0;
     let powerPelletCounter = 0;
+    let echoCounter = 0;
     let chompPosition: Position | null = null;
 
     this.gameWorld.clearSpatialGrids();
@@ -378,8 +384,17 @@ export class RusticGameEngine {
           this.gameWorld.addCollectable(x, y, CollectableKind.PAC_DOT);
           pacDotCounter++;
         } else if (tile === TILE_ECHO) {
-          // Ghost spawn position - for now just make it walkable
-          // TODO: Initialize ghosts here in the future
+          // Echo spawn position - create echo entity
+          const echoId = `echo_${echoCounter}`;
+          createEchoEntity(
+            this.gameWorld,
+            echoId,
+            EchoBehaviorKind.SINUSOID,
+            { x, y },
+            SINUSOID_CONFIG.MOVEMENT_INTERVAL
+          );
+          echoCounter++;
+          // Add pacdot at echo position so it's walkable
           this.gameWorld.addCollectable(x, y, CollectableKind.PAC_DOT);
           pacDotCounter++;
         }
@@ -417,6 +432,7 @@ export class RusticGameEngine {
         house: stats.houseCount,
         pacDots: pacDotCounter,
         powerPellets: powerPelletCounter,
+        echos: echoCounter,
         chompSpawn: chompPosition
       });
     }
@@ -515,19 +531,26 @@ export class RusticGameEngine {
     alignmentSystem(this.gameWorld, deltaTime);
     discretePositionSyncSystem(this.gameWorld);
 
-    // PHASE 4: GHOSTS
+    // PHASE 4: GHOSTS & ECHOS
     // New ECS ghost systems
     const currentLevel = this.gameWorld.getGameState().level;
     ghostBehaviorModeSystem(this.gameWorld, currentLevel);
     ghostTargetingSystem(this.gameWorld);
-    ghostDirectionSystem(this.gameWorld);
-    movementSystem(deltaTime, this.gameWorld); // Discrete movement for ghosts
+    
+    // New ECS echo systems
+    echoBehaviorModeSystem(this.gameWorld);
+    echoTargetingSystem(this.gameWorld);
+    
+    // Shared direction and movement systems
+    targetBasedDirectionSystem(this.gameWorld);
+    movementSystem(deltaTime, this.gameWorld); // Discrete movement for ghosts and echos
 
     // PHASE 5: COLLISIONS & EFFECTS
     // New ECS collision and effects systems
     entityCollisionSystem(this.gameWorld);
     collectionDetectionSystem(this.gameWorld);
     damageSystem(this.gameWorld);
+    echoEatenSystem(this.gameWorld); // Process echo eaten events
     collectionEffectSystem(this.gameWorld);
     powerPelletEffectSystem(this.gameWorld);
     invulnerabilityTickSystem(this.gameWorld);

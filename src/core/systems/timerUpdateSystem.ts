@@ -20,6 +20,7 @@ export function timerUpdateSystem(gameWorld: GameWorld, deltaTime: number): void
       gameWorld.setComponent(entityId, ComponentType.TIMER, {
         elapsed: newElapsed,
         interval: timer.interval,
+        baseInterval: timer.baseInterval,
         isTimeToMove: false
       });
       continue;
@@ -30,6 +31,7 @@ export function timerUpdateSystem(gameWorld: GameWorld, deltaTime: number): void
     gameWorld.setComponent(entityId, ComponentType.TIMER, {
       elapsed: remainder,
       interval: timer.interval,
+      baseInterval: timer.baseInterval,
       isTimeToMove: true
     });
   }

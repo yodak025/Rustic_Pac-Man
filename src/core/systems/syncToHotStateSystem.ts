@@ -18,7 +18,7 @@ import {
   INKY_ENTITY_ID,
   CLYDE_ENTITY_ID
 } from '@custom-types/componentTypes';
-import { useHotState } from '@state/useHotState';
+import { useHotState, type EchoRenderState } from '@state/useHotState';
 
 /**
  * Sync Pacman data from GameWorld to Hot State
@@ -106,11 +106,45 @@ export function syncToHotStateSystem(gameWorld: GameWorld): void {
   }
 
   // ========================================================================
+  // SYNC ECHOS
+  // ========================================================================
+
+  const echoEntities = gameWorld.query(
+    ComponentType.ECHO_TAG,
+    ComponentType.DISCRETE_POSITION,
+    ComponentType.BEHAVIOR_MODE,
+    ComponentType.CURRENT_DIRECTION,
+    ComponentType.COLLECTED_SCORE
+  );
+
+  const echosMap = new Map<string, EchoRenderState>();
+
+  for (const echoId of echoEntities) {
+    const echoPosition = gameWorld.getComponent(echoId, ComponentType.DISCRETE_POSITION);
+    const echoMode = gameWorld.getComponent(echoId, ComponentType.BEHAVIOR_MODE);
+    const echoDirection = gameWorld.getComponent(echoId, ComponentType.CURRENT_DIRECTION);
+    const echoCollectedScore = gameWorld.getComponent(echoId, ComponentType.COLLECTED_SCORE);
+    const echoTimer = gameWorld.getComponent(echoId, ComponentType.TIMER);
+
+    if (echoPosition && echoMode && echoDirection !== undefined && echoCollectedScore && echoTimer !== undefined) {
+      echosMap.set(echoId, {
+        position: { x: echoPosition.x, y: echoPosition.y },
+        mode: echoMode.mode,
+        direction: echoDirection.direction,
+        collectedScore: echoCollectedScore.points,
+        timer: { elapsed: echoTimer.elapsed, interval: echoTimer.interval }
+      });
+    }
+  }
+
+  syncPayload.echos = echosMap;
+
+  // ========================================================================
   // SYNC MAZE STATE
   // ========================================================================
 
   const mazeInfo = gameWorld.getMazeInfo();
-  
+
   syncPayload.maze = {
     isLoaded: mazeInfo.isLoaded,
     walls: gameWorld.getWalls(),

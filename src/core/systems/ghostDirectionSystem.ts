@@ -17,7 +17,7 @@
 
 import type { GameWorld } from '@core/GameWorld';
 import { ComponentType } from '@custom-types/componentTypes';
-import { Direction, GhostBehaviorMode } from '@custom-types/gameComponents';
+import { Direction, BehaviorMode } from '@custom-types/gameComponents';
 
 /**
  * Ghost Direction System
@@ -51,7 +51,7 @@ export function ghostDirectionSystem(gameWorld: GameWorld): void {
     const mode = behaviorMode.mode;
 
     // Don't update direction for EATEN ghosts or ghosts in HOUSE (not moving)
-    if (mode === GhostBehaviorMode.EATEN || mode === GhostBehaviorMode.HOUSE) {
+    if (mode === BehaviorMode.EATEN || mode === BehaviorMode.HOUSE) {
       gameWorld.setComponent(entityId, ComponentType.MOVEMENT_INTENT, { direction: null });
       continue;
     }
@@ -83,8 +83,8 @@ export function ghostDirectionSystem(gameWorld: GameWorld): void {
       // Skip if this enters house (except when exiting or frightened going back)
       const isHouseTile = gameWorld.isHouseAt(move.x, move.y);
       if (isHouseTile &&
-        mode !== GhostBehaviorMode.EXITING_HOUSE &&
-        mode !== GhostBehaviorMode.FRIGHTENED) {
+        mode !== BehaviorMode.EXITING_HOUSE &&
+        mode !== BehaviorMode.FRIGHTENED) {
         continue;
       }
 

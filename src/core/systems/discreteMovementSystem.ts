@@ -5,19 +5,18 @@ import { ComponentType } from "@custom-types/componentTypes";
 /**
  * Discrete Movement System
  * 
- * Handles discrete tile-based movement for ghost entities.
- * Ghosts move one tile at a time when their timer signals it's time to move.
+ * Handles discrete tile-based movement for entities (Ghosts, Echos).
+ * Entities move one tile at a time when their timer signals it's time to move.
  */
 export function movementSystem(_deltaTime: number, gameWorld: GameWorld): void {
-  const ghostEntities = gameWorld.query(
-    ComponentType.GHOST_TAG,
+  const discreteEntities = gameWorld.query(
     ComponentType.DISCRETE_POSITION,
     ComponentType.TIMER,
     ComponentType.MOVEMENT_INTENT,
     ComponentType.CURRENT_DIRECTION
   );
 
-  for (const entityId of ghostEntities) {
+  for (const entityId of discreteEntities) {
     const position = gameWorld.getComponent(entityId, ComponentType.DISCRETE_POSITION);
     const timer = gameWorld.getComponent(entityId, ComponentType.TIMER);
     const movementIntent = gameWorld.getComponent(entityId, ComponentType.MOVEMENT_INTENT);

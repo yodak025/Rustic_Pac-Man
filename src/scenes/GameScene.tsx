@@ -2,7 +2,7 @@
 
 import { PerspectiveCamera } from "@react-three/drei";
 import { useThree } from "@react-three/fiber";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useMemo } from "react";
 import * as THREE from "three";
 
 import PacmanMesh from "@scenes/meshes/entities/PacmanMesh";
@@ -15,40 +15,76 @@ import Maze from "./meshes/maze/Maze";
 import { useWorldColors } from "@core/hooks/useWorldColors";
 import { usePacmanHotState } from "@/state/useHotState";
 
-// Hardcoded ranges (4 ranges of 32 positions each)
-const RANGES = [
-  { start: 0, end: 31, center: 16 },
-  { start: 32, end: 63, center: 48 },
-  { start: 64, end: 95, center: 80 },
-  { start: 96, end: 127, center: 112 },
-];
-
+const INTERVAL_SIZE = 32;
 const CAMERA_TRANSITION_SPEED = 0.08;
+const EDGE_MARGIN_TILES = 2;
+
+/**
+ * Calculate which interval index contains the given position
+ */
+function getIntervalIndex(position: number, intervalSize: number): number {
+  return Math.floor(position / intervalSize);
+}
+
+/**
+ * Calculate the center of an interval
+ */
+function getIntervalCenter(intervalIndex: number, intervalSize: number): number {
+  return intervalIndex * intervalSize + intervalSize / 2;
+}
+
+/**
+ * Check if position is within the conservative trigger zone
+ * (not in the 2-tile edge margins of the interval)
+ */
+function isInConservativeTriggerZone(
+  position: number,
+  intervalIndex: number,
+  intervalSize: number,
+  edgeMargin: number
+): boolean {
+  const intervalStart = intervalIndex * intervalSize;
+  const intervalEnd = intervalStart + intervalSize - 1;
+
+  return (
+    position >= intervalStart + edgeMargin &&
+    position <= intervalEnd - edgeMargin
+  );
+}
 
 export default function GameScene() {
   const { scene } = useThree();
   const { void: voidColor } = useWorldColors();
   const pacmanPosition = usePacmanHotState().position;
 
-  const [targetCameraX, setTargetCameraX] = useState<number>(16);
-  const currentCameraX = useRef<number>(16);
+  const [targetCameraX, setTargetCameraX] = useState<number>(getIntervalCenter(0, INTERVAL_SIZE));
+  const currentCameraX = useRef<number>(getIntervalCenter(0, INTERVAL_SIZE));
+  const lastCommittedIntervalIndex = useRef<number>(0);
+
+  // Calculate current interval index
+  const currentIntervalIndex = useMemo(
+    () => getIntervalIndex(pacmanPosition.x, INTERVAL_SIZE),
+    [pacmanPosition.x]
+  );
 
   // Update scene background color when world changes
   useEffect(() => {
     scene.background = new THREE.Color(voidColor);
   }, [scene, voidColor]);
 
-  // Determine current range and update target camera position
+  // Determine if we should update camera position (with conservative trigger)
   useEffect(() => {
     const pacmanX = pacmanPosition.x;
 
-    for (const range of RANGES) {
-      if (pacmanX >= range.start && pacmanX <= range.end) {
-        setTargetCameraX(range.center);
-        break;
+    // Check if we're in a different interval than the last committed one
+    if (currentIntervalIndex !== lastCommittedIntervalIndex.current) {
+      // Only commit the change if we're in the conservative trigger zone
+      if (isInConservativeTriggerZone(pacmanX, currentIntervalIndex, INTERVAL_SIZE, EDGE_MARGIN_TILES)) {
+        lastCommittedIntervalIndex.current = currentIntervalIndex;
+        setTargetCameraX(getIntervalCenter(currentIntervalIndex, INTERVAL_SIZE));
       }
     }
-  }, [pacmanPosition.x]);
+  }, [pacmanPosition.x, currentIntervalIndex]);
 
   // Smooth camera traveling effect
   useEffect(() => {
@@ -75,12 +111,12 @@ export default function GameScene() {
       <PerspectiveCamera
         makeDefault
         position={[cameraX, 12, cameraZ]}
-        rotation={[-Math.PI / 3.5, 0, 0]}
+        rotation={[-Math.PI / 3, 0, 0]}
         fov={75}
         near={8}
         far={60}
       />
-      <ambientLight intensity={0.1} />
+      <ambientLight intensity={0.2} />
 
       {/* Spotlight following Chomp from above */}
 

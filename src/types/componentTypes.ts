@@ -16,6 +16,7 @@ export enum ComponentType {
   // Identity Tags
   PLAYER_TAG = 'PLAYER_TAG',
   GHOST_TAG = 'GHOST_TAG',
+  ECHO_TAG = 'ECHO_TAG',
   WALL_TAG = 'WALL_TAG',
   COLLECTABLE_TAG = 'COLLECTABLE_TAG',
   HOUSE_TILE_TAG = 'HOUSE_TILE_TAG',
@@ -48,10 +49,12 @@ export enum ComponentType {
   HEALTH = 'HEALTH',
   INVULNERABILITY = 'INVULNERABILITY',
   COLLECTOR = 'COLLECTOR',
+  COLLECTED_SCORE = 'COLLECTED_SCORE',
 
   // Event Components (one-frame, cleared each frame)
   COLLISION_EVENT = 'COLLISION_EVENT',
   COLLECTION_EVENT = 'COLLECTION_EVENT',
+  ECHO_EATEN_EVENT = 'ECHO_EATEN_EVENT',
 
   // Render Marker
   RENDERABLE = 'RENDERABLE',

@@ -285,6 +285,68 @@ def create_rustic_giant_maze(max_figure_size=5, init_row=2, final_row=11):
     return giant_maze
 
 
+def _add_boundary_columns(maze: np.ndarray) -> np.ndarray:
+    """
+    Adds two boundary columns (left and right) to close the maze completely.
+    
+    Each boundary column has '_' in all positions except 3 positions that form
+    a door structure around the entry/exit point.
+    
+    Args:
+        maze: ASCII numpy array tilemap
+    
+    Returns:
+        New tilemap with two extra columns (one at start, one at end)
+    """
+    rows, cols = maze.shape
+    
+    # Create new columns filled with '_'
+    left_column = np.full((rows, 1), '_', dtype='<U1')
+    right_column = np.full((rows, 1), '_', dtype='<U1')
+    
+    # Find entry point in leftmost column (first column of original maze)
+    entry_row = None
+    for row_idx in range(rows):
+        if maze[row_idx, 0] == 'c':
+            entry_row = row_idx
+            break
+    
+    if entry_row is not None:
+        # Set the door structure in left column
+        # The adjacent element in the same row should be '|'
+        left_column[entry_row, 0] = '|'
+        # The two surrounding elements should also be '|'
+        if entry_row > 0:
+            left_column[entry_row - 1, 0] = '|'
+        if entry_row < rows - 1:
+            left_column[entry_row + 1, 0] = '|'
+        LOGGER.debug(f"Left boundary column door created at row {entry_row}")
+    
+    # Find exit point in rightmost column (last column of original maze)
+    exit_row = None
+    for row_idx in range(rows):
+        if maze[row_idx, cols - 1] == '.':
+            exit_row = row_idx
+            break
+    
+    if exit_row is not None:
+        # Set the door structure in right column
+        # The adjacent element in the same row should be '|'
+        right_column[exit_row, 0] = '|'
+        # The two surrounding elements should also be '|'
+        if exit_row > 0:
+            right_column[exit_row - 1, 0] = '|'
+        if exit_row < rows - 1:
+            right_column[exit_row + 1, 0] = '|'
+        LOGGER.debug(f"Right boundary column door created at row {exit_row}")
+    
+    # Concatenate: left_column + original_maze + right_column
+    maze_with_boundaries = np.hstack([left_column, maze, right_column])
+    LOGGER.info(f"Boundary columns added: {maze.shape} -> {maze_with_boundaries.shape}")
+    
+    return maze_with_boundaries
+
+
 def create_giant_maze_with_entities(config: MazeConfig) -> Tuple[np.ndarray, Dict[str, Any]]:
     """
     Generates a giant maze with entity placement (power pellets, chomp, echoes).
@@ -304,7 +366,8 @@ def create_giant_maze_with_entities(config: MazeConfig) -> Tuple[np.ndarray, Dic
     2. If chunk assembly fails, retry up to 10000 times
     3. Convert integer tilemap to ASCII tilemap
     4. Place entities using spatial distribution algorithms
-    5. Return ASCII tilemap and metadata
+    5. Add boundary columns to close the maze completely
+    6. Return ASCII tilemap and metadata
     
     Args:
         config: MazeConfig instance with generation parameters
@@ -336,13 +399,17 @@ def create_giant_maze_with_entities(config: MazeConfig) -> Tuple[np.ndarray, Dic
             LOGGER.info("Placing entities (power pellets, chomp, echoes)...")
             maze_with_entities, metadata = place_entities_on_tilemap(ascii_maze, config)
             
+            # Add boundary columns to close the maze
+            LOGGER.info("Adding boundary columns...")
+            maze_with_boundaries = _add_boundary_columns(maze_with_entities)
+            
             LOGGER.info(
-                f"Giant maze with entities generated successfully: {maze_with_entities.shape}, "
+                f"Giant maze with entities generated successfully: {maze_with_boundaries.shape}, "
                 f"{metadata['pacdot_count']} pacdots, {metadata['powerpellet_count']} power pellets, "
                 f"{metadata['echo_count']} echoes"
             )
             
-            return maze_with_entities, metadata
+            return maze_with_boundaries, metadata
             
         except (ValueError, RuntimeError) as e:
             LOGGER.warning(f"Macro retry {macro_retry + 1}/{MAX_MACRO_RETRIES} failed: {e}. Retrying...")
