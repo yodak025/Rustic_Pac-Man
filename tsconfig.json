@@ -55,6 +55,12 @@
       ],
       "@ui/*": [
         "./src/ui/*"
+      ],
+      "@audio": [
+        "./src/audio/index.ts"
+      ],
+      "@audio/*": [
+        "./src/audio/*"
       ]
     }
   },
