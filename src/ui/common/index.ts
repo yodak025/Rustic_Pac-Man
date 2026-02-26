@@ -7,6 +7,8 @@ export { default as GameStats } from './GameStats';
 export { default as TileGrid } from './TileGrid';
 export { default as DebugEntitySection } from './DebugEntitySection';
 export { default as GameControlsDisplay } from './GameControlsDisplay';
+export { default as InstrumentControl } from './InstrumentControl';
+export { default as ContextPanel } from './ContextPanel';
 
 // Types
 export type { ModalProps } from './Modal';
@@ -15,3 +17,5 @@ export type { LivesDisplayProps } from './LivesDisplay';
 export type { GameStatsProps } from './GameStats';
 export type { TileGridProps } from './TileGrid';
 export type { DebugEntitySectionProps } from './DebugEntitySection';
+export type { InstrumentControlProps } from './InstrumentControl';
+export type { ContextPanelProps } from './ContextPanel';

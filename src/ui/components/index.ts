@@ -14,6 +14,8 @@ export { default as GlassPanel } from './GlassPanel';
 export { default as TechPill } from './TechPill';
 export { default as SectionTitle } from './SectionTitle';
 export { default as ImagePlaceholder } from './ImagePlaceholder';
+export { default as Slider } from './Slider';
+export { default as Select } from './Select';
 
 // Types
 export type { ButtonProps } from './Button';
@@ -28,3 +30,5 @@ export type { GlassPanelProps } from './GlassPanel';
 export type { TechPillProps } from './TechPill';
 export type { SectionTitleProps } from './SectionTitle';
 export type { ImagePlaceholderProps } from './ImagePlaceholder';
+export type { SliderProps } from './Slider';
+export type { SelectProps, SelectOption } from './Select';
