@@ -69,3 +69,11 @@ export {
   noteCountForTexture,
 } from './generators'
 export type { GeneratedPatterns, VariationType, VariationRequest } from './generators'
+
+// Orchestrator
+export { LayerController, TransitionManager, MusicOrchestrator } from './orchestrator'
+export type { TransitionCallback, OrchestratorSnapshot } from './orchestrator'
+
+// Contexts
+export { LEVEL_CONTEXTS, ContextPresets } from './contexts'
+export type { LevelContextName } from './contexts'
