@@ -18,7 +18,9 @@ import {
   INKY_ENTITY_ID,
   CLYDE_ENTITY_ID
 } from '@custom-types/componentTypes';
+import { MedallionKind } from '@custom-types/gameComponents';
 import { useHotState, type EchoRenderState } from '@state/useHotState';
+import { getMedallionActivationCost, getMedallionXpThreshold } from '@config/medallionAttributes';
 
 /**
  * Sync Pacman data from GameWorld to Hot State
@@ -38,6 +40,11 @@ export function syncToHotStateSystem(gameWorld: GameWorld): void {
   const health = gameWorld.getComponent(PACMAN_ENTITY_ID, ComponentType.HEALTH);
   const invulnerability = gameWorld.getComponent(PACMAN_ENTITY_ID, ComponentType.INVULNERABILITY);
   const playerIntent = gameWorld.getComponent(PACMAN_ENTITY_ID, ComponentType.PLAYER_INTENT);
+  const dashState = gameWorld.getComponent(PACMAN_ENTITY_ID, ComponentType.DASH_STATE);
+  const wnbStock = gameWorld.getComponent(PACMAN_ENTITY_ID, ComponentType.WNB_STOCK);
+  const medallionRack = gameWorld.getComponent(PACMAN_ENTITY_ID, ComponentType.MEDALLION_RACK);
+  const essenceBar = gameWorld.getComponent(PACMAN_ENTITY_ID, ComponentType.ESSENCE_BAR);
+  const playerStats = gameWorld.getComponent(PACMAN_ENTITY_ID, ComponentType.PLAYER_STATS);
 
   if (position || health || invulnerability || playerIntent) {
     syncPayload.pacman = {};
@@ -56,6 +63,46 @@ export function syncToHotStateSystem(gameWorld: GameWorld): void {
 
     if (playerIntent && playerIntent.lastValidDirection) {
       syncPayload.pacman.direction = playerIntent.lastValidDirection;
+    }
+
+    if (dashState) {
+      syncPayload.pacman.dashEnergy = dashState.energy;
+      syncPayload.pacman.dashMaxEnergy = dashState.maxEnergy;
+      syncPayload.pacman.isDashing = dashState.isDashing;
+    }
+
+    if (wnbStock) {
+      syncPayload.pacman.wnbCount = wnbStock.count;
+    }
+
+    if (medallionRack) {
+      syncPayload.pacman.medallionRack = medallionRack;
+
+      // Derive charge bar values from the selected medallion slot
+      const slot = medallionRack.slots[medallionRack.selectedIndex];
+      if (slot) {
+        syncPayload.pacman.medallionChargeXP = slot.chargeXP;
+        if (slot.kind === MedallionKind.HEALTH) {
+          syncPayload.pacman.medallionChargeMax = getMedallionActivationCost(MedallionKind.HEALTH);
+        } else if (slot.level < 5) {
+          syncPayload.pacman.medallionChargeMax = getMedallionXpThreshold(slot.kind, slot.level);
+        } else {
+          syncPayload.pacman.medallionChargeMax = getMedallionActivationCost(slot.kind);
+        }
+      }
+    }
+
+    if (essenceBar) {
+      syncPayload.pacman.activePowerUp = essenceBar.activePowerUp;
+    }
+
+    // Sync active ability kind from ACTIVE_ABILITY_TIMER
+    const activeAbilityTimer = gameWorld.getComponent(PACMAN_ENTITY_ID, ComponentType.ACTIVE_ABILITY_TIMER);
+    syncPayload.pacman.activeAbilityKind = activeAbilityTimer ? activeAbilityTimer.kind : null;
+
+    if (playerStats) {
+      syncPayload.pacman.agroRadius = playerStats.agroRadius;
+      syncPayload.pacman.visionRadius = playerStats.visionRadius;
     }
   }
 
@@ -148,11 +195,12 @@ export function syncToHotStateSystem(gameWorld: GameWorld): void {
   syncPayload.maze = {
     isLoaded: mazeInfo.isLoaded,
     walls: gameWorld.getWalls(),
-    pacDots: gameWorld.getPacDots(),
-    powerPellets: gameWorld.getPowerPellets(),
-    pacDotsTotal: mazeInfo.pacDots.total,
-    pacDotsCollected: mazeInfo.pacDots.total - mazeInfo.pacDots.current,
-    powerPelletsTotal: mazeInfo.powerPellets.total,
+    essenceDots: gameWorld.getEssenceDots(),
+    whiteNoiseBalls: gameWorld.getWhiteNoiseBalls(),
+    medallions: gameWorld.getMedallions(),
+    essenceDotsTotal: mazeInfo.essenceDots.total,
+    essenceDotsCollected: mazeInfo.essenceDots.current,
+    whiteNoiseBallsTotal: mazeInfo.whiteNoiseBalls.total,
   };
 
   // ========================================================================

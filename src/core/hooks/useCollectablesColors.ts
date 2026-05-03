@@ -6,8 +6,8 @@ import { useState, useEffect } from 'react';
 import yaml from 'js-yaml';
 
 interface CollectablesColors {
-  pacDots: string;
-  powerPellets: string;
+  essenceDots: string;
+  whiteNoiseBalls: string;
 }
 
 interface CollectablesConfig {
@@ -18,8 +18,8 @@ interface CollectablesConfig {
 }
 
 const defaultColors: CollectablesColors = {
-  pacDots: '#fef3c7',
-  powerPellets: '#ffffff'
+  essenceDots: '#fef3c7',
+  whiteNoiseBalls: '#ffffff'
 };
 
 // Cache for loaded config
@@ -52,8 +52,8 @@ export function useCollectablesColors(): CollectablesColors {
         const config = yaml.load(yamlText) as CollectablesConfig;
         
         const loadedColors = {
-          pacDots: config.styles.pac_dots,
-          powerPellets: config.styles.power_pellets
+          essenceDots: config.styles.pac_dots,
+          whiteNoiseBalls: config.styles.power_pellets
         };
         
         // Cache and set colors

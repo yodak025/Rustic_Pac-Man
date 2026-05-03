@@ -34,7 +34,27 @@ export interface MazeMetadata {
   echo_count: number;
   chomp_spawn: [number, number] | null;
   echo_spawns: Array<[number, number]>;
+  /**
+   * Maps "row,col" to medallion kind string for each dedicated medallion tile.
+   * Each medallion kind uses its own ASCII character (see MEDALLION_TILE_CHARS below).
+   */
+  medallion_kinds?: Record<string, string>;
+  /** Maps "row,col" to power-up kind string (e.g. "SUPER_DASH") for tile 'p' */
+  power_up_kinds?: Record<string, string>;
 }
+
+/**
+ * One-character ASCII tile symbol per collectable medallion kind.
+ * These characters replace pacdots in the post-processed tilemap.
+ * HEALTH is not collectable as a tile, so it has no entry here.
+ */
+export const MEDALLION_TILE_CHARS: Record<string, string> = {
+  STEALTH: 's',
+  VISION:  'v',
+  SHOUT:   'u',
+  SPEED:   'z',
+  ESSENCE: 'e',
+} as const;
 
 /**
  * Result from maze generation including tilemap and metadata
@@ -42,6 +62,51 @@ export interface MazeMetadata {
 export interface MazeGenerationResult {
   tilemap: string[][];
   metadata: MazeMetadata;
+}
+
+/**
+ * Post-processes a generated tilemap to inject one medallion tile per collectable kind.
+ *
+ * Randomly selects one pacdot ('.') position per medallion kind, replaces the tile
+ * with the kind-specific character and records the mapping in metadata.medallion_kinds.
+ *
+ * Mutates `tilemap` and `metadata` in place.
+ */
+function injectMedallionTiles(tilemap: string[][], metadata: MazeMetadata): void {
+  const kinds = Object.keys(MEDALLION_TILE_CHARS);
+
+  // Collect all pacdot positions as [row, col] pairs
+  const pacdotPositions: Array<[number, number]> = [];
+  for (let row = 0; row < tilemap.length; row++) {
+    for (let col = 0; col < tilemap[row].length; col++) {
+      if (tilemap[row][col] === '.') {
+        pacdotPositions.push([row, col]);
+      }
+    }
+  }
+
+  if (pacdotPositions.length < kinds.length) {
+    console.warn(`[mazeGen] Not enough pacdots (${pacdotPositions.length}) to place ${kinds.length} medallions`);
+    return;
+  }
+
+  // Fisher-Yates shuffle to pick random unique positions
+  for (let i = pacdotPositions.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [pacdotPositions[i], pacdotPositions[j]] = [pacdotPositions[j], pacdotPositions[i]];
+  }
+
+  if (!metadata.medallion_kinds) {
+    metadata.medallion_kinds = {};
+  }
+
+  kinds.forEach((kind, i) => {
+    const [row, col] = pacdotPositions[i];
+    tilemap[row][col] = MEDALLION_TILE_CHARS[kind];
+    metadata.medallion_kinds![`${row},${col}`] = kind;
+  });
+
+  console.log(`[mazeGen] Injected ${kinds.length} medallion tiles:`, metadata.medallion_kinds);
 }
 
 /**
@@ -53,6 +118,11 @@ export interface MazeGenerationResult {
  * - 'c' = chomp (player) spawn
  * - 'x' = echo (ghost) spawn
  * - 'o' = power pellet
+ * - 's' = STEALTH medallion
+ * - 'v' = VISION medallion
+ * - 'u' = SHOUT medallion
+ * - 'z' = SPEED medallion
+ * - 'e' = ESSENCE medallion
  * 
  * @param pyodide Already initialized PyodideInterface instance
  * @param config Optional maze configuration (uses defaults if not provided)
@@ -131,6 +201,9 @@ export async function generateMaze(
     console.log("Giant maze generated successfully with entity placement");
     console.log(`Maze size: ${data.tilemap.length} rows × ${data.tilemap[0]?.length || 0} cols`);
     console.log(`Pacdots: ${data.metadata.pacdot_count}, Power pellets: ${data.metadata.powerpellet_count}, Echoes: ${data.metadata.echo_count}`);
+
+    // Post-process: inject one medallion tile per collectable kind into random pacdot positions
+    injectMedallionTiles(data.tilemap, data.metadata);
 
     return {
       tilemap: data.tilemap,

@@ -143,9 +143,9 @@ export function createEchoEntity(
     kind: TargetKind.RANDOM
   });
 
-  // Add collector component (Echos collect PacDots and PowerPellets)
+  // Add collector component (Echos collect Essence dots)
   gameWorld.addComponent(entityId, ComponentType.COLLECTOR, {
-    canCollect: [CollectableKind.PAC_DOT, CollectableKind.POWER_PELLET]
+    canCollect: [CollectableKind.ESSENCE]
   });
 
   // Add collected score component (tracks points this Echo has collected)

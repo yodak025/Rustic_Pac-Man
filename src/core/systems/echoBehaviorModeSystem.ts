@@ -99,6 +99,12 @@ export function echoBehaviorModeSystem(gameWorld: GameWorld): void {
     return;
   }
 
+  // Effective agro radius comes from the STEALTH medallion level (via PLAYER_STATS).
+  // Fall back to the hard-coded config value if PLAYER_STATS is not yet initialised.
+  const playerStats = gameWorld.getComponent(PACMAN_ENTITY_ID, ComponentType.PLAYER_STATS);
+  const agroTriggerDistance = playerStats?.agroRadius ?? SINUSOID_CONFIG.AGRO_TRIGGER_DISTANCE;
+  const agroCoolDistance = agroTriggerDistance; // use symmetric hysteresis by default
+
   const echoEntities = gameWorld.query(
     ComponentType.ECHO_TAG,
     ComponentType.BEHAVIOR_MODE,
@@ -157,7 +163,7 @@ export function echoBehaviorModeSystem(gameWorld: GameWorld): void {
         }
 
         // Check for CHASE transition (player enters agro range)
-        if (distanceToPlayer < SINUSOID_CONFIG.AGRO_TRIGGER_DISTANCE) {
+        if (distanceToPlayer < agroTriggerDistance) {
           setMode(gameWorld, entityId, BehaviorMode.CHASE);
           setSpeed(gameWorld, entityId, SINUSOID_CONFIG.SPEED_CHASE);
         }
@@ -166,7 +172,7 @@ export function echoBehaviorModeSystem(gameWorld: GameWorld): void {
 
       case BehaviorMode.CHASE: {
         // Check for SCATTER transition (player exits agro range)
-        if (distanceToPlayer > SINUSOID_CONFIG.AGRO_COOL_DISTANCE) {
+        if (distanceToPlayer > agroCoolDistance) {
           setMode(gameWorld, entityId, BehaviorMode.SCATTER);
           setSpeed(gameWorld, entityId, SINUSOID_CONFIG.SPEED_SCATTER);
         }
@@ -182,7 +188,7 @@ export function echoBehaviorModeSystem(gameWorld: GameWorld): void {
         // Check if frightened duration expired
         if (behaviorCounter.ticksRemaining <= 0) {
           // Determine transition based on distance to player
-          if (distanceToPlayer < SINUSOID_CONFIG.AGRO_TRIGGER_DISTANCE) {
+          if (distanceToPlayer < agroTriggerDistance) {
             // If player is close, go to CHASE mode
             setMode(gameWorld, entityId, BehaviorMode.CHASE);
             setSpeed(gameWorld, entityId, SINUSOID_CONFIG.SPEED_CHASE);

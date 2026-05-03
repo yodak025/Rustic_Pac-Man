@@ -9,7 +9,7 @@ import type { GameWorld } from '../GameWorld';
 import { ComponentType, PACMAN_ENTITY_ID } from '@custom-types/componentTypes';
 import type { CollisionEvent, Health, Invulnerability, BehaviorMode, CurrentDirection, EchoEatenEvent, CollectedScore } from '@custom-types/components';
 import { BehaviorMode as BehaviorModeEnum } from '@custom-types/gameComponents';
-import * as gameDefaults from '@config/gameDefaults.json';
+import gameDefaults from '@config/gameDefaults.json';
 
 const DAMAGE_AMOUNT = 1;
 const INVULNERABILITY_TICKS = gameDefaults.pacman.invulnerabilityTicks;

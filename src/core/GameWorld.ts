@@ -17,18 +17,21 @@
  * @see /docs/ECS_ARCHITECTURE_DESIGN.md for architecture details
  */
 
-import { 
-  ComponentType, 
-  type EntityId, 
-  type PositionKey, 
-  positionToKey 
+import {
+  ComponentType,
+  type EntityId,
+  type PositionKey,
+  positionToKey
 } from '@custom-types/componentTypes';
-import type { 
+import type {
   Component,
-  ComponentTypeMap 
+  ComponentTypeMap,
+  MedallionRack,
+  EssenceBar
 } from '@custom-types/components';
-import { CollectableKind } from '@custom-types/gameComponents';
+import { CollectableKind, MedallionKind, PowerUpKind } from '@custom-types/gameComponents';
 import GameStatus from '@custom-types/gameStatus';
+import gameDefaults from '@config/gameDefaults.json';
 
 // ============================================================================
 // GAME STATE INTERFACE
@@ -45,15 +48,48 @@ export interface GameState {
 // ============================================================================
 
 export interface MazeInfo {
-  pacDots: {
+  essenceDots: {
     total: number;
     current: number; // collected count
   };
-  powerPellets: {
+  whiteNoiseBalls: {
     total: number;
     current: number; // collected count
   };
   isLoaded: boolean;
+}
+
+// ============================================================================
+// PROGRESS STATE INTERFACE (persists across levels)
+// ============================================================================
+
+export interface ProgressState {
+  medallionRack: MedallionRack;
+  essenceBar: EssenceBar;
+  health: number;      // current HP carried across levels
+  dashEnergy: number;  // dash bar energy carried across levels
+  wnbStock: number;    // white noise ball count carried across levels
+}
+
+function createInitialProgressState(): ProgressState {
+  const abilityCfg = gameDefaults.abilities;
+  return {
+    medallionRack: {
+      slots: [
+        // HEALTH medallion is always present from the start
+        { kind: MedallionKind.HEALTH, level: 0, chargeXP: 0 }
+      ],
+      selectedIndex: 0
+    },
+    essenceBar: {
+      current: 0,
+      max: abilityCfg.essence.maxBar,
+      activePowerUp: null as PowerUpKind | null
+    },
+    health: gameDefaults.pacman.initialHealth,
+    dashEnergy: 0,
+    wnbStock: 0,
+  };
 }
 
 // ============================================================================
@@ -88,30 +124,30 @@ export class GameWorld {
   // ══════════════════════════════════════════════════════════════════════════
   // STORAGE
   // ══════════════════════════════════════════════════════════════════════════
-  
+
   /** Map of entity ID to set of component types it has */
   private entities: Map<EntityId, Set<ComponentType>> = new Map();
-  
+
   /** Map of component type to map of entity ID to component data */
   private components: Map<ComponentType, Map<EntityId, Component>> = new Map();
 
   // ══════════════════════════════════════════════════════════════════════════
   // SPATIAL STRUCTURES (for efficient maze queries)
   // ══════════════════════════════════════════════════════════════════════════
-  
+
   /** Set of position keys where walls exist */
   private wallGrid: Set<PositionKey> = new Set();
-  
+
   /** Set of position keys that are ghost house tiles */
   private houseGrid: Set<PositionKey> = new Set();
-  
+
   /** Map of position key to collectable kind */
   private collectableGrid: Map<PositionKey, CollectableKind> = new Map();
 
   // ══════════════════════════════════════════════════════════════════════════
   // GAME STATE
   // ══════════════════════════════════════════════════════════════════════════
-  
+
   private gameState: GameState = {
     status: GameStatus.LOADING,
     score: 0,
@@ -119,19 +155,25 @@ export class GameWorld {
   };
 
   // ══════════════════════════════════════════════════════════════════════════
+  // PROGRESS STATE (persists across levels)
+  // ══════════════════════════════════════════════════════════════════════════
+
+  private progressState: ProgressState = createInitialProgressState();
+
+  // ══════════════════════════════════════════════════════════════════════════
   // MAZE INFO
   // ══════════════════════════════════════════════════════════════════════════
-  
+
   private mazeInfo: MazeInfo = {
-    pacDots: { total: 0, current: 0 },
-    powerPellets: { total: 0, current: 0 },
+    essenceDots: { total: 0, current: 0 },
+    whiteNoiseBalls: { total: 0, current: 0 },
     isLoaded: false,
   };
 
   // ══════════════════════════════════════════════════════════════════════════
   // CONSTRUCTOR
   // ══════════════════════════════════════════════════════════════════════════
-  
+
   constructor() {
     // Initialize component storage for all types
     for (const type of Object.values(ComponentType)) {
@@ -142,7 +184,7 @@ export class GameWorld {
   // ══════════════════════════════════════════════════════════════════════════
   // ENTITY MANAGEMENT
   // ══════════════════════════════════════════════════════════════════════════
-  
+
   /**
    * Create a new entity with the given ID
    */
@@ -188,13 +230,13 @@ export class GameWorld {
   // ══════════════════════════════════════════════════════════════════════════
   // COMPONENT MANAGEMENT
   // ══════════════════════════════════════════════════════════════════════════
-  
+
   /**
    * Add a component to an entity (type-safe version)
    */
   addComponent<T extends ComponentType>(
-    entityId: EntityId, 
-    type: T, 
+    entityId: EntityId,
+    type: T,
     data: ComponentTypeMap[T]
   ): void {
     if (!this.entities.has(entityId)) {
@@ -218,7 +260,7 @@ export class GameWorld {
    * Get a component from an entity (type-safe version)
    */
   getComponent<T extends ComponentType>(
-    entityId: EntityId, 
+    entityId: EntityId,
     type: T
   ): ComponentTypeMap[T] | undefined {
     return this.components.get(type)?.get(entityId) as ComponentTypeMap[T] | undefined;
@@ -235,8 +277,8 @@ export class GameWorld {
    * Set/update a component on an entity (type-safe version)
    */
   setComponent<T extends ComponentType>(
-    entityId: EntityId, 
-    type: T, 
+    entityId: EntityId,
+    type: T,
     data: ComponentTypeMap[T]
   ): void {
     if (!this.entities.has(entityId)) {
@@ -251,7 +293,7 @@ export class GameWorld {
   // ══════════════════════════════════════════════════════════════════════════
   // QUERIES
   // ══════════════════════════════════════════════════════════════════════════
-  
+
   /**
    * Query for entities that have ALL specified component types
    */
@@ -261,7 +303,7 @@ export class GameWorld {
     }
 
     const result: EntityId[] = [];
-    
+
     for (const [entityId, entityComponents] of this.entities) {
       let hasAll = true;
       for (const type of componentTypes) {
@@ -282,7 +324,7 @@ export class GameWorld {
   // SPATIAL QUERIES (for maze)
   // Uses Math.round() because tile centers are at integer coordinates
   // ══════════════════════════════════════════════════════════════════════════
-  
+
   /**
    * Check if there's a wall at the given position
    * Position is rounded to nearest tile center
@@ -314,18 +356,18 @@ export class GameWorld {
   removeCollectable(x: number, y: number): boolean {
     const key = positionToKey(toTile(x), toTile(y));
     const kind = this.collectableGrid.get(key);
-    
+
     if (!kind) {
       return false;
     }
 
     this.collectableGrid.delete(key);
-    
+
     // Update maze info
-    if (kind === CollectableKind.PAC_DOT) {
-      this.mazeInfo.pacDots.current++;
-    } else if (kind === CollectableKind.POWER_PELLET) {
-      this.mazeInfo.powerPellets.current++;
+    if (kind === CollectableKind.ESSENCE) {
+      this.mazeInfo.essenceDots.current++;
+    } else if (kind === CollectableKind.WHITE_NOISE_BALL) {
+      this.mazeInfo.whiteNoiseBalls.current++;
     }
 
     return true;
@@ -335,7 +377,7 @@ export class GameWorld {
   // SPATIAL GRID MANAGEMENT (for initialization)
   // These methods expect integer tile coordinates
   // ══════════════════════════════════════════════════════════════════════════
-  
+
   /**
    * Add a wall to the spatial grid at tile (x, y)
    */
@@ -374,12 +416,12 @@ export class GameWorld {
   }
 
   /**
-   * Get all pac dot positions
+   * Get all essence dot positions
    */
-  getPacDots(): Set<PositionKey> {
+  getEssenceDots(): Set<PositionKey> {
     const result = new Set<PositionKey>();
     for (const [key, kind] of this.collectableGrid) {
-      if (kind === CollectableKind.PAC_DOT) {
+      if (kind === CollectableKind.ESSENCE) {
         result.add(key);
       }
     }
@@ -387,13 +429,34 @@ export class GameWorld {
   }
 
   /**
-   * Get all power pellet positions
+   * Get all white noise ball positions
    */
-  getPowerPellets(): Set<PositionKey> {
+  getWhiteNoiseBalls(): Set<PositionKey> {
     const result = new Set<PositionKey>();
     for (const [key, kind] of this.collectableGrid) {
-      if (kind === CollectableKind.POWER_PELLET) {
+      if (kind === CollectableKind.WHITE_NOISE_BALL) {
         result.add(key);
+      }
+    }
+    return result;
+  }
+
+  /**
+   * Get all medallion collectable positions mapped to their CollectableKind.
+   * Excludes ESSENCE dots, WHITE_NOISE_BALLs, and power-ups.
+   */
+  getMedallions(): Map<PositionKey, CollectableKind> {
+    const MEDALLION_KINDS = new Set<CollectableKind>([
+      CollectableKind.MEDALLION_STEALTH,
+      CollectableKind.MEDALLION_VISION,
+      CollectableKind.MEDALLION_SHOUT,
+      CollectableKind.MEDALLION_SPEED,
+      CollectableKind.MEDALLION_ESSENCE,
+    ]);
+    const result = new Map<PositionKey, CollectableKind>();
+    for (const [key, kind] of this.collectableGrid) {
+      if (MEDALLION_KINDS.has(kind)) {
+        result.set(key, kind);
       }
     }
     return result;
@@ -402,7 +465,7 @@ export class GameWorld {
   // ══════════════════════════════════════════════════════════════════════════
   // GAME STATE MANAGEMENT
   // ══════════════════════════════════════════════════════════════════════════
-  
+
   /**
    * Get current game state
    */
@@ -446,9 +509,25 @@ export class GameWorld {
   }
 
   // ══════════════════════════════════════════════════════════════════════════
+  // PROGRESS STATE MANAGEMENT (persists across levels)
+  // ══════════════════════════════════════════════════════════════════════════
+
+  getProgressState(): Readonly<ProgressState> {
+    return this.progressState;
+  }
+
+  setProgressState(state: ProgressState): void {
+    this.progressState = state;
+  }
+
+  updateProgressState(partial: Partial<ProgressState>): void {
+    this.progressState = { ...this.progressState, ...partial };
+  }
+
+  // ══════════════════════════════════════════════════════════════════════════
   // MAZE INFO MANAGEMENT
   // ══════════════════════════════════════════════════════════════════════════
-  
+
   /**
    * Get maze info
    */
@@ -459,10 +538,10 @@ export class GameWorld {
   /**
    * Initialize maze info with totals
    */
-  initializeMazeInfo(pacDotsTotal: number, powerPelletsTotal: number): void {
+  initializeMazeInfo(essenceDotsTotal: number, whiteNoiseBallsTotal: number): void {
     this.mazeInfo = {
-      pacDots: { total: pacDotsTotal, current: 0 },
-      powerPellets: { total: powerPelletsTotal, current: 0 },
+      essenceDots: { total: essenceDotsTotal, current: 0 },
+      whiteNoiseBalls: { total: whiteNoiseBallsTotal, current: 0 },
       isLoaded: false,
     };
   }
@@ -477,13 +556,13 @@ export class GameWorld {
   // ══════════════════════════════════════════════════════════════════════════
   // DEBUG API
   // ══════════════════════════════════════════════════════════════════════════
-  
+
   /**
    * Debug: Set a component directly (bypasses validation for testing)
    */
   debugSetComponent<T extends ComponentType>(
-    entityId: EntityId, 
-    type: T, 
+    entityId: EntityId,
+    type: T,
     data: ComponentTypeMap[T]
   ): void {
     if (!this.entities.has(entityId)) {
@@ -525,7 +604,7 @@ export class GameWorld {
   // ══════════════════════════════════════════════════════════════════════════
   // RESET
   // ══════════════════════════════════════════════════════════════════════════
-  
+
   /**
    * Reset the world state
    * @param preserveProgress - If true, preserves score and level (for level transitions)
@@ -533,10 +612,11 @@ export class GameWorld {
   reset(preserveProgress: boolean = false): void {
     const savedScore = preserveProgress ? this.gameState.score : 0;
     const savedLevel = preserveProgress ? this.gameState.level : 1;
-    
+    const savedProgressState = preserveProgress ? this.progressState : createInitialProgressState();
+
     this.entities.clear();
     this.clearSpatialGrids();
-    
+
     // Re-initialize component storage
     for (const type of Object.values(ComponentType)) {
       this.components.set(type, new Map());
@@ -548,9 +628,11 @@ export class GameWorld {
       level: savedLevel,
     };
 
+    this.progressState = savedProgressState;
+
     this.mazeInfo = {
-      pacDots: { total: 0, current: 0 },
-      powerPellets: { total: 0, current: 0 },
+      essenceDots: { total: 0, current: 0 },
+      whiteNoiseBalls: { total: 0, current: 0 },
       isLoaded: false,
     };
   }
