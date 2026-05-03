@@ -1,0 +1,78 @@
+# Medallion Attribute Scaling Configuration
+#
+# Each medallion governs one player attribute.
+# Passive attribute values are indexed by medallion level: index 0 = level 0 (base), index 1–5 = active levels.
+# Level 0 means the medallion slot has not been activated yet — base values apply.
+#
+# xpToNextLevel: array of 5 XP thresholds.
+#   xpToNextLevel[i] = XP required to advance from level i to level i+1.
+#   Levels 1-2 are approachable, 3-4 are challenging, 5 is a major sacrifice.
+#
+# activationCost: XP needed at level 5 to fire the active ability.
+#   For HEALTH, this is the cost to auto-activate (grant +1 HP) — no level system.
+#
+# Active ability durations (in game ticks) for timed actives:
+#   stealthActiveDurationTicks: how long STEALTH's active suppression lasts
+#   speedActiveDurationTicks:   how long SPEED's active boost lasts
+#   Vision active lasts until the player moves (handled in engine, not via timer).
+
+# HEALTH medallion — no leveling system, auto-activates (no button press required)
+health:
+  xpToNextLevel: []
+  activationCost: 300
+
+# STEALTH medallion — agro detection radius of echoes (tiles)
+# Lower = echoes detect Chomp at a shorter distance
+# Active: drastically reduce detection radius for N ticks
+stealth:
+  agroRadiusPerLevel: [8, 7, 6, 5, 4, 3]
+  agroRadiusActive: 1
+  #xpToNextLevel: [60, 150, 350, 650, 1100]
+  xpToNextLevel: [6, 15, 35, 65, 110]
+  #activationCost: 400
+  activationCost: 40
+  stealthActiveDurationTicks: 300
+
+# VISION medallion — player vision spotlight radius (tiles)
+# Higher = wider comfort light cone
+# Active: bird's-eye view until player moves
+vision:
+  visionRadiusPerLevel: [8, 10, 12, 14, 17, 20]
+  #xpToNextLevel: [60, 150, 350, 650, 1100]
+  xpToNextLevel: [6, 15, 35, 65, 110]
+  #activationCost: 500
+  activationCost: 50
+
+# SHOUT medallion — duration of FRIGHTENED state when WNB is used (ticks)
+# Higher = echoes stay frightened longer
+# Active: grants 1 White Noise Ball
+shout:
+  frightDurationPerLevel: [30, 40, 55, 75, 100, 130]
+  #xpToNextLevel: [50, 120, 280, 500, 900]
+  xpToNextLevel: [5, 12, 28, 50, 90]
+  #activationCost: 350
+  activationCost: 35
+
+# SPEED medallion — Chomp movement speed multiplier
+# Higher = faster movement
+# Active: temporary extreme speed boost
+speed:
+  speedMultiplierPerLevel: [1.0, 1.1, 1.2, 1.35, 1.5, 1.7]
+  speedMultiplierActive: 3.5
+  #xpToNextLevel: [70, 180, 400, 750, 1200]
+  xpToNextLevel: [7, 18, 40, 75, 120]
+  #activationCost: 600
+  activationCost: 60
+  speedActiveDurationTicks: 200
+
+# ESSENCE medallion — energy earned per essence dot AND max dash bar size
+# Higher = more energy per dot + larger dash bar capacity
+# Active: fills essence bar to maximum
+essence:
+  essenceMultiplierPerLevel: [1.0, 1.5, 2.0, 2.5, 3.5, 5.0]
+  #dashMaxEnergyPerLevel: [200, 250, 300, 350, 450, 600]
+  dashMaxEnergyPerLevel: [20, 25, 30, 35, 45, 60]
+  #xpToNextLevel: [80, 200, 450, 800, 1300]
+  xpToNextLevel: [8, 20, 45, 80, 130]
+  #activationCost: 450
+  activationCost: 45

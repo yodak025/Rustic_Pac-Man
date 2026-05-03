@@ -18,8 +18,8 @@
     "initialLevel": 1,
     "initialScore": 0,
     "pointValues": {
-      "pacDot": 100,
-      "powerPellet": 500,
+      "essence": 100,
+      "whiteNoiseBall": 500,
       "ghost": 200,
       "levelBonus": 1000
     }
@@ -27,5 +27,26 @@
   "movement": {
     "baseSpeed": 5.0,
     "frightenedSpeedMultiplier": 0.5
+  },
+  "abilities": {
+    "dash": {
+      "energyPerEssence": 1,
+      "maxEnergy": 10,
+      "costPerDash": 2,
+      "speedMultiplier": 3.0,
+      "durationMs": 200,
+      "cooldownMs": 150,
+      "dashEnergyPerPoint": 0.05
+    },
+    "medallions": {
+      "xpPerEssence": 1,
+      "xpPerEchoPoint": 0.02
+    },
+    "essence": {
+      "maxBar": 300
+    },
+    "wnb": {
+      "frightDurationTicks": 30
+    }
   }
 }
