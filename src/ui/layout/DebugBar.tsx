@@ -50,8 +50,8 @@ export default function DebugBar() {
               <h3 className="font-bold text-[var(--color-accent)] mb-2">MAZE</h3>
               <p>Loaded: {maze.isLoaded ? 'YES' : 'NO'}</p>
               <p>Walls: {maze.walls.size}</p>
-              <p>Dots: {maze.pacDotsCollected}/{maze.pacDotsTotal}</p>
-              <p>Pellets: {maze.powerPellets.size}</p>
+              <p>Essence: {maze.essenceDotsCollected}/{maze.essenceDotsTotal}</p>
+              <p>WNBalls: {maze.whiteNoiseBalls.size}</p>
             </div>
 
             {/* Ghosts State */}

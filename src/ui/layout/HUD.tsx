@@ -4,12 +4,12 @@ import GameStatus from "@/types/gameStatus";
 import InGameMenu from "@/ui/layout/InGameMenu";
 import DebugBar from "@/ui/layout/DebugBar";
 import MazeViewer from "@/ui/layout/MazeViewer";
-import LivesDisplay from "@/ui/common/LivesDisplay";
-import GameStats from "@/ui/common/GameStats";
+import PlayerInGameInfo from "@/ui/common/PlayerInGameInfo";
+import LevelInGameInfo from "@/ui/common/LevelInGameInfo";
 import DeathScreen from "@/ui/pages/DeathScreen";
 import VictoryScreen from "@/ui/pages/VictoryScreen";
 import { useEffect } from "react";
-import { usePacmanHotState, useGameHotState, useMazeHotState } from "@state/useHotState";
+import { usePacmanHotState, useGameHotState } from "@state/useHotState";
 import useDebugConfigStore from "@/state/useDebugConfigStore";
 import { useGameWorldContext } from "@core/contexts/GameWorldContext";
 import { useWorldColors } from "@core/hooks/useWorldColors";
@@ -18,8 +18,8 @@ import { useWorldColors } from "@core/hooks/useWorldColors";
 const HUD = () => {
   const { pauseGame, resumeGame } = useGameWorldContext();
   const gameState = useGameHotState();
-  const lives = usePacmanHotState().health;
-  const mazeState = useMazeHotState();
+  const pacman = usePacmanHotState();
+
   const { worldName } = useWorldColors();
 
   const { debug } = useDebugConfigStore();
@@ -41,21 +41,29 @@ const HUD = () => {
 
   return (
     <>
-      <div className="fixed top-5 left-5  right-5 z-50 p-4">
-        <div className="absolute top-4 left-4">
-          <LivesDisplay lives={lives} />
-        </div>
-        <div className="absolute top-4 right-4">
-          <GameStats 
-            level={gameState.level} 
-            score={gameState.score}
-            worldName={worldName}
-            currentPacDots={mazeState.pacDotsCollected}
-            totalPacDots={mazeState.pacDotsTotal}
+      {/* ── Top-right: level info ─────────────────────────────────────────────── */}
+      <div className="fixed top-20 right-5 z-50">
+        <LevelInGameInfo
+          level={gameState.level}
+          score={gameState.score}
+          worldName={worldName}
+        />
+      </div>
+
+      {/* ── Bottom-left: player info (lives, WNB, dash, medallions) ──────────── */}
+      {gameState.status === GameStatus.PLAYING && (
+        <div className="fixed top-20 left-20 z-50">
+          <PlayerInGameInfo
+            lives={pacman.health}
+            wnbCount={pacman.wnbCount}
+            dashEnergy={pacman.dashEnergy}
+            dashMaxEnergy={pacman.dashMaxEnergy}
+            isDashing={pacman.isDashing}
+            medallionRack={pacman.medallionRack}
           />
         </div>
-      </div>
-      
+      )}
+
       {debug && <DebugBar />}
       {debug && <MazeViewer />}
 

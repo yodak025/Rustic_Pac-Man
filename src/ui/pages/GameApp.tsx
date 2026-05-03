@@ -1,103 +1,122 @@
-'use client'
+"use client";
 
-import { useEffect, useMemo, useRef, useCallback } from "react"
-import { Canvas } from "@react-three/fiber"
-import { Suspense } from "react"
-import GameScene from "@/scenes/GameScene"
-import GameScenePreloader from "@/scenes/GameScenePreloader"
-import AppView from "@custom-types/appView"
-import useAppStateStore from "@/state/useAppStateStore"
-import { usePyodide, useGameEngine } from "@core/hooks"
-import { GameWorldProvider } from "@core/contexts/GameWorldContext"
-import MainMenu from "@/ui/pages/MainMenu"
-import MazeTilemapAnalyzer from "@/ui/pages/MazeTilemapAnalyzer"
-import DebugSettings from "@/ui/pages/DebugSettings"
-import TutorialPage from "@/ui/pages/TutorialPage"
-import HUD from "@ui/layout/HUD"
-import LoadingScreen from "@/ui/common/LoadingScreen"
+import { useEffect, useMemo, useRef } from "react";
+import { Canvas } from "@react-three/fiber";
+import { Suspense } from "react";
+import GameScene from "@/scenes/GameScene";
+import AppView from "@custom-types/appView";
+import useAppStateStore from "@/state/useAppStateStore";
+import { usePyodide, useGameEngine } from "@core/hooks";
+import { GameWorldProvider } from "@core/contexts/GameWorldContext";
+import MainMenu from "@/ui/pages/MainMenu";
+import MazeTilemapAnalyzer from "@/ui/pages/MazeTilemapAnalyzer";
+import DebugSettings from "@/ui/pages/DebugSettings";
+import TutorialPage from "@/ui/pages/TutorialPage";
+import HUD from "@ui/layout/HUD";
+import LoadingScreen from "@/ui/common/LoadingScreen";
 
 export default function GameApp() {
-  const { view, setPyodideReady, setEngineReady, goToMainMenu, showGameCanvas, isLevelTransition, setIsLevelTransition, isRestarting, setIsRestarting } = useAppStateStore()
-  
-  const { pyodide, error: pyodideError } = usePyodide()
-  
-  const { contextValue, isReady: engineReady } = useGameEngine(pyodide)
+  const {
+    view,
+    setPyodideReady,
+    setEngineReady,
+    goToMainMenu,
+    showGameCanvas,
+    isLevelTransition,
+    setIsLevelTransition,
+    isRestarting,
+    setIsRestarting,
+  } = useAppStateStore();
 
-  const gameInitializedRef = useRef(false)
-  const assetsLoadedRef = useRef(false)
+  const { pyodide, error: pyodideError } = usePyodide();
+
+  const { contextValue, isReady: engineReady } = useGameEngine(pyodide);
+
+  const gameInitializedRef = useRef(false);
+  const assetsLoadedRef = useRef(false);
 
   // Update app state when Pyodide loads
   useEffect(() => {
     if (pyodide) {
-      setPyodideReady(true)
-      goToMainMenu()
+      setPyodideReady(true);
+      goToMainMenu();
     }
-  }, [pyodide, setPyodideReady, goToMainMenu])
+  }, [pyodide, setPyodideReady, goToMainMenu]);
 
   // Update app state when engine is ready
   useEffect(() => {
     if (engineReady) {
-      setEngineReady(true)
+      setEngineReady(true);
     }
-  }, [engineReady, setEngineReady])
+  }, [engineReady, setEngineReady]);
 
   // When view changes to LOADING_GAME, start loading the game core or next level
   useEffect(() => {
     if (view === AppView.LOADING_GAME) {
       if (isLevelTransition) {
         // Level transition - load next level
-        console.log('[GameApp] Loading next level...')
-        assetsLoadedRef.current = false
-        contextValue.loadNextLevel(false).then(() => {
-          console.log('[GameApp] Next level loaded, waiting for assets...')
-          setIsLevelTransition(false)
-        }).catch((error: Error) => {
-          console.error('[GameApp] Failed to load next level:', error)
-          setIsLevelTransition(false)
-        })
+        console.log("[GameApp] Loading next level...");
+        assetsLoadedRef.current = false;
+        contextValue
+          .loadNextLevel(false)
+          .then(() => {
+            console.log("[GameApp] Next level loaded, waiting for assets...");
+            setIsLevelTransition(false);
+          })
+          .catch((error: Error) => {
+            console.error("[GameApp] Failed to load next level:", error);
+            setIsLevelTransition(false);
+          });
       } else if (isRestarting) {
         // Restart current level - reload from scratch
-        console.log('[GameApp] Restarting level...')
-        assetsLoadedRef.current = false
-        contextValue.restartGame().then(() => {
-          console.log('[GameApp] Level restarted, waiting for assets...')
-          setIsRestarting(false)
-        }).catch((error: Error) => {
-          console.error('[GameApp] Failed to restart level:', error)
-          setIsRestarting(false)
-        })
+        console.log("[GameApp] Restarting level...");
+        assetsLoadedRef.current = false;
+        contextValue
+          .restartGame()
+          .then(() => {
+            console.log("[GameApp] Level restarted, waiting for assets...");
+            setIsRestarting(false);
+          })
+          .catch((error: Error) => {
+            console.error("[GameApp] Failed to restart level:", error);
+            setIsRestarting(false);
+          });
       } else if (!gameInitializedRef.current) {
         // New game - load from scratch
-        gameInitializedRef.current = true
-        assetsLoadedRef.current = false
+        gameInitializedRef.current = true;
+        assetsLoadedRef.current = false;
 
-        console.log('[GameApp] Starting new game...')
-        contextValue.startNewGame().then(() => {
-          console.log('[GameApp] Core loaded, waiting for assets...')
-        }).catch((error: Error) => {
-          console.error('[GameApp] Failed to start new game:', error)
-        })
+        console.log("[GameApp] Starting new game...");
+        contextValue
+          .startNewGame()
+          .then(() => {
+            console.log("[GameApp] Core loaded, starting game...");
+            contextValue.beginGame();
+            console.log("[GameApp] Game started, showing canvas... ");
+            showGameCanvas();
+          })
+          .catch((error: Error) => {
+            console.error("[GameApp] Failed to start new game:", error);
+          });
       }
     }
-  }, [view, contextValue, isLevelTransition, setIsLevelTransition, isRestarting, setIsRestarting])
-
-  // Callback for when R3F finishes loading assets
-  const handleAssetsLoaded = useCallback(() => {
-    if (!assetsLoadedRef.current) {
-      assetsLoadedRef.current = true
-      console.log('[GameApp] Assets loaded, starting game...')
-      contextValue.beginGame()
-      showGameCanvas()
-    }
-  }, [contextValue, showGameCanvas])
+  }, [
+    view,
+    contextValue,
+    isLevelTransition,
+    setIsLevelTransition,
+    isRestarting,
+    setIsRestarting,
+    showGameCanvas,
+  ]);
 
   // Reset refs when leaving game canvas
   useEffect(() => {
     if (view !== AppView.LOADING_GAME && view !== AppView.GAME_CANVAS) {
-      gameInitializedRef.current = false
-      assetsLoadedRef.current = false
+      gameInitializedRef.current = false;
+      assetsLoadedRef.current = false;
     }
-  }, [view])
+  }, [view]);
 
   const sceneLayout = useMemo(() => {
     return (
@@ -105,9 +124,9 @@ export default function GameApp() {
         <HUD />
         <Canvas
           className="z-0"
-          style={{ 
+          style={{
             height: "100vh",
-            background: "var(--color-background)"
+            background: "var(--color-background)",
           }}
         >
           <Suspense>
@@ -115,8 +134,8 @@ export default function GameApp() {
           </Suspense>
         </Canvas>
       </Suspense>
-    )
-  }, [])
+    );
+  }, []);
 
   if (pyodideError) {
     return (
@@ -130,7 +149,7 @@ export default function GameApp() {
           </p>
         </div>
       </div>
-    )
+    );
   }
 
   // Wrap entire app with GameWorldContext provider
@@ -139,42 +158,34 @@ export default function GameApp() {
       {(() => {
         switch (view) {
           case AppView.LOADING_PYODIDE:
-            return <LoadingScreen />
+            return <LoadingScreen />;
 
           case AppView.MAIN_MENU:
-            return <MainMenu />
+            return <MainMenu />;
 
           case AppView.DEBUG_MAZE_ANALYZER:
-            return <MazeTilemapAnalyzer />
+            return <MazeTilemapAnalyzer />;
 
           case AppView.DEBUG_SETTINGS:
-            return <DebugSettings />
+            return <DebugSettings />;
 
           case AppView.TUTORIAL:
-            return <TutorialPage />
+            return <TutorialPage />;
 
           case AppView.LOADING_GAME:
             return (
               <>
                 <LoadingScreen />
-                {/* Hidden Canvas that preloads assets */}
-                <div style={{ position: 'absolute', top: -9999, left: -9999 }}>
-                  <Canvas>
-                    <Suspense fallback={null}>
-                      <GameScenePreloader onLoaded={handleAssetsLoaded} />
-                    </Suspense>
-                  </Canvas>
-                </div>
               </>
-            )
+            );
 
           case AppView.GAME_CANVAS:
-            return sceneLayout
+            return sceneLayout;
 
           default:
-            throw new Error(`Unknown app view: ${view}`)
+            throw new Error(`Unknown app view: ${view}`);
         }
       })()}
     </GameWorldProvider>
-  )
+  );
 }

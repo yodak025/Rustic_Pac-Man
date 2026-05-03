@@ -58,7 +58,7 @@ const MusicGeneratorControls: React.FC<MusicGeneratorControlsProps> = ({
       <div className="flex gap-3">
         <Button
           onClick={onStart}
-          disabled={isRunning || !isInitialized}
+          disabled={isRunning}
           variant="primary"
           className="flex-1"
         >
