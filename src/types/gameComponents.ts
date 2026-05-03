@@ -40,9 +40,54 @@ export interface Health {
   iTicks:number;
 }
 
-export enum CollectableKind{
-PAC_DOT = 'PAC_DOT',
-POWER_PELLET = 'POWER_PELLET'
+export enum CollectableKind {
+  ESSENCE = 'ESSENCE',
+  WHITE_NOISE_BALL = 'WHITE_NOISE_BALL',
+  // Medallions (found in the world as tiles)
+  MEDALLION_HEALTH = 'MEDALLION_HEALTH',
+  MEDALLION_STEALTH = 'MEDALLION_STEALTH',
+  MEDALLION_VISION = 'MEDALLION_VISION',
+  MEDALLION_SHOUT = 'MEDALLION_SHOUT',
+  MEDALLION_SPEED = 'MEDALLION_SPEED',
+  MEDALLION_ESSENCE = 'MEDALLION_ESSENCE',
+  // Power Ups (found in the world, consumed via essence bar)
+  POWER_UP_SUPER_DASH = 'POWER_UP_SUPER_DASH',
+}
+
+export enum MedallionKind {
+  HEALTH = 'HEALTH',
+  STEALTH = 'STEALTH',
+  VISION = 'VISION',
+  SHOUT = 'SHOUT',
+  SPEED = 'SPEED',
+  ESSENCE = 'ESSENCE',
+}
+
+export enum PowerUpKind {
+  SUPER_DASH = 'SUPER_DASH',
+}
+
+/** Maps MedallionKind to its CollectableKind tile variant */
+export const MEDALLION_COLLECTABLE: Record<MedallionKind, CollectableKind> = {
+  [MedallionKind.HEALTH]: CollectableKind.MEDALLION_HEALTH,
+  [MedallionKind.STEALTH]: CollectableKind.MEDALLION_STEALTH,
+  [MedallionKind.VISION]: CollectableKind.MEDALLION_VISION,
+  [MedallionKind.SHOUT]: CollectableKind.MEDALLION_SHOUT,
+  [MedallionKind.SPEED]: CollectableKind.MEDALLION_SPEED,
+  [MedallionKind.ESSENCE]: CollectableKind.MEDALLION_ESSENCE,
+};
+
+/** Set of all medallion CollectableKinds for quick membership tests */
+export const MEDALLION_COLLECTABLE_SET = new Set<CollectableKind>(
+  Object.values(MEDALLION_COLLECTABLE)
+);
+
+/** Resolves which MedallionKind a CollectableKind represents (or null) */
+export function medallionKindFromCollectable(kind: CollectableKind): MedallionKind | null {
+  for (const [mk, ck] of Object.entries(MEDALLION_COLLECTABLE) as [MedallionKind, CollectableKind][]) {
+    if (ck === kind) return mk;
+  }
+  return null;
 }
 
 export interface Collector {

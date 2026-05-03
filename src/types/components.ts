@@ -14,7 +14,9 @@ import {
   GhostBehaviorKind,
   BehaviorMode as BehaviorModeEnum,
   EchoBehaviorKind,
-  TargetKind
+  TargetKind,
+  MedallionKind,
+  PowerUpKind
 } from './gameComponents';
 
 // ============================================================================
@@ -253,6 +255,98 @@ export interface EchoEatenEvent extends Component {
 }
 
 // ============================================================================
+// ABILITY COMPONENTS (player only)
+// ============================================================================
+
+/**
+ * Dash State - energy bar and speed-boost state for dashing
+ */
+export interface DashState extends Component {
+  energy: number;                  // current energy (float)
+  maxEnergy: number;               // maximum energy capacity
+  isDashing: boolean;              // true while the speed boost is active
+  dashTimeRemaining: number;       // ms left in the current boost (0 = not dashing)
+  cooldownTimeRemaining: number;   // ms until the next dash is allowed (0 = ready)
+}
+
+/**
+ * WNB Stock - White Noise Ball inventory
+ */
+export interface WnbStock extends Component {
+  count: number;
+}
+
+/**
+ * Medallion State - one slot in the rack
+ */
+export interface MedallionState {
+  kind: MedallionKind;
+  level: number;    // 0-5 (0 = not yet activated, 1-5 = active levels)
+  chargeXP: number; // accumulated XP toward next level
+}
+
+/**
+ * Medallion Rack - collection of medallions the player carries
+ */
+export interface MedallionRack extends Component {
+  slots: MedallionState[];
+  selectedIndex: number;
+}
+
+/**
+ * Essence Bar - power-up charge bar
+ */
+export interface EssenceBar extends Component {
+  current: number;
+  max: number;
+  activePowerUp: PowerUpKind | null; // which power up is loaded (if any)
+}
+
+/**
+ * Player Ability Input - one-frame ability key presses
+ */
+export interface PlayerAbilityInput extends Component {
+  dash: boolean;
+  useWnb: boolean;
+  prevMedallion: boolean;
+  nextMedallion: boolean;
+  activateAbility: boolean;
+}
+
+/**
+ * Player Stats - derived attribute values computed from the Medallion Rack.
+ * Updated every frame by playerAttributeSystem before any system that reads them.
+ */
+export interface PlayerStats extends Component {
+  /** Tile radius at which echoes detect Chomp and enter CHASE mode (STEALTH medallion) */
+  agroRadius: number;
+  /** Tile radius of the player's vision spotlight — comfort light (VISION medallion) */
+  visionRadius: number;
+  /** Duration of FRIGHTENED state in ticks when WNB is used (SHOUT medallion) */
+  frightDuration: number;
+  /** Chomp movement speed multiplier applied to base speed (SPEED medallion) */
+  speedMultiplier: number;
+  /** Energy gained per essence dot collected (ESSENCE medallion) */
+  essenceMultiplier: number;
+  /** Maximum dash bar energy capacity (ESSENCE medallion) */
+  dashMaxEnergy: number;
+}
+
+/**
+ * Active Ability Timer — tracks a currently running timed active ability.
+ * playerAttributeSystem applies attribute overrides while ticksRemaining > 0
+ * and decrements the counter each frame.
+ * For VISION (bird's-eye), ticksRemaining is set to -1 (lasts until movement).
+ * directionAtActivation captures the player's lastValidDirection at the moment
+ * the ability was activated; VISION is cancelled when this direction changes.
+ */
+export interface ActiveAbilityTimer extends Component {
+  kind: MedallionKind;
+  ticksRemaining: number; // -1 = indefinite (until cancelled externally)
+  directionAtActivation: Direction | null; // snapshot for VISION cancel logic
+}
+
+// ============================================================================
 // RENDER MARKER
 // ============================================================================
 
@@ -294,6 +388,13 @@ export interface ComponentTypeMap {
   [ComponentType.INVULNERABILITY]: Invulnerability;
   [ComponentType.COLLECTOR]: Collector;
   [ComponentType.COLLECTED_SCORE]: CollectedScore;
+  [ComponentType.DASH_STATE]: DashState;
+  [ComponentType.WNB_STOCK]: WnbStock;
+  [ComponentType.MEDALLION_RACK]: MedallionRack;
+  [ComponentType.ESSENCE_BAR]: EssenceBar;
+  [ComponentType.PLAYER_ABILITY_INPUT]: PlayerAbilityInput;
+  [ComponentType.PLAYER_STATS]: PlayerStats;
+  [ComponentType.ACTIVE_ABILITY_TIMER]: ActiveAbilityTimer;
   [ComponentType.COLLISION_EVENT]: CollisionEvent;
   [ComponentType.COLLECTION_EVENT]: CollectionEvent;
   [ComponentType.ECHO_EATEN_EVENT]: EchoEatenEvent;

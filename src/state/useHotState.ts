@@ -14,10 +14,13 @@
  */
 
 import { create } from 'zustand';
-import { Direction, BehaviorMode } from '@custom-types/gameComponents';
+import { Direction, BehaviorMode, MedallionKind, CollectableKind } from '@custom-types/gameComponents';
 import GameStatus from '@custom-types/gameStatus';
 import type { PositionKey } from '@custom-types/componentTypes';
-import * as gameDefaults from '@config/gameDefaults.json';
+import type { MedallionRack } from '@custom-types/components';
+import type { PowerUpKind } from '@custom-types/gameComponents';
+import gameDefaults from '@config/gameDefaults.json';
+import { MEDALLION_ATTRIBUTES, getMedallionActivationCost } from '@config/medallionAttributes';
 
 // ============================================================================
 // GHOST RENDER STATE
@@ -57,6 +60,21 @@ export interface PacmanRenderState {
   health: number;
   isInvulnerable: boolean;
   direction: Direction | null;
+  // Ability state
+  dashEnergy: number;
+  dashMaxEnergy: number;
+  isDashing: boolean;
+  wnbCount: number;
+  medallionRack: MedallionRack;
+  // Medallion charge bar (derived from MEDALLION_RACK.slots[selectedIndex])
+  medallionChargeXP: number;
+  medallionChargeMax: number;
+  activePowerUp: PowerUpKind | null;
+  /** Kind of the currently running active ability, or null if none */
+  activeAbilityKind: MedallionKind | null;
+  // Derived attribute radii (for spotlight rendering)
+  agroRadius: number;
+  visionRadius: number;
 }
 
 // ============================================================================
@@ -67,11 +85,13 @@ export interface MazeRenderState {
   isLoaded: boolean;
   walls: Set<PositionKey>;
   floorTiles: Set<PositionKey>;  // Static floor positions (never updated after init)
-  pacDots: Set<PositionKey>;
-  powerPellets: Set<PositionKey>;
-  pacDotsCollected: number;
-  pacDotsTotal: number;
-  powerPelletsTotal: number;
+  essenceDots: Set<PositionKey>;
+  whiteNoiseBalls: Set<PositionKey>;
+  /** Medallion collectables still present in the world: positionKey → CollectableKind */
+  medallions: Map<PositionKey, CollectableKind>;
+  essenceDotsCollected: number;
+  essenceDotsTotal: number;
+  whiteNoiseBallsTotal: number;
 }
 
 // ============================================================================
@@ -137,11 +157,23 @@ export interface HotStateSyncPayload {
 // ============================================================================
 
 function createInitialPacmanState(): PacmanRenderState {
+  const abilityCfg = gameDefaults.abilities;
   return {
     position: { ...gameDefaults.pacman.initialPosition },
     health: gameDefaults.pacman.initialHealth,
     isInvulnerable: false,
     direction: null,
+    dashEnergy: 0,
+    dashMaxEnergy: abilityCfg.dash.maxEnergy,
+    isDashing: false,
+    wnbCount: 0,
+    medallionRack: { slots: [], selectedIndex: 0 },
+    medallionChargeXP: 0,
+    medallionChargeMax: getMedallionActivationCost(MedallionKind.HEALTH),
+    activePowerUp: null,
+    activeAbilityKind: null,
+    agroRadius: MEDALLION_ATTRIBUTES.agroRadiusPerLevel[0],
+    visionRadius: MEDALLION_ATTRIBUTES.visionRadiusPerLevel[0],
   };
 }
 
@@ -162,11 +194,12 @@ function createInitialMazeState(): MazeRenderState {
     isLoaded: false,
     walls: new Set(),
     floorTiles: new Set(),
-    pacDots: new Set(),
-    powerPellets: new Set(),
-    pacDotsCollected: 0,
-    pacDotsTotal: 0,
-    powerPelletsTotal: 0,
+    essenceDots: new Set(),
+    whiteNoiseBalls: new Set(),
+    medallions: new Map(),
+    essenceDotsCollected: 0,
+    essenceDotsTotal: 0,
+    whiteNoiseBallsTotal: 0,
   };
 }
 
