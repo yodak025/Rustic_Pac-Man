@@ -12,12 +12,12 @@ export interface InstancedPowerPelletsProps {
 const MAX_INSTANCES = 100000;
 
 export default function InstancedPowerPellets({ positions }: InstancedPowerPelletsProps) {
-  const { powerPellets } = useCollectablesColors();
+  const { whiteNoiseBalls } = useCollectablesColors();
   const meshRef = useRef<InstancedMesh>(null);
   const tempObject = useMemo(() => new Object3D(), []);
 
   const geometry = useMemo(() => new SphereGeometry(0.3, 8, 8), []);
-  const material = useMemo(() => new MeshStandardMaterial({ color: powerPellets }), [powerPellets]);
+  const material = useMemo(() => new MeshStandardMaterial({ color: whiteNoiseBalls }), [whiteNoiseBalls]);
 
   useEffect(() => {
     if (!meshRef.current) return;

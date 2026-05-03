@@ -12,12 +12,12 @@ export interface InstancedPacDotsProps {
 const MAX_INSTANCES = 100000;
 
 export default function InstancedPacDots({ positions }: InstancedPacDotsProps) {
-  const { pacDots } = useCollectablesColors();
+  const { essenceDots } = useCollectablesColors();
   const meshRef = useRef<InstancedMesh>(null);
   const tempObject = useMemo(() => new Object3D(), []);
 
   const geometry = useMemo(() => new SphereGeometry(0.1, 8, 8), []);
-  const material = useMemo(() => new MeshStandardMaterial({ color: pacDots }), [pacDots]);
+  const material = useMemo(() => new MeshStandardMaterial({ color: essenceDots }), [essenceDots]);
 
   useEffect(() => {
     if (!meshRef.current) return;

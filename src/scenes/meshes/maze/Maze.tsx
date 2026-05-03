@@ -5,7 +5,8 @@ import InstancedWalls from "@scenes/meshes/maze/InstancedWalls";
 import InstancedFloors from "@scenes/meshes/maze/InstancedFloors";
 import InstancedPacDots from "@scenes/meshes/maze/InstancedPacDots";
 import InstancedPowerPellets from "@scenes/meshes/maze/InstancedPowerPellets";
-import InstancedEchos from "@scenes/meshes/maze/InstancedEchos";
+import InstancedMedallions from "@scenes/meshes/maze/InstancedMedallions";
+import Sinusoid from "@scenes/meshes/entities/Sinusoid";
 
 /**
  * Convert Set<PositionKey> to Position[] array
@@ -31,16 +32,17 @@ export default function Maze() {
 
   const wallPositions = convertPositions(mazeState.walls);
   const floorPositions = convertPositions(mazeState.floorTiles);
-  const pacDotPositions = convertPositions(mazeState.pacDots);
-  const powerPelletPositions = convertPositions(mazeState.powerPellets);
+  const essenceDotPositions = convertPositions(mazeState.essenceDots);
+  const whiteNoiseBallPositions = convertPositions(mazeState.whiteNoiseBalls);
 
   return (
     <>
       <InstancedWalls positions={wallPositions} />
       <InstancedFloors positions={floorPositions} />
-      <InstancedPacDots positions={pacDotPositions} />
-      <InstancedPowerPellets positions={powerPelletPositions} />
-      <InstancedEchos echosMap={echosMap} />
+      <InstancedPacDots positions={essenceDotPositions} />
+      <InstancedPowerPellets positions={whiteNoiseBallPositions} />
+      <InstancedMedallions medallions={mazeState.medallions} />
+      <Sinusoid echosMap={echosMap} />
     </>
   );
 }
