@@ -36,6 +36,11 @@ export function useGameEngine(
       console.error("[useGameEngine] Failed to initialize game engine:", error);
       setIsReady(false);
     }
+
+    return () => {
+      engineRef.current?.destroy();
+      engineRef.current = null;
+    };
   }, [pyodide]);
 
   // Create context value with engine commands
@@ -62,7 +67,7 @@ export function useGameEngine(
       loadNextLevel: (autoStart: boolean) =>
         engineRef.current?.loadNextLevel(autoStart) ?? Promise.resolve(),
     }),
-    [isReady],
+    [],
   );
 
   return {

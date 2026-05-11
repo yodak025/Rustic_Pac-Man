@@ -3,7 +3,6 @@ import { generateMaze, MEDALLION_TILE_CHARS } from "./mazeGen";
 import { useHotState } from "@/state/useHotState";
 import type { Position } from "@custom-types/gameComponents";
 import GameStatus from "@custom-types/gameStatus";
-import * as config from "@/config/defaultPositions.json";
 import { CollectableKind } from "@custom-types/gameComponents";
 import type { PyodideInterface } from "pyodide";
 import { preloadAllWorldConfigs } from "@core/worldConfigLoader";
@@ -11,20 +10,11 @@ import { preloadAllWorldConfigs } from "@core/worldConfigLoader";
 // New ECS Architecture imports
 import { GameWorld } from "./GameWorld";
 import { DEBUG_LOG_GAME_WORLD } from "@config/featureFlags";
-import {
-  ComponentType,
-  PACMAN_ENTITY_ID,
-  BLINKY_ENTITY_ID,
-  PINKY_ENTITY_ID,
-  INKY_ENTITY_ID,
-  CLYDE_ENTITY_ID,
-} from "@custom-types/componentTypes";
+import { ComponentType, PACMAN_ENTITY_ID } from "@custom-types/componentTypes";
 import gameDefaults from "@config/gameDefaults.json";
-import { createGhostEntity, createEchoEntity } from "./entityFactory";
-import {
-  GhostBehaviorKind,
-  EchoBehaviorKind,
-} from "@custom-types/gameComponents";
+import { createEchoEntity, createPacmanEntity } from "./entityFactory";
+import { setupKeyboardListeners, type KeyState } from "./keyboardListeners";
+import { EchoBehaviorKind } from "@custom-types/gameComponents";
 import { SINUSOID_CONFIG } from "@config/echoConfig";
 
 // ECS Systems
@@ -37,8 +27,6 @@ import { discretePositionSyncSystem } from "./systems/discretePositionSyncSystem
 import { dashEnergySystem } from "./systems/dashEnergySystem";
 import { dashSystem } from "./systems/dashSystem";
 import { syncToHotStateSystem } from "./systems/syncToHotStateSystem";
-import { ghostBehaviorModeSystem } from "./systems/ghostBehaviorModeSystem";
-import { ghostTargetingSystem } from "./systems/ghostTargetingSystem";
 import { targetBasedDirectionSystem } from "./systems/targetBasedDirectionSystem";
 import { behaviorTimerTickSystem } from "./systems/behaviorTimerTickSystem";
 import { timerUpdateSystem } from "./systems/timerUpdateSystem";
@@ -49,7 +37,7 @@ import { collectionEffectSystem } from "./systems/collectionEffectSystem";
 import { wnoiseActivateSystem } from "./systems/wnoiseActivateSystem";
 import { medallionChargeSystem } from "./systems/medallionChargeSystem";
 import { medallionActivateSystem } from "./systems/medallionActivateSystem";
-import { superDashSystem } from "./systems/superDashSystem";
+//import { superDashSystem } from "./systems/superDashSystem";
 import { invulnerabilityTickSystem } from "./systems/invulnerabilityTickSystem";
 import { victoryConditionSystem } from "./systems/victoryConditionSystem";
 import { defeatConditionSystem } from "./systems/defeatConditionSystem";
@@ -58,15 +46,12 @@ import { echoBehaviorModeSystem } from "./systems/echoBehaviorModeSystem";
 import { echoTargetingSystem } from "./systems/echoTargetingSystem";
 import { echoEatenSystem } from "./systems/echoEatenSystem";
 import { playerAttributeSystem } from "./systems/playerAttributeSystem";
-import { MEDALLION_ATTRIBUTES } from "@config/medallionAttributes";
-
-const STARTING_POSITIONS = config.DEFAULT_POSITIONS.HOME;
 
 export class RusticGameEngine {
   private isRunning: boolean = false;
   private animationFrameId: number | null = null;
   private lastTime: number = 0;
-  private keyState = {
+  private keyState: KeyState = {
     w: false,
     a: false,
     s: false,
@@ -77,6 +62,7 @@ export class RusticGameEngine {
     k: false,
     dot: false,
   };
+  private teardownKeyboardListeners: (() => void) | null = null;
   private pyodide: PyodideInterface;
 
   private gameWorld: GameWorld;
@@ -258,273 +244,7 @@ export class RusticGameEngine {
     syncToHotStateSystem(this.gameWorld);
   }
 
-  private setupKeyboardListeners(): void {
-    window.addEventListener("keydown", (event) => {
-      switch (event.key.toLowerCase()) {
-        case "w":
-          this.keyState.w = true;
-          break;
-        case "a":
-          this.keyState.a = true;
-          break;
-        case "s":
-          this.keyState.s = true;
-          break;
-        case "d":
-          this.keyState.d = true;
-          break;
-        case "m":
-          this.keyState.m = true;
-          break;
-        case ",":
-          this.keyState.comma = true;
-          break;
-        case "j":
-          this.keyState.j = true;
-          break;
-        case "k":
-          this.keyState.k = true;
-          break;
-        case ".":
-          this.keyState.dot = true;
-          break;
-        case "n":
-          // Debug: Skip to next level (only works when playing)
-          if (this.gameWorld.getGameState().status === GameStatus.PLAYING) {
-            console.log("[Engine] Debug: Forcing instant level transition...");
-            this.loadNextLevel(true).catch((err) => {
-              console.error("[Engine] Error loading next level:", err);
-            });
-          }
-          break;
-      }
-    });
-
-    window.addEventListener("keyup", (event) => {
-      switch (event.key.toLowerCase()) {
-        case "w":
-          this.keyState.w = false;
-          break;
-        case "a":
-          this.keyState.a = false;
-          break;
-        case "s":
-          this.keyState.s = false;
-          break;
-        case "d":
-          this.keyState.d = false;
-          break;
-        case "m":
-          this.keyState.m = false;
-          break;
-        case ",":
-          this.keyState.comma = false;
-          break;
-        case "j":
-          this.keyState.j = false;
-          break;
-        case "k":
-          this.keyState.k = false;
-          break;
-        case ".":
-          this.keyState.dot = false;
-          break;
-      }
-    });
-  }
-
-  private initPacmanEntity(initialPosition: Position): void {
-    const defaults = gameDefaults.pacman;
-    const baseSpeed = gameDefaults.movement.baseSpeed;
-
-    this.gameWorld.createEntity(PACMAN_ENTITY_ID);
-    this.gameWorld.addComponent(PACMAN_ENTITY_ID, ComponentType.PLAYER_TAG, {
-      _tag: "player" as const,
-    });
-    this.gameWorld.addComponent(PACMAN_ENTITY_ID, ComponentType.TIMER, {
-      elapsed: 0,
-      interval: defaults.movementInterval,
-      baseInterval: defaults.movementInterval,
-      isTimeToMove: false,
-    });
-    this.gameWorld.addComponent(
-      PACMAN_ENTITY_ID,
-      ComponentType.CONTINUOUS_POSITION,
-      {
-        x: initialPosition.x,
-        y: initialPosition.y,
-      },
-    );
-    this.gameWorld.addComponent(
-      PACMAN_ENTITY_ID,
-      ComponentType.DISCRETE_POSITION,
-      {
-        x: initialPosition.x,
-        y: initialPosition.y,
-      },
-    );
-    this.gameWorld.addComponent(
-      PACMAN_ENTITY_ID,
-      ComponentType.MOVEMENT_SPEED,
-      {
-        current: baseSpeed,
-        base: baseSpeed,
-      },
-    );
-    this.gameWorld.addComponent(
-      PACMAN_ENTITY_ID,
-      ComponentType.MOVEMENT_INTENT,
-      {
-        direction: null,
-      },
-    );
-    this.gameWorld.addComponent(PACMAN_ENTITY_ID, ComponentType.PLAYER_INTENT, {
-      desiredDirection: null,
-      lastValidDirection: null,
-    });
-    this.gameWorld.addComponent(
-      PACMAN_ENTITY_ID,
-      ComponentType.ALIGNMENT_STATE,
-      {
-        isAligned: true,
-        aligningDirection: null,
-      },
-    );
-
-    // Ability components — restore from progressState (persists between levels)
-    const progress = this.gameWorld.getProgressState();
-    const abilityCfg = gameDefaults.abilities;
-
-    this.gameWorld.addComponent(PACMAN_ENTITY_ID, ComponentType.HEALTH, {
-      current: progress.health,
-      max: defaults.initialHealth,
-    });
-    this.gameWorld.addComponent(
-      PACMAN_ENTITY_ID,
-      ComponentType.INVULNERABILITY,
-      {
-        ticksRemaining: 0,
-      },
-    );
-    this.gameWorld.addComponent(PACMAN_ENTITY_ID, ComponentType.COLLECTOR, {
-      canCollect: [
-        CollectableKind.ESSENCE,
-        CollectableKind.WHITE_NOISE_BALL,
-        CollectableKind.MEDALLION_HEALTH,
-        CollectableKind.MEDALLION_STEALTH,
-        CollectableKind.MEDALLION_VISION,
-        CollectableKind.MEDALLION_SHOUT,
-        CollectableKind.MEDALLION_SPEED,
-        CollectableKind.MEDALLION_ESSENCE,
-        CollectableKind.POWER_UP_SUPER_DASH,
-      ],
-    });
-    this.gameWorld.addComponent(PACMAN_ENTITY_ID, ComponentType.PLAYABLE, {
-      _tag: "playable" as const,
-    });
-
-    this.gameWorld.addComponent(PACMAN_ENTITY_ID, ComponentType.DASH_STATE, {
-      energy: progress.dashEnergy,
-      maxEnergy: abilityCfg.dash.maxEnergy,
-      isDashing: false,
-      dashTimeRemaining: 0,
-      cooldownTimeRemaining: 0,
-    });
-    this.gameWorld.addComponent(PACMAN_ENTITY_ID, ComponentType.WNB_STOCK, {
-      count: progress.wnbStock,
-    });
-    this.gameWorld.addComponent(
-      PACMAN_ENTITY_ID,
-      ComponentType.MEDALLION_RACK,
-      {
-        slots: [...progress.medallionRack.slots.map((s) => ({ ...s }))],
-        selectedIndex: progress.medallionRack.selectedIndex,
-      },
-    );
-    this.gameWorld.addComponent(PACMAN_ENTITY_ID, ComponentType.ESSENCE_BAR, {
-      current: progress.essenceBar.current,
-      max: progress.essenceBar.max,
-      activePowerUp: progress.essenceBar.activePowerUp,
-    });
-    this.gameWorld.addComponent(
-      PACMAN_ENTITY_ID,
-      ComponentType.PLAYER_ABILITY_INPUT,
-      {
-        dash: false,
-        useWnb: false,
-        prevMedallion: false,
-        nextMedallion: false,
-        activateAbility: false,
-      },
-    );
-
-    // Derived stats — level-0 values from MEDALLION_ATTRIBUTES (recalculated each frame)
-    this.gameWorld.addComponent(PACMAN_ENTITY_ID, ComponentType.PLAYER_STATS, {
-      agroRadius: MEDALLION_ATTRIBUTES.agroRadiusPerLevel[0],
-      visionRadius: MEDALLION_ATTRIBUTES.visionRadiusPerLevel[0],
-      frightDuration: MEDALLION_ATTRIBUTES.frightDurationPerLevel[0],
-      speedMultiplier: MEDALLION_ATTRIBUTES.speedMultiplierPerLevel[0],
-      essenceMultiplier: MEDALLION_ATTRIBUTES.essenceMultiplierPerLevel[0],
-      dashMaxEnergy: MEDALLION_ATTRIBUTES.dashMaxEnergyPerLevel[0],
-    });
-
-    if (DEBUG_LOG_GAME_WORLD) {
-      console.log(
-        "[GameWorld] Pacman entity created at position:",
-        initialPosition,
-      );
-    }
-  }
-
-  // ══════════════════════════════════════════════════════════════════════════
-  // GHOST INITIALIZATION (Currently disabled - kept for future use)
-  // ══════════════════════════════════════════════════════════════════════════
-
-  private initGhostsEntities(): void {
-    const GHOST_MOVEMENT_INTERVAL = 250;
-
-    createGhostEntity(
-      this.gameWorld,
-      BLINKY_ENTITY_ID,
-      GhostBehaviorKind.BLINKY,
-      STARTING_POSITIONS.BLINKY as Position,
-      GHOST_MOVEMENT_INTERVAL,
-      0,
-    );
-
-    createGhostEntity(
-      this.gameWorld,
-      PINKY_ENTITY_ID,
-      GhostBehaviorKind.PINKY,
-      STARTING_POSITIONS.PINKY as Position,
-      GHOST_MOVEMENT_INTERVAL,
-      15,
-    );
-
-    createGhostEntity(
-      this.gameWorld,
-      INKY_ENTITY_ID,
-      GhostBehaviorKind.INKY,
-      STARTING_POSITIONS.INKY as Position,
-      GHOST_MOVEMENT_INTERVAL,
-      30,
-    );
-
-    createGhostEntity(
-      this.gameWorld,
-      CLYDE_ENTITY_ID,
-      GhostBehaviorKind.CLYDE,
-      STARTING_POSITIONS.CLYDE as Position,
-      GHOST_MOVEMENT_INTERVAL,
-      45,
-    );
-
-    if (DEBUG_LOG_GAME_WORLD) {
-      console.log("[GameWorld] 4 ghost entities created");
-    }
-  }
-
-  private async initMazeEntities(): Promise<Position> {
+  private async initMazeEntities(): Promise<void> {
     const mazeResult = await generateMaze(this.pyodide);
 
     // ASCII tile character constants
@@ -643,7 +363,8 @@ export class RusticGameEngine {
       });
     }
 
-    return chompPosition;
+    createPacmanEntity(this.gameWorld, chompPosition);
+    console.log("[Engine] Pacman entity initialized");
   }
 
   async load(): Promise<void> {
@@ -653,15 +374,22 @@ export class RusticGameEngine {
       console.log("[Engine] World configs preloaded");
     }
 
-    const chompSpawn = await this.initMazeEntities();
+    await this.initMazeEntities();
     console.log("[Engine] Maze entities initialized");
-    this.setupKeyboardListeners();
+    if (!this.teardownKeyboardListeners) {
+      this.teardownKeyboardListeners = setupKeyboardListeners(
+        this.keyState,
+        () => {
+          if (this.gameWorld.getGameState().status === GameStatus.PLAYING) {
+            console.log("[Engine] Debug: Forcing instant level transition...");
+            this.loadNextLevel(true).catch((err) => {
+              console.error("[Engine] Error loading next level:", err);
+            });
+          }
+        },
+      );
+    }
     console.log("[Engine] Keyboard listeners set up");
-    this.initPacmanEntity(chompSpawn);
-    console.log("[Engine] Pacman entity initialized");
-    // Ghosts disabled for now
-    // this.initGhostsEntities();
-    console.log("[Engine] Ghosts entities initialization skipped (disabled)");
     this.gameWorld.setGameStatus(GameStatus.READY);
     console.log("[Engine] Core loaded!");
   }
@@ -682,6 +410,17 @@ export class RusticGameEngine {
       cancelAnimationFrame(this.animationFrameId);
       this.animationFrameId = null;
     }
+  }
+
+  /**
+   * Destroy the engine: halt the game loop and remove all event listeners.
+   * Must be called when the owning React component unmounts.
+   */
+  destroy(): void {
+    this.stop();
+    this.teardownKeyboardListeners?.();
+    this.teardownKeyboardListeners = null;
+    console.log("[Engine] Destroyed");
   }
 
   private gameLoop(): void {
@@ -741,17 +480,10 @@ export class RusticGameEngine {
     alignmentSystem(this.gameWorld, deltaTime);
     discretePositionSyncSystem(this.gameWorld);
 
-    // PHASE 4: GHOSTS & ECHOS
-    // New ECS ghost systems
-    const currentLevel = this.gameWorld.getGameState().level;
-    ghostBehaviorModeSystem(this.gameWorld, currentLevel);
-    ghostTargetingSystem(this.gameWorld);
-
-    // New ECS echo systems
+    // PHASE 4: ECHOS
+    // ECS echo systems
     echoBehaviorModeSystem(this.gameWorld);
     echoTargetingSystem(this.gameWorld);
-
-    // Shared direction and movement systems
     targetBasedDirectionSystem(this.gameWorld);
     movementSystem(deltaTime, this.gameWorld); // Discrete movement for ghosts and echos
 
@@ -765,7 +497,7 @@ export class RusticGameEngine {
     wnoiseActivateSystem(this.gameWorld);
     medallionChargeSystem(this.gameWorld);
     medallionActivateSystem(this.gameWorld);
-    superDashSystem(this.gameWorld);
+    //superDashSystem(this.gameWorld); Unsupported for now
     invulnerabilityTickSystem(this.gameWorld);
 
     timerUpdateSystem(this.gameWorld, deltaTime);
