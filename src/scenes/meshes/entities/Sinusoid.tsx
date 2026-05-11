@@ -122,6 +122,9 @@ export default function Sinusoid({ echosMap }: InstancedSinusoidsProps) {
 
     echosMap.forEach((echoState, echoId) => {
       const mode = echoState.mode;
+
+      if (mode === BehaviorMode.EATEN) return;
+
       const rotation = calculateRotation(echoState.direction);
       const scaleFactor = calculateScaleFactor(
         echoState.timer.elapsed,
