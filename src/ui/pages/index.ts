@@ -5,5 +5,4 @@ export { default as MazeTilemapAnalyzer } from './MazeTilemapAnalyzer';
 export { default as DebugSettings } from './DebugSettings';
 export { default as TutorialPage } from './TutorialPage';
 export { default as GameApp } from './GameApp';
-export { default as MusicGenerator } from './MusicGenerator';
 

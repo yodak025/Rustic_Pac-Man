@@ -9,8 +9,6 @@ export { default as MedallionDisplay } from './MedallionDisplay';
 export { default as TileGrid } from './TileGrid';
 export { default as DebugEntitySection } from './DebugEntitySection';
 export { default as GameControlsDisplay } from './GameControlsDisplay';
-export { default as InstrumentControl } from './InstrumentControl';
-export { default as ContextPanel } from './ContextPanel';
 
 // Types
 export type { ModalProps } from './Modal';
@@ -21,5 +19,3 @@ export type { DashBarProps } from './DashBar';
 export type { MedallionDisplayProps } from './MedallionDisplay';
 export type { TileGridProps } from './TileGrid';
 export type { DebugEntitySectionProps } from './DebugEntitySection';
-export type { InstrumentControlProps } from './InstrumentControl';
-export type { ContextPanelProps } from './ContextPanel';
