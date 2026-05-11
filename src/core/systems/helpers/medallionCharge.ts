@@ -51,8 +51,7 @@ function chargeHealth(
   if (newXP >= activationCost) {
     const health = gameWorld.getComponent(entityId, ComponentType.HEALTH);
     if (health) {
-      const newHp = Math.min(health.current + 1, health.max);
-      gameWorld.setComponent(entityId, ComponentType.HEALTH, { ...health, current: newHp });
+      gameWorld.setComponent(entityId, ComponentType.HEALTH, { ...health, current: health.current + 1 });
     }
     const newSlots = rack.slots.map((s, i) =>
       i === idx ? { ...s, chargeXP: newXP - activationCost } : s
