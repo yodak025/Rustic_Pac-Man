@@ -67,7 +67,7 @@ export function setupKeyboardListeners(
       case "k":
         keyState.activateAbility = true;
         break;
-      case "n":
+      case "?":
         onDebugSkipLevel();
         break;
     }
