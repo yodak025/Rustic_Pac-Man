@@ -7,7 +7,7 @@ import { useGameWorldContext } from "@core/contexts/GameWorldContext";
 import useAppStateStore from "@/state/useAppStateStore";
 
 const DeathScreen: React.FC = () => {
-  const { restartGame, exitToMenu } = useGameWorldContext();
+  const { startRestartLevel, exitToMenu } = useGameWorldContext();
   const { goToMainMenu } = useAppStateStore();
 
   const handleMainMenu = () => {
@@ -18,7 +18,7 @@ const DeathScreen: React.FC = () => {
   return (
     <Modal isOpen={true} title="GAME OVER" className="w-3xl h-2/7">
       <MenuButtonGroup
-        onRestart={restartGame}
+        onRestart={startRestartLevel}
         onMainMenu={handleMainMenu}
         restartLabel="RESTART"
         mainMenuLabel="MAIN MENU"

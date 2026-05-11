@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import GameStatus from "@/types/gameStatus";
 import InGameMenu from "@/ui/layout/InGameMenu";
@@ -14,14 +14,11 @@ import useDebugConfigStore from "@/state/useDebugConfigStore";
 import { useGameWorldContext } from "@core/contexts/GameWorldContext";
 import { useWorldColors } from "@core/hooks/useWorldColors";
 
-
 const HUD = () => {
   const { pauseGame, resumeGame } = useGameWorldContext();
   const gameState = useGameHotState();
   const pacman = usePacmanHotState();
-
   const { worldName } = useWorldColors();
-
   const { debug } = useDebugConfigStore();
 
   useEffect(() => {
@@ -49,7 +46,6 @@ const HUD = () => {
           worldName={worldName}
         />
       </div>
-
       {/* ── Bottom-left: player info (lives, WNB, dash, medallions) ──────────── */}
       {gameState.status === GameStatus.PLAYING && (
         <div className="fixed top-20 left-20 z-50">
@@ -63,10 +59,8 @@ const HUD = () => {
           />
         </div>
       )}
-
       {debug && <DebugBar />}
       {debug && <MazeViewer />}
-
       {gameState.status === GameStatus.PAUSED && <InGameMenu />}
       {gameState.status === GameStatus.LOST && <DeathScreen />}
       {gameState.status === GameStatus.WON && <VictoryScreen />}
