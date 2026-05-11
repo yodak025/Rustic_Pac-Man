@@ -1,5 +1,5 @@
 # =============================================================================
-# docker-compose.yaml — Chomp Crawler (Next.js SSR)
+# docker-compose.yaml — Chomp Crawler
 # =============================================================================
 # Standalone:   docker compose --profile standalone up -d --build
 # Orchestrated: docker compose up -d --build  (launched from LTAW-Practicas)
@@ -11,8 +11,8 @@ services:
     container_name: chomp-crawler
     restart: unless-stopped
     environment:
-      - VIRTUAL_HOST=chomp.yourdomain.com
-      - LETSENCRYPT_HOST=chomp.yourdomain.com
+      - VIRTUAL_HOST=chompcrawler.com
+      - LETSENCRYPT_HOST=chompcrawler.com
       - VIRTUAL_PORT=3000
     networks:
       - web-proxy
