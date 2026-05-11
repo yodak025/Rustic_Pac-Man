@@ -52,15 +52,15 @@ export class RusticGameEngine {
   private animationFrameId: number | null = null;
   private lastTime: number = 0;
   private keyState: KeyState = {
-    w: false,
-    a: false,
-    s: false,
-    d: false,
-    m: false,
-    comma: false,
-    j: false,
-    k: false,
-    dot: false,
+    up: false,
+    down: false,
+    left: false,
+    right: false,
+    dash: false,
+    useWnb: false,
+    prevMedallion: false,
+    nextMedallion: false,
+    activateAbility: false,
   };
   private teardownKeyboardListeners: (() => void) | null = null;
   private pyodide: PyodideInterface;
@@ -345,6 +345,7 @@ export class RusticGameEngine {
     const floorTiles = new Set<`${number},${number}`>();
     this.gameWorld.getEssenceDots().forEach((key) => floorTiles.add(key));
     this.gameWorld.getWhiteNoiseBalls().forEach((key) => floorTiles.add(key));
+    this.gameWorld.getMedallions().forEach((_kind, key) => floorTiles.add(key));
     useHotState.getState().initializeFloorTiles(floorTiles);
     console.log(
       `[Engine] Initialized ${floorTiles.size} floor tiles in HotState`,

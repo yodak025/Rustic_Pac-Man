@@ -1,11 +1,12 @@
 /**
  * Input Capture System
- * 
+ *
  * PHASE: INPUT_CAPTURE
- * RESPONSIBILITY: Capture keyboard state and write to InputState component
- * 
+ * RESPONSIBILITY: Capture movement key state and write to InputState component
+ *
  * This system creates/updates a singleton InputState component that holds
- * the current keyboard state. It translates from engine.keyState to ECS.
+ * the current movement input. It translates from engine.keyState to ECS.
+ * Physical key bindings live in keyboardListeners.ts.
  */
 
 import type { GameWorld } from '@core/GameWorld';
@@ -14,34 +15,34 @@ import type { InputState } from '@custom-types/components';
 
 const INPUT_ENTITY_ID = 'input_singleton';
 
-interface KeyboardState {
-  w: boolean;
-  a: boolean;
-  s: boolean;
-  d: boolean;
+interface MovementKeyState {
+  up: boolean;
+  down: boolean;
+  left: boolean;
+  right: boolean;
 }
 
 /**
- * Captures keyboard input and writes to GameWorld InputState component
- * 
+ * Captures movement input and writes to GameWorld InputState component
+ *
  * @param gameWorld - The ECS world
- * @param keyboardState - Current keyboard state from engine
+ * @param keyboardState - Current movement state from engine
  */
 export function inputCaptureSystem(
   gameWorld: GameWorld,
-  keyboardState: KeyboardState
+  keyboardState: MovementKeyState
 ): void {
   // Ensure input singleton entity exists
   if (!gameWorld.entityExists(INPUT_ENTITY_ID)) {
     gameWorld.createEntity(INPUT_ENTITY_ID);
   }
 
-  // Write current keyboard state to InputState component
+  // Write current movement state to InputState component
   const inputState: InputState = {
-    up: keyboardState.w,
-    down: keyboardState.s,
-    left: keyboardState.a,
-    right: keyboardState.d
+    up: keyboardState.up,
+    down: keyboardState.down,
+    left: keyboardState.left,
+    right: keyboardState.right
   };
 
   gameWorld.addComponent(INPUT_ENTITY_ID, ComponentType.INPUT_STATE, inputState);

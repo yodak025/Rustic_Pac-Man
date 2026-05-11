@@ -3,27 +3,34 @@
  *
  * RESPONSIBILITY: Register and unregister keyboard event listeners for the game.
  *
+ * This module is the SINGLE SOURCE OF TRUTH for the keyboard-to-action mapping.
+ * Downstream systems consume the semantic action flags (up, dash, useWnb, etc.)
+ * and remain agnostic to the physical keys bound to them — to remap a binding,
+ * edit only the switch cases below.
+ *
  * Returns a teardown function that removes the registered listeners,
  * allowing clean destruction of the engine without leaking handlers.
  */
 
 export interface KeyState {
-  w: boolean;
-  a: boolean;
-  s: boolean;
-  d: boolean;
-  m: boolean;
-  comma: boolean;
-  j: boolean;
-  k: boolean;
-  dot: boolean;
+  // Movement (semantic directions, decoupled from physical keys)
+  up: boolean;
+  down: boolean;
+  left: boolean;
+  right: boolean;
+  // Abilities (semantic actions, decoupled from physical keys)
+  dash: boolean;
+  useWnb: boolean;
+  prevMedallion: boolean;
+  nextMedallion: boolean;
+  activateAbility: boolean;
 }
 
 /**
  * Register keydown/keyup listeners that mutate the provided keyState object.
  *
  * @param keyState - Mutable keyboard state object owned by the engine
- * @param onDebugSkipLevel - Callback invoked when the debug skip key ('n') is pressed
+ * @param onDebugSkipLevel - Callback invoked when the debug skip key is pressed
  * @returns Teardown function that removes both event listeners
  */
 export function setupKeyboardListeners(
@@ -33,31 +40,32 @@ export function setupKeyboardListeners(
   const onKeyDown = (event: KeyboardEvent): void => {
     switch (event.key.toLowerCase()) {
       case "w":
-        keyState.w = true;
+        keyState.up = true;
         break;
       case "a":
-        keyState.a = true;
+        keyState.left = true;
         break;
       case "s":
-        keyState.s = true;
+        keyState.down = true;
         break;
       case "d":
-        keyState.d = true;
+        keyState.right = true;
         break;
-      case "m":
-        keyState.m = true;
-        break;
-      case ",":
-        keyState.comma = true;
+      case " ":
+        event.preventDefault();
+        keyState.dash = true;
         break;
       case "j":
-        keyState.j = true;
+        keyState.useWnb = true;
+        break;
+      case "m":
+        keyState.prevMedallion = true;
+        break;
+      case ",":
+        keyState.nextMedallion = true;
         break;
       case "k":
-        keyState.k = true;
-        break;
-      case ".":
-        keyState.dot = true;
+        keyState.activateAbility = true;
         break;
       case "n":
         onDebugSkipLevel();
@@ -68,31 +76,31 @@ export function setupKeyboardListeners(
   const onKeyUp = (event: KeyboardEvent): void => {
     switch (event.key.toLowerCase()) {
       case "w":
-        keyState.w = false;
+        keyState.up = false;
         break;
       case "a":
-        keyState.a = false;
+        keyState.left = false;
         break;
       case "s":
-        keyState.s = false;
+        keyState.down = false;
         break;
       case "d":
-        keyState.d = false;
+        keyState.right = false;
         break;
-      case "m":
-        keyState.m = false;
-        break;
-      case ",":
-        keyState.comma = false;
+      case " ":
+        keyState.dash = false;
         break;
       case "j":
-        keyState.j = false;
+        keyState.useWnb = false;
+        break;
+      case "m":
+        keyState.prevMedallion = false;
+        break;
+      case ",":
+        keyState.nextMedallion = false;
         break;
       case "k":
-        keyState.k = false;
-        break;
-      case ".":
-        keyState.dot = false;
+        keyState.activateAbility = false;
         break;
     }
   };

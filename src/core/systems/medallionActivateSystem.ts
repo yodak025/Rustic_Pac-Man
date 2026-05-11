@@ -3,7 +3,8 @@
  *
  * PHASE: EFFECTS (runs after collectionEffectSystem)
  * RESPONSIBILITY: Trigger the active ability of the currently selected medallion
- *                 when the player presses the activate key ('.').
+ *                 when the player presses the activate-ability key (binding
+ *                 defined in keyboardListeners.ts).
  *
  * Gate conditions (all must pass):
  *   1. PlayerAbilityInput.activateAbility is true.

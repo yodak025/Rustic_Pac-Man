@@ -1,26 +1,26 @@
 /**
  * Player Ability Input System
- * 
+ *
  * PHASE: INPUT_CAPTURE (runs after inputCaptureSystem)
  * RESPONSIBILITY: Translate ability key state into PlayerAbilityInput component
- * 
- * Keys:
- *   m       - dash
- *   ,       - use White Noise Ball
- *   j       - select previous medallion
- *   k       - select next medallion
- *   .       - activate selected medallion ability
+ *
+ * Actions handled (key bindings live in keyboardListeners.ts):
+ *   - dash
+ *   - useWnb              (use White Noise Ball)
+ *   - prevMedallion       (select previous medallion)
+ *   - nextMedallion       (select next medallion)
+ *   - activateAbility     (activate selected medallion ability)
  */
 
 import type { GameWorld } from '@core/GameWorld';
 import { ComponentType, PACMAN_ENTITY_ID } from '@custom-types/componentTypes';
 
 interface AbilityKeyState {
-  m: boolean;
-  comma: boolean;
-  j: boolean;
-  k: boolean;
-  dot: boolean;
+  dash: boolean;
+  useWnb: boolean;
+  prevMedallion: boolean;
+  nextMedallion: boolean;
+  activateAbility: boolean;
 }
 
 /**
@@ -40,10 +40,10 @@ export function playerAbilityInputSystem(
   if (!abilityInput) return;
 
   gameWorld.setComponent(PACMAN_ENTITY_ID, ComponentType.PLAYER_ABILITY_INPUT, {
-    dash: keyState.m,
-    useWnb: keyState.comma,
-    prevMedallion: keyState.j,
-    nextMedallion: keyState.k,
-    activateAbility: keyState.dot,
+    dash: keyState.dash,
+    useWnb: keyState.useWnb,
+    prevMedallion: keyState.prevMedallion,
+    nextMedallion: keyState.nextMedallion,
+    activateAbility: keyState.activateAbility,
   });
 }

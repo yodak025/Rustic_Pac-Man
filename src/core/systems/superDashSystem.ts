@@ -7,7 +7,7 @@
  * Conditions:
  * - essenceBar.activePowerUp === PowerUpKind.SUPER_DASH
  * - essenceBar.current >= essenceBar.max
- * - PlayerAbilityInput.dash is true (reuses the dash key)
+ * - PlayerAbilityInput.dash is true (reuses the dash action)
  * 
  * Effect:
  * - Teleport Chomp to the farthest reachable tile in the current direction
