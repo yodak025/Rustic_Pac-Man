@@ -14,8 +14,6 @@ import ImagePlaceholder from '@/ui/components/ImagePlaceholder'
 import HeartIcon from '@/ui/components/HeartIcon'
 import TileCell from '@/ui/components/TileCell'
 import VersionInfo from '@/ui/components/VersionInfo'
-import DebugInput from '@/ui/components/DebugInput'
-import DebugDetails from '@/ui/components/DebugDetails'
 
 const Styleguide: React.FC = () => {
   const [checkboxState, setCheckboxState] = useState(false)
@@ -36,7 +34,7 @@ const Styleguide: React.FC = () => {
 
       {/* Simulated 3D backdrop */}
       {showBackdrop && (
-        <div 
+        <div
           className="fixed inset-0 z-0"
           style={{
             background: `
@@ -50,7 +48,7 @@ const Styleguide: React.FC = () => {
 
       {/* Content */}
       <div className="relative z-10 max-w-7xl mx-auto space-y-12">
-        
+
         {/* Header */}
         <div className="text-center space-y-4">
           <PageTitle size="large">Design System</PageTitle>
@@ -68,7 +66,7 @@ const Styleguide: React.FC = () => {
             <h2 className="text-3xl font-bold font-mono text-[var(--color-accent)] mb-6">
               Typography System
             </h2>
-            
+
             <div className="space-y-6">
               <div>
                 <p className="text-sm text-[var(--color-text-body)] font-sans mb-2">
@@ -78,7 +76,7 @@ const Styleguide: React.FC = () => {
                 <PageTitle size="medium">Level Complete</PageTitle>
                 <PageTitle size="small">Game Over</PageTitle>
               </div>
-              
+
               <div>
                 <p className="text-sm text-[var(--color-text-body)] font-sans mb-2">
                   Body Font: Montserrat (Data, Paragraphs, UI Text)
@@ -100,7 +98,7 @@ const Styleguide: React.FC = () => {
             <h2 className="text-3xl font-bold font-mono text-[var(--color-accent)] mb-6">
               Color Palette - Chomp Core
             </h2>
-            
+
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
               {[
                 { name: 'Accent', var: '--color-accent', hex: '#F59E0B', desc: 'Amber - Primary' },
@@ -114,7 +112,7 @@ const Styleguide: React.FC = () => {
                 { name: 'Alert', var: '--color-alert', hex: '#EF4444', desc: 'Matte Red' },
               ].map((color) => (
                 <div key={color.var} className="flex items-center gap-3">
-                  <div 
+                  <div
                     className="w-16 h-16 rounded-tech border-2 border-[var(--color-main-light)] shadow-inset-sm"
                     style={{ backgroundColor: `var(${color.var})` }}
                   />
@@ -141,7 +139,7 @@ const Styleguide: React.FC = () => {
             <h2 className="text-3xl font-bold font-mono text-[var(--color-accent)] mb-6">
               GlassPanel Variants
             </h2>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div>
                 <h3 className="font-mono text-lg text-[var(--color-text-main)] mb-3">Light</h3>
@@ -154,7 +152,7 @@ const Styleguide: React.FC = () => {
                   </p>
                 </GlassPanel>
               </div>
-              
+
               <div>
                 <h3 className="font-mono text-lg text-[var(--color-text-main)] mb-3">Medium</h3>
                 <GlassPanel variant="medium" className="p-6 h-40">
@@ -166,7 +164,7 @@ const Styleguide: React.FC = () => {
                   </p>
                 </GlassPanel>
               </div>
-              
+
               <div>
                 <h3 className="font-mono text-lg text-[var(--color-text-main)] mb-3">Heavy</h3>
                 <GlassPanel variant="heavy" className="p-6 h-40">
@@ -188,15 +186,15 @@ const Styleguide: React.FC = () => {
             <h2 className="text-3xl font-bold font-mono text-[var(--color-accent)] mb-6">
               Inset Shadows - Brutalist Depth
             </h2>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
               {(['none', 'sm', 'md', 'lg'] as const).map((shadow) => (
                 <div key={shadow}>
                   <h3 className="font-mono text-lg text-[var(--color-text-main)] mb-3 capitalize">
                     {shadow === 'none' ? 'None' : shadow.toUpperCase()}
                   </h3>
-                  <GlassPanel 
-                    variant="medium" 
+                  <GlassPanel
+                    variant="medium"
                     insetShadow={shadow}
                     className="p-6 h-32"
                   >
@@ -216,26 +214,26 @@ const Styleguide: React.FC = () => {
             <h2 className="text-3xl font-bold font-mono text-[var(--color-accent)] mb-6">
               Button Variants
             </h2>
-            
+
             <div className="space-y-6">
               <div>
                 <h3 className="font-mono text-lg text-[var(--color-text-main)] mb-3">Default States</h3>
                 <div className="flex flex-wrap gap-4">
-                  <Button onClick={() => {}} variant="primary">Primary Button</Button>
-                  <Button onClick={() => {}} variant="secondary">Secondary Button</Button>
-                  <Button onClick={() => {}} variant="danger">Danger Button</Button>
-                  <Button onClick={() => {}} variant="success">Success Button</Button>
+                  <Button onClick={() => { }} variant="primary">Primary Button</Button>
+                  <Button onClick={() => { }} variant="secondary">Secondary Button</Button>
+                  <Button onClick={() => { }} variant="danger">Danger Button</Button>
+                  <Button onClick={() => { }} variant="success">Success Button</Button>
                 </div>
               </div>
-              
+
               <div>
                 <h3 className="font-mono text-lg text-[var(--color-text-main)] mb-3">Disabled State</h3>
                 <div className="flex flex-wrap gap-4">
-                  <Button onClick={() => {}} variant="primary" disabled>Disabled Primary</Button>
-                  <Button onClick={() => {}} variant="secondary" disabled>Disabled Secondary</Button>
+                  <Button onClick={() => { }} variant="primary" disabled>Disabled Primary</Button>
+                  <Button onClick={() => { }} variant="secondary" disabled>Disabled Secondary</Button>
                 </div>
               </div>
-              
+
               <div>
                 <h3 className="font-mono text-lg text-[var(--color-text-main)] mb-3">Hover Instructions</h3>
                 <p className="font-sans text-[var(--color-text-body)] mb-3">
@@ -252,7 +250,7 @@ const Styleguide: React.FC = () => {
             <h2 className="text-3xl font-bold font-mono text-[var(--color-accent)] mb-6">
               Link Variants
             </h2>
-            
+
             <div className="flex flex-wrap gap-6">
               <Link href="#" variant="primary">Primary Link</Link>
               <Link href="#" variant="secondary">Secondary Link</Link>
@@ -267,13 +265,13 @@ const Styleguide: React.FC = () => {
             <h2 className="text-3xl font-bold font-mono text-[var(--color-accent)] mb-6">
               Interactive Components
             </h2>
-            
+
             <div className="space-y-8">
               <div>
                 <h3 className="font-mono text-lg text-[var(--color-text-main)] mb-4">Progress Bar</h3>
                 <ProgressBar progress={65} showPercentage animated />
               </div>
-              
+
               <div>
                 <h3 className="font-mono text-lg text-[var(--color-text-main)] mb-4">Checkbox</h3>
                 <Checkbox
@@ -282,7 +280,7 @@ const Styleguide: React.FC = () => {
                   label="Toggle this checkbox"
                 />
               </div>
-              
+
               <div>
                 <h3 className="font-mono text-lg text-[var(--color-text-main)] mb-4">Key Display</h3>
                 <div className="flex gap-3">
@@ -302,7 +300,7 @@ const Styleguide: React.FC = () => {
             <h2 className="text-3xl font-bold font-mono text-[var(--color-accent)] mb-6">
               Geometric Properties
             </h2>
-            
+
             <div className="space-y-4">
               <div>
                 <p className="font-sans text-[var(--color-text-body)] mb-2">
@@ -312,7 +310,7 @@ const Styleguide: React.FC = () => {
                   Functional moderate rounding - balance between modern and severe
                 </p>
               </div>
-              
+
               <div>
                 <p className="font-sans text-[var(--color-text-body)] mb-2">
                   <span className="font-semibold text-[var(--color-text-main)]">Transition (Organic):</span> 250ms ease-out
@@ -321,7 +319,7 @@ const Styleguide: React.FC = () => {
                   Moderate organic timing - like filament warming up
                 </p>
               </div>
-              
+
               <div>
                 <p className="font-sans text-[var(--color-text-body)] mb-2">
                   <span className="font-semibold text-[var(--color-text-main)]">Philosophy:</span> Functional Brutalism
@@ -340,7 +338,7 @@ const Styleguide: React.FC = () => {
             <h2 className="text-3xl font-bold font-mono text-[var(--color-accent)] mb-6">
               Landing Page Components
             </h2>
-            
+
             <div className="space-y-8">
               <div>
                 <h3 className="font-mono text-lg text-[var(--color-text-main)] mb-4">SectionTitle</h3>
@@ -348,7 +346,7 @@ const Styleguide: React.FC = () => {
                 <SectionTitle size="medium">Medium Section Title</SectionTitle>
                 <SectionTitle size="small">Small Section Title</SectionTitle>
               </div>
-              
+
               <div>
                 <h3 className="font-mono text-lg text-[var(--color-text-main)] mb-4">TechPill</h3>
                 <div className="flex flex-wrap gap-3">
@@ -358,7 +356,7 @@ const Styleguide: React.FC = () => {
                   <TechPill>Three.js</TechPill>
                 </div>
               </div>
-              
+
               <div>
                 <h3 className="font-mono text-lg text-[var(--color-text-main)] mb-4">ImagePlaceholder</h3>
                 <ImagePlaceholder height="200px" label="Screenshot Placeholder" />
@@ -373,7 +371,7 @@ const Styleguide: React.FC = () => {
             <h2 className="text-3xl font-bold font-mono text-[var(--color-accent)] mb-6">
               Game UI Components
             </h2>
-            
+
             <div className="space-y-8">
               <div>
                 <h3 className="font-mono text-lg text-[var(--color-text-main)] mb-4">HeartIcon</h3>
@@ -383,7 +381,7 @@ const Styleguide: React.FC = () => {
                   <HeartIcon />
                 </div>
               </div>
-              
+
               <div>
                 <h3 className="font-mono text-lg text-[var(--color-text-main)] mb-4">TileCell</h3>
                 <div className="flex gap-2">
@@ -397,7 +395,7 @@ const Styleguide: React.FC = () => {
                   Types: 0=Empty, 1=Wall, 2=Pellet, 3=Power, 4=Special
                 </p>
               </div>
-              
+
               <div>
                 <h3 className="font-mono text-lg text-[var(--color-text-main)] mb-4">VersionInfo</h3>
                 <VersionInfo />
@@ -405,36 +403,6 @@ const Styleguide: React.FC = () => {
             </div>
           </GlassPanel>
         </section>
-
-        {/* Debug Components Section */}
-        <section>
-          <GlassPanel variant="medium" className="p-8">
-            <h2 className="text-3xl font-bold font-mono text-[var(--color-accent)] mb-6">
-              Debug Components
-            </h2>
-            
-            <div className="space-y-8">
-              <div>
-                <h3 className="font-mono text-lg text-[var(--color-text-main)] mb-4">DebugInput</h3>
-                <DebugInput
-                  placeholder="Enter debug value..."
-                  type="number"
-                  onSubmit={(val) => console.log('Debug value:', val)}
-                  min="0"
-                />
-              </div>
-              
-              <div>
-                <h3 className="font-mono text-lg text-[var(--color-text-main)] mb-4">DebugDetails</h3>
-                <DebugDetails summary="Debug Information" open={false}>
-                  <p className="font-sans text-sm">This is debug content that can be expanded.</p>
-                  <p className="font-sans text-sm">Used in debug panels and settings.</p>
-                </DebugDetails>
-              </div>
-            </div>
-          </GlassPanel>
-        </section>
-
       </div>
     </div>
   )
