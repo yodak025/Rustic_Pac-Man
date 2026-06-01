@@ -10,6 +10,3 @@ export { useHotState, usePacmanHotState, useGhostHotState, useGhostsHotState, us
 
 // App-level state
 export { default as useAppStateStore } from './useAppStateStore';
-
-// Debug/config state
-export { default as useDebugConfigStore } from './useDebugConfigStore';

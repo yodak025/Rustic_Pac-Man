@@ -7,7 +7,6 @@ export { default as LevelInGameInfo } from './LevelInGameInfo';
 export { default as DashBar } from './DashBar';
 export { default as MedallionDisplay } from './MedallionDisplay';
 export { default as TileGrid } from './TileGrid';
-export { default as DebugEntitySection } from './DebugEntitySection';
 export { default as GameControlsDisplay } from './GameControlsDisplay';
 
 // Types
@@ -18,4 +17,3 @@ export type { LevelInGameInfoProps } from './LevelInGameInfo';
 export type { DashBarProps } from './DashBar';
 export type { MedallionDisplayProps } from './MedallionDisplay';
 export type { TileGridProps } from './TileGrid';
-export type { DebugEntitySectionProps } from './DebugEntitySection';

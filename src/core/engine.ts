@@ -302,7 +302,14 @@ export class RusticGameEngine {
             echoId,
             EchoBehaviorKind.SINUSOID,
             { x, y },
-            SINUSOID_CONFIG.MOVEMENT_INTERVAL,
+            Math.max(
+              // The movement interval is decreased by level. Here it is calculated.
+              // This behavior increases the difficulty, making the game more interesting.
+              SINUSOID_CONFIG.ABSOLUTE_MIN_MOVEMENT_INTERVAL,
+              SINUSOID_CONFIG.BASE_MOVEMENT_INTERVAL -
+                SINUSOID_CONFIG.LEVEL_MOVEMENT_REDUCTION *
+                  this.gameWorld.getGameState().level,
+            ),
           );
           echoCounter++;
           // Add essence at echo position so it's walkable

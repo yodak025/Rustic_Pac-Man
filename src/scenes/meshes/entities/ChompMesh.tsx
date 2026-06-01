@@ -1,10 +1,8 @@
-import { useRef } from 'react';
+import { useRef } from "react";
 import { useGLTF } from "@react-three/drei";
 import { usePacmanHotState } from "@state/useHotState";
 import * as THREE from "three";
 import { Direction } from "@/types/gameComponents";
-
-
 
 /**
  * Calculate rotation based on direction
@@ -25,14 +23,9 @@ function calculateRotation(direction: Direction | null): number {
   }
 }
 
-
 export default function PacmanMesh() {
-  const {
-    position,
-    isInvulnerable,
-    direction,
-    agroRadius,
-    visionRadius } = usePacmanHotState();
+  const { position, isInvulnerable, direction, agroRadius, visionRadius } =
+    usePacmanHotState();
   const chompRef = useRef<THREE.Mesh>(null);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { nodes } = useGLTF("/assets/models/chomp-base.glb") as any;
@@ -46,10 +39,7 @@ export default function PacmanMesh() {
   const visionAngle = Math.atan((visionRadius + VISUAL_MARGIN) / LIGHT_HEIGHT);
 
   return (
-    <group
-      position={[position.x, 0.5, position.y]}
-    >
-
+    <group position={[position.x, 0.5, position.y]}>
       <spotLight
         position={[0, LIGHT_HEIGHT, 0]}
         target={chompRef.current!}
@@ -61,7 +51,6 @@ export default function PacmanMesh() {
         position={[0, LIGHT_HEIGHT, 0]}
         target={chompRef.current!}
         intensity={5}
-        color="blue"
         angle={visionAngle}
         decay={0}
       />
@@ -74,12 +63,10 @@ export default function PacmanMesh() {
         material={nodes.mesh_0.material}
       >
         {/* Override material color when invulnerable (white) */}
-        {isInvulnerable && (
-          <meshStandardMaterial color="white" />
-        )}
+        {isInvulnerable && <meshStandardMaterial color="white" />}
       </mesh>
     </group>
   );
 }
 
-useGLTF.preload('/assets/models/chomp-base.glb');
+useGLTF.preload("/assets/models/chomp-base.glb");

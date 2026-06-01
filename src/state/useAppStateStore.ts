@@ -69,9 +69,6 @@ interface AppStateStore {
   /** Navigate to debug maze analyzer */
   goToDebugMazeAnalyzer: () => void;
 
-  /** Navigate to debug settings */
-  goToDebugSettings: () => void;
-
   /** Reset app state (for cleanup) */
   reset: () => void;
 }
@@ -103,8 +100,6 @@ const useAppStateStore = create<AppStateStore>((set) => ({
   goToTutorial: () => set({ view: AppView.TUTORIAL }),
 
   goToDebugMazeAnalyzer: () => set({ view: AppView.DEBUG_MAZE_ANALYZER }),
-
-  goToDebugSettings: () => set({ view: AppView.DEBUG_SETTINGS }),
 
   reset: () =>
     set({

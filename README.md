@@ -1,34 +1,52 @@
-# Rustic Pac-Man
+# Chomp Crawler
 
-This project is my thesis for a degree in Engineering in Audiovisual Systems. It features a Pac-Man clone with a rogue-like perspective. The main goals of this project are:
+This project is the final thesis for a degree in Audiovisual Systems and Multimedia Engineering. It presents a 3D web-based video game that modernizes the classic arcade mechanics of Pac-Man by introducing characteristic elements of the rogue-like genre.
 
-- Decentralized Multiplayer: Implement a 1-4 player experience using WebRTC.
-- Procedural Generation: Explore the creation of procedural Pac-Man mazes.
-- Web Aplication: Use web technologies in order to make the game highly available.
-  
-This projects iterates functional prototypes, focusing in the idea of constant improvement. Actually, I'm working in the 3rd one. It's goal is to end being a pacman-like endless arcade, while approaching to future ideas. 
+The main goals of the project are:
 
-## Architecture
-The game is currently divided in 4 main units
-1. There's a Three.js based scene, created with React Three Fiber, that runs inside a TypeScript React.js App. It shows the graphical representation of the game.
-2. The logic runs in a game loop. It is implemented with pure TypeScript.
-3. The global state is implemented using Zustand. The game loop modifies it and the React.js app follows these values.
-4. A Python maze generator that creates tilemaps in order to represent the levels. This generator integrates inside the game logic using Pyodide. 
+- **Procedural Generation**: Create highly replayable, interconnected maze dungeons avoiding dead-ends and ensuring navigability.
+- **Robust Architecture**: Implement a custom **Entity Component System (ECS)** to handle game logic cleanly and efficiently.
+- **Web Availability**: Leverage modern web technologies (React, Next.js, WebGL) to provide a highly available, installation-free experience.
 
-## Maze generation:
+## Tech Stack & Architecture
 
-Starting from the work of [Saun LeBron](https://shaunlebron.github.io/pacman-mazegen/), I've developed a Python based implementation. It will follow some of the LeBron contrains:
+The game is built upon a decoupled architecture dividing logic, state, and presentation:
 
-- Simetric levels.
-- 1 tile thick paths.
-- No sharp turns.
-- No dead ends.
-- Only I, L, T or + wall shapes alowed, excepting posible variations of the ghost home.
-- Non rectangular walls must be 2 tiles thick
+1. **ECS Game Engine (TypeScript)**: The core simulation runs on a custom, strict Entity-Component-System logic loop operating on flat data structures (Cold State) to ensure performance.
+2. **Procedural Generation (Python & WebAssembly)**: A complex maze generation algorithm written in Python, compiled to WebAssembly, and executed client-side via **Pyodide**.
+3. **Global State (Zustand)**: A reactive Hot State store that receives frame-by-frame snapshots from the ECS to communicate data to the UI layer without prop-drilling or over-rendering.
+4. **3D Presentation (React Three Fiber & WebGL)**: The graphical representation of the game world. It leverages heavily on **Instanced Meshes** to render thousands of dynamic elements (walls, floors, collectables, enemies) in a single draw call.
+5. **UI & App Orchestration (React, Next.js & Tailwind CSS)**: Handles the Single Page Application flow, routing, Heads-Up Display (HUD), menus, and styling via utility classes.
 
-In addition/variation of those, I add 2 more:
+## Maze Generation
 
-- The map needs to ve a 4x4 version of the 28x31 tiles maps of the classic Pac-Man design.
-- These maps will be formed of of 4 4x1 layers that will be connected by tunnels.
+The procedural generation takes inspiration from [Shaun LeBron's Pac-Man Maze Generation](https://shaunlebron.github.io/pacman-mazegen/) and expands it to create massive, multi-room dungeons. The process is divided into two layers:
 
-The mazes are currently in a prototype state. The game uses this algorhythm to generate pacman-like arcade games. However, it's fully functional for the full purpose of the project. 
+- **Micro Layer (Python)**: Generates individual rooms as valid Pac-Man-style tilemaps (cyclic, no dead ends, specific wall shapes).
+- **Macro Layer (Python)**: Organizes multiple rooms into horizontal and vertical layers, connecting them via shared lateral tunnels determined by a **Minimum Spanning Tree (Kruskal's algorithm)** to ensure full maze connectivity while avoiding excessive loops.
+
+## Getting Started
+
+This project is built using Next.js. To run it locally on your machine, you will need to have [Node.js](https://nodejs.org/) installed.
+
+1. **Install dependencies:**
+
+   ```bash
+   npm install
+   ```
+
+2. **Build the project for production:**
+
+   ```bash
+   npm run build
+   ```
+
+3. **Start the production server:**
+
+   ```bash
+   npm start
+   ```
+
+4. **Play the game:**
+   Open [http://localhost:3000](http://localhost:3000) with your browser to see the landing page and start the game.
+

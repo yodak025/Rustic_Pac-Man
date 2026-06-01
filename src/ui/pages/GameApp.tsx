@@ -7,7 +7,6 @@ import { usePyodide } from "@core/hooks";
 import Game from "@/scenes/Game";
 import MainMenu from "@/ui/pages/MainMenu";
 import MazeTilemapAnalyzer from "@/ui/pages/MazeTilemapAnalyzer";
-import DebugSettings from "@/ui/pages/DebugSettings";
 import TutorialPage from "@/ui/pages/TutorialPage";
 import LoadingScreen from "@/ui/common/LoadingScreen";
 
@@ -47,9 +46,6 @@ export default function GameApp() {
 
     case AppView.DEBUG_MAZE_ANALYZER:
       return <MazeTilemapAnalyzer />;
-
-    case AppView.DEBUG_SETTINGS:
-      return <DebugSettings />;
 
     case AppView.TUTORIAL:
       return <TutorialPage />;

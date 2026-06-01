@@ -190,9 +190,6 @@ See `src/ui/common/TileGrid.tsx` - 2D array mapping to TileCell grid
 **Multi-Store Integration:**
 See `src/ui/layout/HUD.tsx` - reads from useGameStatusStore, usePacmanStore, useMazeStore
 
-**Keyboard Event Handling:**
-See `src/ui/layout/DebugBar.tsx` - toggles visibility with '#' key
-
 ---
 
 ## 4. Modification & Extension

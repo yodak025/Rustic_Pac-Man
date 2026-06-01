@@ -1,6 +1,6 @@
 /**
  * Echo Configuration
- * 
+ *
  * Configuration constants for Echo entities (enemies).
  * These values control Echo behavior, movement, and AI decision-making.
  */
@@ -11,7 +11,7 @@
 
 /**
  * Sinusoid Echo - The basic wandering enemy
- * 
+ *
  * Behavior:
  * - IDLE: Stands still for a duration
  * - SCATTER: Wanders randomly at slow speed
@@ -30,7 +30,7 @@ export const SINUSOID_CONFIG = {
   /** Distance at which Echo exits CHASE mode (returns to SCATTER) */
   AGRO_COOL_DISTANCE: 8,
 
-  /** 
+  /**
    * Distance threshold for FRIGHTEN behavior:
    * - If Chomp is closer than this: flee actively
    * - If Chomp is farther than this: wander at high speed
@@ -41,8 +41,8 @@ export const SINUSOID_CONFIG = {
   // IDLE BEHAVIOR
   // ──────────────────────────────────────────────────────────────────────────
 
-  /** 
-   * Probability of entering IDLE state on each movement decision 
+  /**
+   * Probability of entering IDLE state on each movement decision
    * 0.005 = 0.5% chance per tick
    */
   IDLE_PROBABILITY: 0.005,
@@ -61,21 +61,22 @@ export const SINUSOID_CONFIG = {
   // MOVEMENT SPEEDS
   // ──────────────────────────────────────────────────────────────────────────
 
-  /** 
+  /**
    * Speed multipliers (relative to base speed)
    * Base speed is defined in gameDefaults.json
    */
-  SPEED_SCATTER: 0.6,    // Very slow wandering
-  SPEED_CHASE: 1.1,      // Slightly faster than Chomp
-  SPEED_FRIGHTEN: 2,   // Much faster when fleeing
+  SPEED_SCATTER: 0.6, // Very slow wandering
+  SPEED_CHASE: 1.1, // Slightly faster than Chomp
+  SPEED_FRIGHTEN: 2, // Much faster when fleeing
 
   // ──────────────────────────────────────────────────────────────────────────
   // TIMING
   // ──────────────────────────────────────────────────────────────────────────
 
   /** Movement interval in milliseconds (same as ghosts for consistency) */
-  MOVEMENT_INTERVAL: 200,
-
+  BASE_MOVEMENT_INTERVAL: 200,
+  LEVEL_MOVEMENT_REDUCTION: 10,
+  ABSOLUTE_MIN_MOVEMENT_INTERVAL: 50, // Minimum cap for movement interval
   // ──────────────────────────────────────────────────────────────────────────
   // SCORING
   // ──────────────────────────────────────────────────────────────────────────

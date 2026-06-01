@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useFrame } from "@react-three/fiber";
-import useDebugConfigStore from "@/state/useDebugConfigStore";
 import {
   type Position,
   type MovementTimer,
@@ -13,15 +12,9 @@ export function useGraphicPositionInterpolation(
   directions: Direction[],
   lastPosition: Position,
 ) {
-  const { view } = useDebugConfigStore();
   const [interpolatedPosition, setInterpolatedPosition] = useState(position);
 
   useFrame(() => {
-    if (view.isDiscrete) {
-      setInterpolatedPosition(position);
-      return;
-    }
-    
     if (!directions) {
       setInterpolatedPosition(position);
     } else {
@@ -34,6 +27,5 @@ export function useGraphicPositionInterpolation(
     }
   });
 
-  
-  return view.isDiscrete ? position : interpolatedPosition;
+  return interpolatedPosition;
 }

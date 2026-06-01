@@ -7,7 +7,7 @@ import Button from '@/ui/components/Button';
 import { VersionInfo } from '@/ui/components';
 
 const MainMenu: React.FC = () => {
-  const { goToGame, goToTutorial, goToDebugMazeAnalyzer, goToDebugSettings } = useAppStateStore();
+  const { goToGame, goToTutorial, goToDebugMazeAnalyzer } = useAppStateStore();
   
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-[var(--color-background)] text-[var(--color-text-main)]">
@@ -25,10 +25,6 @@ const MainMenu: React.FC = () => {
 
         <Button onClick={goToDebugMazeAnalyzer} variant="success">
           MAZE GENERATION
-        </Button>
-
-        <Button onClick={goToDebugSettings} variant="secondary">
-          DEBUG SETTINGS
         </Button>
       </div>
     </div>

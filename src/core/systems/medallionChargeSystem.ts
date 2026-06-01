@@ -13,7 +13,7 @@ import type { GameWorld } from "@core/GameWorld";
 import { ComponentType, PACMAN_ENTITY_ID } from "@custom-types/componentTypes";
 
 // TODO: migrate to proper ECS cooldown component (see dashSystem pattern)
-const COOLDOWN_MS = 100;
+const COOLDOWN_MS = 200;
 let lastSwitch = 0;
 
 export function medallionChargeSystem(gameWorld: GameWorld): void {
