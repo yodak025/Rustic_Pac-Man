@@ -1,8 +1,8 @@
+import Image from 'next/image'
 import Link from '@/ui/components/Link'
 import PageTitle from '@/ui/components/PageTitle'
 import SectionTitle from '@/ui/components/SectionTitle'
 import TechPill from '@/ui/components/TechPill'
-import ImagePlaceholder from '@/ui/components/ImagePlaceholder'
 import GlassPanel from '@/ui/components/GlassPanel'
 import { VersionInfo } from '@/ui/components'
 
@@ -90,10 +90,21 @@ export default function LandingPage() {
             </div>
             
             <div>
-              <ImagePlaceholder 
-                height="400px" 
-                label="Game Screenshot"
-              />
+              <GlassPanel
+                variant="medium"
+                insetShadow="md"
+                showBorder={true}
+                className="overflow-hidden p-2"
+              >
+                <Image
+                  src="/assets/images/chomp-game-art.jpg"
+                  alt="Chomp Crawler key art"
+                  width={1024}
+                  height={825}
+                  className="w-full h-auto rounded-lg"
+                  priority
+                />
+              </GlassPanel>
             </div>
           </div>
         </div>
@@ -144,13 +155,6 @@ export default function LandingPage() {
                 {tech}
               </TechPill>
             ))}
-          </div>
-
-          <div className="mt-12">
-            <ImagePlaceholder 
-              height="300px" 
-              label="Tech Architecture Diagram"
-            />
           </div>
         </div>
       </section>
