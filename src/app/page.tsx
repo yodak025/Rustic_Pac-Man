@@ -45,7 +45,52 @@ export default function LandingPage() {
   return (
     <main className="bg-[var(--color-background)] text-[var(--color-text-main)]">
       <VersionInfo />
-      
+
+      {/* ========== SECTION 0: TFG DEFENSE ========== */}
+      <section className="pt-20 pb-8 px-4 bg-[var(--color-main-dark)] border-b border-[var(--color-main-light)]">
+        <div className="max-w-3xl mx-auto">
+          <GlassPanel variant="medium" insetShadow="md" showBorder={true} className="p-8 text-center">
+            <SectionTitle size="small">
+              THESIS DEFENSE
+            </SectionTitle>
+
+            <p className="font-sans text-base text-[var(--color-text-body)] leading-relaxed mb-2 max-w-2xl mx-auto">
+              Thank you to the committee for your time and consideration. The thesis report, the defense slides and the source code are available below.
+            </p>
+            <p className="font-sans text-sm text-[var(--color-text-body)] opacity-70 mb-8">
+              The report and slides are written in Spanish.
+            </p>
+
+            <div className="flex flex-wrap justify-center gap-4">
+              <a
+                href="/tfg/memoria.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-mono font-bold text-base uppercase tracking-wide px-8 py-3 bg-[var(--color-accent)] text-[var(--color-background)] hover:text-[var(--color-text-main)] rounded-tech shadow-inset-sm hover-magnetize inline-flex items-center justify-center"
+              >
+                Report (PDF)
+              </a>
+              <a
+                href="/tfg/ChompCrawler_TFG_Defensa.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-mono font-bold text-base uppercase tracking-wide px-8 py-3 bg-[var(--color-accent)] text-[var(--color-background)] hover:text-[var(--color-text-main)] rounded-tech shadow-inset-sm hover-magnetize inline-flex items-center justify-center"
+              >
+                Slides (PDF)
+              </a>
+              <a
+                href="https://github.com/yodak025/chomp-crawler"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-mono font-bold text-base uppercase tracking-wide px-8 py-3 bg-[var(--color-accent)] text-[var(--color-background)] hover:text-[var(--color-text-main)] rounded-tech shadow-inset-sm hover-magnetize inline-flex items-center justify-center"
+              >
+                Source Code
+              </a>
+            </div>
+          </GlassPanel>
+        </div>
+      </section>
+
       {/* ========== SECTION 1: HERO ========== */}
       <section className="min-h-screen flex flex-col items-center justify-center px-4 py-16">
         <div className="max-w-4xl w-full text-center">
